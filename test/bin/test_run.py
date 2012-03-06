@@ -167,7 +167,7 @@ class TestOptions(object):
 class TestSettings(object):
 
     def test_get_settings(self):
-#        # settings default
+        # settings default
         options = _get_options(['-e', 'some_unknown_settings_file'])
         settings = _get_settings(options)
         eq_(settings['server'], 'localhost')
