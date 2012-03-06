@@ -21,7 +21,7 @@ The integration test suite assumes you have a running disco cluster.
     diana@ubuntu:~$ disco start
     Master ubuntu:8989 started
  
-And that your inferno settings (~/.inferno or '/etc/inferno/settings.yaml') 
+And that your inferno settings (~/.inferno or /etc/inferno/settings.yaml) 
 point to that disco master.
 
     diana@ubuntu:~$ cat ~/.inferno
