@@ -1,0 +1,10 @@
+syntax: glob
+*.iml
+*.pyc
+*.orig
+build
+.DS_Store
+.idea
+.coverage
+dist
+inferno.egg-info

@@ -1,0 +1,3 @@
+server: disco://localhost
+rules_directory: /apps/duck/duck/rules
+inferno_http_port: 6969
