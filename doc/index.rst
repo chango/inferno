@@ -26,7 +26,7 @@ The inferno map/reduce rule (inferno/test/fixture/test_rules/names.py)::
     RULES = [
         InfernoRule(
             name='last_names_json',
-            source_tags=['test:integration:chunk:users'],
+            source_tags=['example:chunk:users'],
             map_input_stream=chunk_json_keyset_stream,
             parts_preprocess=[count],
             partitions=2,
@@ -52,12 +52,12 @@ Here's our input data::
 
 Toss the input data into `disco's distributed filesystem <http://discoproject.org/doc/howto/ddfs.html>`_ (ddfs)::
 
-    diana@ubuntu:~$ ddfs chunk test:integration:chunk:users ./data.txt 
+    diana@ubuntu:~$ ddfs chunk example:chunk:users ./data.txt 
     created: disco://localhost/ddfs/vol0/blob/99/data_txt-0$533-406a9-e50
 
 Verify that the data is in ddfs::
 
-    diana@ubuntu:~$ ddfs xcat test:integration:chunk:users
+    diana@ubuntu:~$ ddfs xcat example:chunk:users
     {"first_name":"Joan", "last_name":"Términos"}
     {"first_name":"Willow", "last_name":"Harvey"}
     {"first_name":"Noam", "last_name":"Clarke"}
@@ -67,7 +67,7 @@ Verify that the data is in ddfs::
 Run the last name counting map/reduce job::
 
     diana@ubuntu:~$ inferno -s localhost -y /home/diana/workspace/inferno/test/fixture/test_rules -i names.last_names_json
-    2012-03-09 03:41:08,765,765 INFO  [inferno.lib.job] Processing tags: ['test:integration:chunk:users']
+    2012-03-09 03:41:08,765,765 INFO  [inferno.lib.job] Processing tags: ['example:chunk:users']
     2012-03-09 03:41:08,806,806 INFO  [inferno.lib.job] Started job last_names_json@533:40914:c355f processing 1 blobs
     2012-03-09 03:41:12,115,115 INFO  [inferno.lib.job] Done waiting for job last_names_json@533:40914:c355f
 
