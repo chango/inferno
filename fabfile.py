@@ -2,20 +2,15 @@ import os
 import re
 import sys
 
-from fabric.api import sudo, run, local, env, cd
+from fabric.api import sudo, run, local, cd
 from fabric.decorators import runs_once
 
 
 _sudo = sudo
 here = os.path.abspath(os.path.dirname(__file__))
-env.user = 'chango'
-env.roledefs = {
-    'dancefloor': ['dancefloor01', 'cronkite01'],
-    'test_dashboard': ['dev-dashboard01'],
-}
 
 PROJECT_NAME = 'inferno'
-RELEASE_DIR = '/etc/inferno/minipop'
+RELEASE_DIR = '/etc/inferno/inferno'
 VERSION_PATH = os.path.join(here, 'inferno', 'lib', '__init__.py')
 
 
@@ -25,8 +20,8 @@ def sudo(*args, **kwargs):
 
 
 @runs_once
-def prepare_deploy():
-    print "Please enter a deploy log message:"
+def prepare_release():
+    print "Please enter a release log message:"
     response = sys.stdin.readline().strip()
     if not response:
         print "Aborted. No log message"
@@ -35,18 +30,17 @@ def prepare_deploy():
     return tag_name
 
 
-def deploy(tag_name=None):
+def release(tag_name=None):
     if not tag_name:
-        tag_name = prepare_deploy()
+        tag_name = prepare_release()
     update_code(tag_name)
 
 
 def update_code(tag_name):
     with cd(RELEASE_DIR):
-        print "Deploying tag %s..." % tag_name
+        print "Releasing tag %s..." % tag_name
         run("hg pull")
         run("hg up -C %s" % tag_name)
-        run("python setup.py install")
 
 
 def bump_version(release_type='patch', message='bumping version'):
