@@ -91,6 +91,12 @@ class InfernoJob(object):
             return self.job
         return None
 
+    def _safe_str(self, value):
+        try:
+            return str(value)
+        except UnicodeEncodeError:
+            return unicode(value).encode('utf-8')
+
     def wait(self):
         blob_count = self.archiver.blob_count
         log.info('Started job %s processing %i blobs',
@@ -106,7 +112,7 @@ class InfernoJob(object):
                 self._process_results(results, self.job.name)
             else:
                 keyset_result(results, self.rule.params)
-            self._purge(self.job.name)
+            self._purge(self._safe_str(self.job.name))
         except Exception as e:
             log.error('Job %s failed: %s',
                       self.job.name, e, exc_info=sys.exc_info())

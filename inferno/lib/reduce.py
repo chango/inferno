@@ -15,7 +15,7 @@ def keyset_reduce(iter_, params_):
                     key = ujson.loads(key)
                     sum_ = self._sum_group(key, value)
                     if (hasattr(self.params, 'serial_out') and
-                        self.params.serial_out):
+                            self.params.serial_out):
                         serial = ','.join([self._safe_str(y) for y in key[1:]])
                         result = serial, ujson.dumps(sum_)
                     else:

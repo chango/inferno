@@ -20,6 +20,14 @@ class JobFactory(object):
                 job.wait()
 
     @staticmethod
+    def execute_immediate(parent=None, settings=None, **kwargs):
+        if not settings:
+            settings = kwargs
+        else:
+            settings.update(kwargs)
+        JobFactory.execute_immediate_rule(settings, parent)
+
+    @staticmethod
     def get_disco_ddfs(settings):
         server = settings.get('server')
         return get_disco_handle(server)
