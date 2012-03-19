@@ -6,63 +6,15 @@
 Example - Campaign Finance
 ==========================
 
-The inferno map/reduce rule (inferno/test/fixture/test_rules/election.py)::
+Rule
+----
 
-    import re
-    
-    from inferno.lib.rule import chunk_csv_keyset_stream
-    from inferno.lib.rule import InfernoRule
-    from inferno.lib.rule import Keyset
-    
-    
-    def count(parts, params):
-        parts['count'] = 1
-        yield parts
-    
-    
-    def occupation_preprocess(parts, params):
-        parts['occupation'] = re.sub(r'\W+', ' ', parts['contbr_occupation'])
-        yield parts
-    
-    
-    RULES = [
-        InfernoRule(
-            name='presidential_2012',
-            source_tags=['gov:chunk:presidential_campaign_finance'],
-            map_input_stream=chunk_csv_keyset_stream,
-            parts_preprocess=[count, occupation_preprocess],
-            partitions=1,
-            csv_fields=(
-                'cmte_id',
-                'cand_id',
-                'cand_nm',
-                'contbr_nm',
-                'contbr_city',
-                'contbr_st',
-                'contbr_zip',
-                'contbr_employer',
-                'contbr_occupation',
-                'contb_receipt_amt',
-                'contb_receipt_dt',
-                'receipt_desc',
-                'memo_cd',
-                'memo_text',
-                'form_tp',
-                'file_num',
-            ),
-            csv_dialect='excel',
-            keysets={
-                'contributions_by_candidate_name':Keyset(
-                    key_parts=['cand_nm'],
-                    value_parts=['count', 'contb_receipt_amt'],
-                 ),
-                'contributions_by_occupation_and_candidate_name':Keyset(
-                    key_parts=['occupation', 'cand_nm'],
-                    value_parts=['count', 'contb_receipt_amt']
-                 )
-            }
-        )
-    ]
+The inferno map/reduce rule (inferno/test/fixture/test_rules/election.py):
+
+.. literalinclude:: ../test/fixture/test_rules/election.py
+
+Input - 2012 Presidential Campaign Finance
+------------------------------------------
 
 Make sure `disco <http://discoproject.org/>`_ is running::
 
@@ -89,6 +41,9 @@ Verify that the data is in ddfs::
     C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",50,23-JUN-11,"","","","SA17A",736166
     C00410118,"P20002978","Bachmann, Michelle","BLEVINS, DARONDA","PIGGOTT","AR","724548253","NONE","RETIRED",250,01-AUG-11,"","","","SA17A",749073
 
+Contributions by Candidate
+--------------------------
+
 Run the contributions_by_candidate_name map/reduce job::
 
     diana@ubuntu:~$ inferno -s localhost -y /path/test_rules/ -i election.presidential_2012.contributions_by_candidate_name
@@ -97,23 +52,33 @@ Run the contributions_by_candidate_name map/reduce job::
     2012-03-19 INFO  [inferno.lib.job] Done waiting for job presidential_2012@533:87210:81a1b
     2012-03-19 INFO  [inferno.lib.job] Finished job presidential_2012@533:87210:81a1b
 
-The output::
+The output in CSV::
 
-    cand_nm,count,contb_receipt_amt
-    "Bachmann, Michelle",12322,2607916.06
-    "Cain, Herman",19924,7010445.99
-    "Gingrich, Newt",27740,9271750.98
-    "Huntsman, Jon",4143,3200693.48
-    "Johnson, Gary Earl",702,413276.89
-    "McCotter, Thaddeus G",74,37030.0
-    "Obama, Barack",292400,81057578.81
-    "Paul, Ron",87697,15435762.37
-    "Pawlenty, Timothy",4532,4238858.94
-    "Perry, Rick",13341,18644247.91
-    "Roemer, Charles E. 'Buddy' III",5364,339033.78
-    "Romney, Mitt",58420,55427338.84
-    "Santorum, Rick",9382,3351439.54
+    candidate,count,amount
+    gingrich newt,27740,9271750.98
+    obama barack,292400,81057578.81
+    paul ron,87697,15435762.37
+    romney mitt,58420,55427338.84
+    santorum rick,9382,3351439.54
 
+The output as a table:
+
++----------------+--------+-----------------+
+| candidate      | count  | amount          |
++================+========+=================+
+| gingrich newt  | 27740  | $ 9,271,750.98  |
++----------------+--------+-----------------+
+| obama barack   | 292400 | $ 81,057,578.81 |
++----------------+--------+-----------------+
+| paul ron       | 87697  | $ 15,435,762.37 |
++----------------+--------+-----------------+
+| romney mitt    | 58420  | $ 55,427,338.84 |
++----------------+--------+-----------------+
+| santorum rick  | 9382   | $ 3,351,439.54  |
++----------------+--------+-----------------+
+
+Contributions by Occupation
+---------------------------
 
 Run the contributions_by_occupation_and_candidate_name map/reduce job::
 
@@ -150,6 +115,9 @@ The output::
 Example - Count Last Names
 ==========================
 
+Rule
+----
+
 The inferno map/reduce rule (inferno/test/fixture/test_rules/names.py)::
 
     from inferno.lib.rule import chunk_json_keyset_stream
@@ -165,14 +133,17 @@ The inferno map/reduce rule (inferno/test/fixture/test_rules/names.py)::
     RULES = [
         InfernoRule(
             name='last_names_json',
-            source_tags=['example:chunk:users'],
+            source_tags=['test:integration:chunk:users'],
             map_input_stream=chunk_json_keyset_stream,
             parts_preprocess=[count],
             partitions=2,
             key_parts=['last_name'],
             value_parts=['count'],
-        )
+        ),
     ]
+
+Input
+-----
 
 Make sure `disco <http://discoproject.org/>`_ is running::
 
@@ -201,6 +172,9 @@ Verify that the data is in ddfs::
     {"first_name":"Noam", "last_name":"Clarke"}
     {"first_name":"Joan", "last_name":"Harvey"}
     {"first_name":"Beatty", "last_name":"Clarke"}
+
+Output
+------
 
 Run the last name counting map/reduce job::
 
