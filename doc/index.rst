@@ -13,15 +13,15 @@ The inferno map/reduce rule (inferno/test/fixture/test_rules/election.py):
 
 .. literalinclude:: ../test/fixture/test_rules/election.py
 
-Input - 2012 Presidential Campaign Finance
-------------------------------------------
+Input
+-----
 
 Make sure `disco <http://discoproject.org/>`_ is running::
 
     diana@ubuntu:~$ disco start
     Master ubuntu:8989 started
 
-Here's our input data (from the `FEC <http://www.fec.gov/disclosurep/PDownload.do>`_)::
+The 2012 presidential campaign finance data (from the `FEC <http://www.fec.gov/disclosurep/PDownload.do>`_)::
 
     diana@ubuntu:~$ head -4 P00000001-ALL.txt
     cmte_id,cand_id,cand_nm,contbr_nm,contbr_city,contbr_st,contbr_zip,contbr_employer,contbr_occupation,contb_receipt_amt,contb_receipt_dt,receipt_desc,memo_cd,memo_text,form_tp,file_num
@@ -41,8 +41,11 @@ Verify that the data is in ddfs::
     C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",50,23-JUN-11,"","","","SA17A",736166
     C00410118,"P20002978","Bachmann, Michelle","BLEVINS, DARONDA","PIGGOTT","AR","724548253","NONE","RETIRED",250,01-AUG-11,"","","","SA17A",749073
 
+Output
+-----
+
 Contributions by Candidate
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run the contributions_by_candidate_name map/reduce job::
 
@@ -78,7 +81,7 @@ The output as a table:
 +----------------+--------+-----------------+
 
 Contributions by Occupation
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run the contributions_by_occupation_and_candidate_name map/reduce job::
 
