@@ -26,11 +26,11 @@ JSON, etc.
 **people.json**
 ::
 
-    {"first_name":"Joan",   "last_name":"Términos"}
-    {"first_name":"Willow",   "last_name":"Harvey"}
-    {"first_name":"Noam",     "last_name":"Clarke"}
-    {"first_name":"Joan",     "last_name":"Harvey"}
-    {"first_name":"Beatty",   "last_name":"Clarke"}
+    {"first_name":"Joan", "last_name":"Términos"}
+    {"first_name":"Willow", "last_name":"Harvey"}
+    {"first_name":"Noam", "last_name":"Clarke"}
+    {"first_name":"Joan", "last_name":"Harvey"}
+    {"first_name":"Beatty", "last_name":"Clarke"}
 
 **people.csv**
 ::
