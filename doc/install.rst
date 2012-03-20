@@ -9,13 +9,14 @@ Before diving into Inferno, you'll first need to have a working
 cluster on your development machine). 
 
 This only takes a few minutes on a Linux machine, and basically just involves the
-following. See 
-`Installing Disco <http://discoproject.org/doc/start/install.htm>`_ 
-for complete instructions.
+following. 
 
     * Install Erlang
     * Install Disco
     * Test your Disco install
+
+See `Installing Disco <http://discoproject.org/doc/start/install.htm>`_ 
+for complete instructions.
 
 Inferno
 -------
