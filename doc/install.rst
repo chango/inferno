@@ -8,7 +8,7 @@ Before diving into Inferno, you'll first need to have a working
 `Disco <http://discoproject.org/>`_ cluster (even if it's just a one node 
 cluster on your development machine). 
 
-This takes only few minutes on a Linux machine, and basically just involves the
+This only takes a few minutes on a Linux machine, and basically just involves the
 following. See 
 `Installing Disco <http://discoproject.org/doc/start/install.htm>`_ 
 for complete instructions.
