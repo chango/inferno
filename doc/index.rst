@@ -23,6 +23,7 @@ In its simplest form, you can think of Inferno as a query language for
 That structured text could be a CSV file, or file containing lines of valid 
 JSON, etc.
 
+**people.json**
 ::
 
     {"first_name":"Joan",   "last_name":"Términos"}
@@ -31,6 +32,7 @@ JSON, etc.
     {"first_name":"Joan",     "last_name":"Harvey"}
     {"first_name":"Beatty",   "last_name":"Clarke"}
 
+**people.csv**
 ::
 
     first_name,last_name
@@ -39,6 +41,8 @@ JSON, etc.
     Noam,Clarke
     Joan,Harvey
     Beatty,Clarke
+
+**people.db**
 
 If you had this same data in the database, you would use SQL to query it.
 
@@ -50,6 +54,8 @@ If you had this same data in the database, you would use SQL to query it.
     Harvey, 2
     Términos, 1
 
+**Terminal**
+
 Or if the data was small enough, you might just use command line utilities.
 
 ::
@@ -59,6 +65,8 @@ Or if the data was small enough, you might just use command line utilities.
     2 Clarke
     2 Harvey
     1 Términos
+
+**Inferno**
 
 But that's not going to scale if you're processing **10,000,000,000+** of 
 these records **per day**.
@@ -74,59 +82,18 @@ Here's what a similar query using Inferno would look like::
         value_parts=['count'],
     )
 
-Don't worry about the details for now - we'll cover this rule in depth 
+Don't worry about the details - we'll cover this rule in depth 
 :doc:`here </counting>`. For now, all you need to know is that Inferno will 
 yield the same results by starting a Disco map/reduce job, distributing the 
 work across the many nodes in your cluster.
 
-Getting Started
-===============
 
-Disco
------
-
-Before diving into Inferno, you'll first need to have a working 
-`Disco <http://discoproject.org/>`_ cluster (even if it's just a one node 
-cluster on your development machine). 
-
-This takes only few minutes on a Linux machine, and basically just involves the
-following. See 
-`Installing Disco <http://discoproject.org/doc/start/install.htm>`_ 
-for complete instructions.
-
-    * Install Erlang
-    * Install Disco
-    * Test your Disco install
-
-Inferno
--------
-
-Inferno is available as a package on the 
-`Python Package Index <http://pypi.python.org/pypi/inferno>`_.
-
-* `Easy Install <http://packages.python.org/distribute/easy_install.html>`_
-
-::
-
-    diana@ubuntu:~$ sudo easy_install inferno
-    
-* `Pip <http://www.pip-installer.org>`_
-
-::
-
-    diana@ubuntu:~$ sudo pip install inferno
-
-Source Code
------------
-
- * Inferno: http://bitbucket.org/chango/inferno
- * Disco: https://github.com/discoproject
-
-Examples
-========
+Table of Contents
+=================
 .. toctree::
      :maxdepth: 1
      
+     install
      counting
      election
 
