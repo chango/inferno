@@ -20,7 +20,7 @@ Inferno Query Language
 In its simplest form, you can think of Inferno as a query language for 
 **large** amounts of structured text.
 
-That structured text could be a CSV file, or file containing lines of valid 
+This structured text could be a CSV file, or file containing lines of valid 
 JSON, etc.
 
 **people.json**
