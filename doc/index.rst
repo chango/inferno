@@ -95,7 +95,7 @@ Here's what a similar query using Inferno would look like:
 
 Don't worry about the details - we'll cover this rule in depth 
 :doc:`here </counting>`. For now, all you need to know is that Inferno will 
-yield the same results by starting a Disco map/reduce job, distributing the 
+yield the same results by starting a Disco map/reduce job to distributing the 
 work across the many nodes in your cluster.
 
 
