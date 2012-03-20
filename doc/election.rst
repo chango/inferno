@@ -19,10 +19,10 @@ Make sure `disco <http://discoproject.org/>`_ is running::
 The 2012 presidential campaign finance data (from the `FEC <http://www.fec.gov/disclosurep/PDownload.do>`_)::
 
     diana@ubuntu:~$ head -4 P00000001-ALL.txt
-    cmte_id,cand_id,cand_nm,contbr_nm,contbr_city,contbr_st,contbr_zip,contbr_employer,contbr_occupation,contb_receipt_amt,contb_receipt_dt,receipt_desc,memo_cd,memo_text,form_tp,file_num
-    C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",250,20-JUN-11,"","","","SA17A",736166
-    C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",50,23-JUN-11,"","","","SA17A",736166
-    C00410118,"P20002978","Bachmann, Michelle","BLEVINS, DARONDA","PIGGOTT","AR","724548253","NONE","RETIRED",250,01-AUG-11,"","","","SA17A",749073
+    cmte_id,cand_id,cand_nm,contbr_nm,contbr_city,contbr_st,contbr_zip,contbr_employer,contbr_occupation,contb_receipt_amt...
+    C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",250...
+    C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",50...
+    C00410118,"P20002978","Bachmann, Michelle","BLEVINS, DARONDA","PIGGOTT","AR","724548253","NONE","RETIRED",250...
 
 Toss the input data into `disco's distributed filesystem <http://discoproject.org/doc/howto/ddfs.html>`_ (ddfs)::
 
@@ -32,9 +32,9 @@ Toss the input data into `disco's distributed filesystem <http://discoproject.or
 Verify that the data is in ddfs::
 
     diana@ubuntu:~$ ddfs xcat gov:chunk:presidential_campaign_finance:2012-03-19 | head -3
-    C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",250,20-JUN-11,"","","","SA17A",736166
-    C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",50,23-JUN-11,"","","","SA17A",736166
-    C00410118,"P20002978","Bachmann, Michelle","BLEVINS, DARONDA","PIGGOTT","AR","724548253","NONE","RETIRED",250,01-AUG-11,"","","","SA17A",749073
+    C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",250...
+    C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",50...
+    C00410118,"P20002978","Bachmann, Michelle","BLEVINS, DARONDA","PIGGOTT","AR","724548253","NONE","RETIRED",250...
 
 Output
 ------
@@ -44,7 +44,7 @@ Contributions by Candidate
 
 Run the contributions_by_candidate_name map/reduce job::
 
-    diana@ubuntu:~$ inferno -s localhost -y /path/test_rules/ -i election.presidential_2012.contributions_by_candidate_name
+    diana@ubuntu:~$ inferno -i election.presidential_2012.contributions_by_candidate_name
     2012-03-19 INFO  [inferno.lib.job] Processing tags: ['gov:chunk:presidential_campaign_finance']
     2012-03-19 INFO  [inferno.lib.job] Started job presidential_2012@533:87210:81a1b processing 1 blobs
     2012-03-19 INFO  [inferno.lib.job] Done waiting for job presidential_2012@533:87210:81a1b
@@ -80,7 +80,7 @@ Contributions by Occupation
 
 Run the contributions_by_occupation_and_candidate_name map/reduce job::
 
-    diana@ubuntu:~$ inferno -s localhost -y /path/test_rules/ -i election.presidential_2012.contributions_by_occupation_and_candidate_name > occupations.csv
+    diana@ubuntu:~$ inferno  -i election.presidential_2012.contributions_by_occupation_and_candidate_name > occupations.csv
     2012-03-19 INFO  [inferno.lib.job] Processing tags: ['gov:chunk:presidential_campaign_finance']
     2012-03-19 INFO  [inferno.lib.job] Started job presidential_2012@533:87782:c7c98 processing 1 blobs
     2012-03-19 INFO  [inferno.lib.job] Done waiting for job presidential_2012@533:87782:c7c98
