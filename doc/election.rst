@@ -37,7 +37,7 @@ Verify that the data is in ddfs::
     C00410118,"P20002978","Bachmann, Michelle","BLEVINS, DARONDA","PIGGOTT","AR","724548253","NONE","RETIRED",250,01-AUG-11,"","","","SA17A",749073
 
 Output
------
+------
 
 Contributions by Candidate
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
