@@ -22,7 +22,6 @@ The inferno map/reduce rule (inferno/test/fixture/test_rules/names.py)::
             source_tags=['test:integration:chunk:users'],
             map_input_stream=chunk_json_keyset_stream,
             parts_preprocess=[count],
-            partitions=2,
             key_parts=['last_name'],
             value_parts=['count'],
         ),

@@ -71,7 +71,9 @@ Or if the data was small enough, you might just use command line utilities.
 But that's not going to scale if you're processing **10,000,000,000+** of 
 these records **per day**.
 
-Here's what a similar query using Inferno would look like::
+Here's what a similar query using Inferno would look like:
+
+::
 
     InfernoRule(
         name='last_names_json',
@@ -81,6 +83,15 @@ Here's what a similar query using Inferno would look like::
         key_parts=['last_name'],
         value_parts=['count'],
     )
+
+::
+
+    diana@ubuntu:~$ inferno -i names.last_names_json
+
+    last_name,count
+    Clarke,2
+    Harvey,2
+    Términos,1
 
 Don't worry about the details - we'll cover this rule in depth 
 :doc:`here </counting>`. For now, all you need to know is that Inferno will 
