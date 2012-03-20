@@ -98,11 +98,10 @@ Don't worry about the details - we'll cover this rule in depth
 yield the same results by starting a Disco map/reduce job to distributing the 
 work across the many nodes in your cluster.
 
-.. include:: install.rst
+Inferno Daemon
+--------------
 
-.. include:: counting.rst
-
-.. include:: election.rst
+TODO
 
 Table of Contents
 =================
@@ -110,8 +109,14 @@ Table of Contents
      :maxdepth: 1
      
      install
+     settings
      counting
+     rule
+     keyset
      election
+     command
+     daemon
+     http
 
 Indices and tables
 ==================
