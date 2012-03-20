@@ -7,7 +7,7 @@ Inferno
 =======
 
 Inferno is a python `map/reduce <http://en.wikipedia.org/wiki/MapReduce>`_ 
-library powered by `Disco <http://discoproject.org/>`_ specializing in the 
+library, powered by `Disco <http://discoproject.org/>`_, specializing in the 
 following. 
 
     * Query language for structured text (csv, json)
@@ -18,9 +18,10 @@ Inferno Query Language
 ----------------------
 
 In its simplest form, you can think of Inferno as a query language for 
-**large** amounts of structured text. 
+**large** amounts of structured text.
 
-That structured text could be lines of json, or a CSV file, etc.
+That structured text could be a CSV file, or file containing lines of valid 
+JSON, etc.
 
 ::
 
@@ -115,8 +116,11 @@ Inferno is available as a package on the
 
     diana@ubuntu:~$ sudo pip install inferno
 
-The source code can be found in a Mercurial repository, at 
-http://bitbucket.org/chango/inferno/.
+Source Code
+-----------
+
+ * Inferno: http://bitbucket.org/chango/inferno
+ * Disco: https://github.com/discoproject
 
 Examples
 ========
