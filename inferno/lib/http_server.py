@@ -42,7 +42,7 @@ class RequestHandler(tornado.web.RequestHandler):
             return url
 
     def request_app(self, msg, *args):
-        if getattr(self.application, 'unit_testing', True):
+        if getattr(self.application, 'unit_testing', False):
             func = getattr(self.application.disco_ball, msg)
             return func(*args)
         try:
@@ -72,9 +72,6 @@ class MainHandler(RequestHandler):
         self.write(dict(
             rules=self.build_url('rules', relative=False),
             jobs=self.build_url('jobs', relative=False),
-            stop=self.build_url('stop', relative=False, json=False),
-            pause=self.build_url('pause', relative=False, json=False),
-            play=self.build_url('play', relative=False, json=False),
         ))
 
 
