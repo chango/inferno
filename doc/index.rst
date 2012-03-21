@@ -23,8 +23,8 @@ Table of Contents
      settings
      counting
      election
-     rule
      keyset
+     rule
      command
      daemon
      http
