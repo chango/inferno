@@ -26,7 +26,17 @@ table
 parts_preprocess
 ----------------
 
-	TODO
+Part pre-pocessors are typically used to filter, expand, or edit the input to
+the map step. 
+
+The ``parts_preprocess`` functions are called before the ``field_transforms`` 
+functions, to ready the data for the ``map_funtion``.
+
+Note that a ``parts_preprocess`` functions always take ``parts`` and 
+``params``, and must ``yield`` one, none, or many parts.
+
+Example parts_preprocess:
+
 
 field_transforms
 ----------------

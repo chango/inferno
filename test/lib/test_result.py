@@ -47,6 +47,30 @@ class TestKeysetResult(object):
         self.params.keysets['last_name_keyset']['column_mappings'] = mapping
         self._assert_keyset_result(data, self.params, expected)
 
+    def test_result_post_processor(self):
+        def some_filter(data, params):
+            if data[2] > 10:
+                yield data
+
+        def some_expander(data, params):
+            for x in [1, 2]:
+                yield data
+
+        data = [
+            (['last_name_keyset', 'Clarke'], [10]),
+            (['last_name_keyset', 'Harvey'], [20]),
+            (['last_name_keyset', 'Martin'], [30])]
+        expected = [
+            'last_name,count',
+            'Harvey,20',
+            'Harvey,20',
+            'Martin,30', 
+            'Martin,30']
+        self.params.result_postprocess = ['some_filter', 'some_expander']
+        self.params.__setattr__('some_filter', some_filter)
+        self.params.__setattr__('some_expander', some_expander)
+        self._assert_keyset_result(data, self.params, expected)
+
     def test_input_data_keyset_grouped_together(self):
         data = [
             (['first_name_keyset', 'Tim'], [100]),

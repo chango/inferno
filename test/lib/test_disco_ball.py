@@ -93,6 +93,7 @@ class TestRuleHandler(DiscoBallHandlerTestCase):
             'map_function': 'inferno.lib.map.keyset_map',
             'reduce_function': 'inferno.lib.reduce.keyset_reduce',
             'parts_preprocess': [],
+            'result_postprocess': [],
             'keysets': {
                 'keyset_1': {
                     'key_parts': ['_keyset', 'key_1'],
