@@ -33,6 +33,20 @@ class TestKeysetResult(object):
         expected = ['last_name,count', 'Términos,30']
         self._assert_keyset_result(data, self.params, expected)
 
+    def test_column_mappings(self):
+        data = [
+            (['last_name_keyset', 'Clarke'], [10]),
+            (['last_name_keyset', 'Harvey'], [20]),
+            (['last_name_keyset', 'Martin'], [30])]
+        expected = [
+            'name,count',
+            'Clarke,10',
+            'Harvey,20',
+            'Martin,30']
+        mapping = {'last_name': 'name'}
+        self.params.keysets['last_name_keyset']['column_mappings'] = mapping
+        self._assert_keyset_result(data, self.params, expected)
+
     def test_input_data_keyset_grouped_together(self):
         data = [
             (['first_name_keyset', 'Tim'], [100]),

@@ -7,6 +7,13 @@ def keyset_result(iter, params, **kwargs):
         stream.flush()
         return stream
 
+    def column_map(keyset, name):
+        if keyset.get('column_mappings', None):
+            mappings = keyset['column_mappings']
+            if name in mappings and mappings[name]:
+                return mappings[name]
+        return name
+
     output_stream = kwargs.get('output_stream', sys.stdout)
     flush_schedule = kwargs.get('flush_schedule', 5000)
     flush_callback = kwargs.get('flush_callback', default_flush_callback)
@@ -19,9 +26,10 @@ def keyset_result(iter, params, **kwargs):
     for keys, values in iter:
         keyset_name = keys[0]
         if generate_header and last_keyset_name != keyset_name:
-            columns = params.keysets[keyset_name]['key_parts'][1:]
-            columns.extend(params.keysets[keyset_name]['value_parts'])
-            writer.writerow(columns)
+            keyset = params.keysets[keyset_name]
+            columns = keyset['key_parts'][1:] + keyset['value_parts']
+            mapped = [column_map(keyset, column) for column in columns]
+            writer.writerow(mapped)
             last_keyset_name = keyset_name
 
         if skip_keyset:
