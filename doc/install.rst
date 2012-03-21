@@ -13,6 +13,9 @@ involves installing Erlang and Disco. See
 `Installing Disco <http://discoproject.org/doc/start/install.htm>`_ 
 for complete instructions.
 
+Bonus Points: A great talk about 
+`Disco and Map/Reduce <http://marakana.com/s/disco_mapreduce,1100/index.html>`_.
+
 Inferno
 -------
 
