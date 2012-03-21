@@ -4,40 +4,37 @@ Getting Started
 Disco
 -----
 
-Before diving into Inferno, you'll first need to have a working 
+Before diving into Inferno, you'll need to have a working 
 `Disco <http://discoproject.org/>`_ cluster (even if it's just a one node 
 cluster on your development machine). 
 
-This only takes a few minutes on a Linux machine, and basically just involves the
-following. 
-
-    * Install Erlang
-    * Install Disco
-    * Test your Disco install
-
-See `Installing Disco <http://discoproject.org/doc/start/install.htm>`_ 
+This only takes a few minutes on a Linux machine, and basically just 
+involves installing Erlang and Disco. See 
+`Installing Disco <http://discoproject.org/doc/start/install.htm>`_ 
 for complete instructions.
 
 Inferno
 -------
 
 Inferno is available as a package on the 
-`Python Package Index <http://pypi.python.org/pypi/inferno>`_.
-
-* `Easy Install <http://packages.python.org/distribute/easy_install.html>`_
+`Python Package Index <http://pypi.python.org/pypi/inferno>`_, so you can use 
+either `pip <http://www.pip-installer.org>`_, or 
+`easy_install <http://packages.python.org/distribute/easy_install.html>`_ 
+to install it from there.
 
 ::
 
     diana@ubuntu:~$ sudo easy_install inferno
     
-* `Pip <http://www.pip-installer.org>`_
-
-::
+               -- or --
 
     diana@ubuntu:~$ sudo pip install inferno
 
 Source Code
 -----------
+
+Both Disco and Inferno are open-source libraries. If you end up writing more 
+complicated map/reduce jobs, you'll eventually need to look under the hood. 
 
  * Inferno: http://bitbucket.org/chango/inferno
  * Disco: https://github.com/discoproject
