@@ -63,9 +63,6 @@ class TestMainHandler(DiscoBallHandlerTestCase):
         path = self.get_path(self.get_http_port())
         url = '/index.json'
         expected = {
-            'stop': '%s/stop' % path,
-            'play': '%s/play' % path,
-            'pause': '%s/pause' % path,
             'jobs': '%s/jobs.json' % path,
             'rules': '%s/rules.json' % path}
         self.assert_json_response(url, expected)
