@@ -32,7 +32,8 @@ Beatty,Clarke
     def setUp(self):
         sys.stdout = self.capture_stdout = cStringIO.StringIO()
         here = os.path.dirname(__file__)
-        self.rules_dir = os.path.join(here, '..', 'fixture', 'test_rules')
+        self.rules_dir = os.path.join(
+            here, '..', '..', 'inferno', 'example_rules')
         self.tag = 'test:integration:chunk:users:2012-01-10'
         self.custom_tag_prefix = 'result:test:integration:last_names_result'
         self.result_tag_prefix = 'disco:job:results:last_names_result'
