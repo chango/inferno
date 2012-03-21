@@ -1,4 +1,6 @@
 import logging.config
+import os
+import shutil
 import sys
 
 import argparse
@@ -127,6 +129,11 @@ def _get_options(argv):
         action="append",
         help="additional rule parameters (in yaml)")
 
+    parser.add_argument(
+        "--example_rules",
+        dest="example_rules",
+        help="additional rule parameters (in yaml)")
+
     options = parser.parse_args(argv)
 
     if options.source_tags:
@@ -157,6 +164,27 @@ def _get_settings(options):
 def main(argv=sys.argv):
     options = _get_options(argv[1:])
     settings = _get_settings(options)
+
+    if options['example_rules']:
+        try:
+            os.mkdir(options['example_rules'])
+            here = os.path.dirname(__file__)
+            src_dir = os.path.join(here, '..', 'example_rules')
+            src_dir = os.path.abspath(src_dir)
+            dst_dir = os.path.abspath(options['example_rules'])
+            for name in os.listdir(src_dir):
+                if name.endswith('.py'):
+                    src = os.path.join(src_dir, name)
+                    dst = os.path.join(dst_dir, name)
+                    shutil.copy(src, dst)
+            print '\n\tCreated example rules dir:\n\n\t\t%s' % (dst_dir)
+            for name in os.listdir(dst_dir):
+                print '\t\t\t', name
+        except Exception as e:
+            print 'Error creating example rules dir %r' % (e)
+        finally:
+            return
+    
     log = logging.getLogger(__name__)
 
     try:
@@ -172,9 +200,10 @@ def main(argv=sys.argv):
     for path in settings.get('extra_python_paths'):
         sys.path.insert(0, path)
 
-    # either run inferno in 'immediate' or 'daemon' mode
     if options['immediate_rule']:
+        # run inferno in 'immediate' mode
         JobFactory.execute_immediate_rule(settings)
     else:
+        # run inferno in 'daemon' mode
         from inferno.lib.daemon import InfernoDaemon
         InfernoDaemon(settings).start()
