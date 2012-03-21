@@ -18,17 +18,24 @@ Inferno
 
 Inferno is available as a package on the 
 `Python Package Index <http://pypi.python.org/pypi/inferno>`_, so you can use 
-either `pip <http://www.pip-installer.org>`_, or 
+either `pip <http://www.pip-installer.org>`_ or 
 `easy_install <http://packages.python.org/distribute/easy_install.html>`_ 
 to install it from there.
 
 ::
 
     diana@ubuntu:~$ sudo easy_install inferno
-    
-               -- or --
-
+        -- or --
     diana@ubuntu:~$ sudo pip install inferno
+
+If you've got both Inferno and Disco installed, you should be able to ask 
+Inferno for its version number:
+
+::
+
+    diana@ubuntu:~$ inferno --version
+    inferno-0.1.17
+
 
 Source Code
 -----------

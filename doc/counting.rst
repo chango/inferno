@@ -4,7 +4,7 @@ Example 1 - Count Last Names
 Rule
 ----
 
-The inferno map/reduce rule (inferno/test/fixture/test_rules/names.py)::
+The inferno map/reduce rule (inferno/example_rules/names.py)::
 
     from inferno.lib.rule import chunk_json_keyset_stream
     from inferno.lib.rule import InfernoRule

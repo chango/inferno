@@ -4,9 +4,9 @@ Example 2 - Campaign Finance
 Rule
 ----
 
-The inferno map/reduce rule (inferno/test/fixture/test_rules/election.py):
+The inferno map/reduce rule (inferno/example_rules/election.py):
 
-.. literalinclude:: ../test/fixture/test_rules/election.py
+.. literalinclude:: ../inferno/example_rules/election.py
 
 Input
 -----
