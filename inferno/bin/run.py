@@ -184,7 +184,7 @@ def main(argv=sys.argv):
             print 'Error creating example rules dir %r' % (e)
         finally:
             return
-    
+
     log = logging.getLogger(__name__)
 
     try:

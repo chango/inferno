@@ -11,7 +11,7 @@ from disco.job import Job
 from inferno.lib.archiver import Archiver
 from inferno.lib.disco_ext import get_disco_handle
 from inferno.lib.job_options import JobOptions
-from inferno.lib.result import keyset_result
+from inferno.lib.result import reduce_result
 
 
 log = logging.getLogger(__name__)
@@ -111,7 +111,7 @@ class InfernoJob(object):
             if not self.settings.get('debug'):
                 self._process_results(results, self.job.name)
             else:
-                keyset_result(results, self.rule.params)
+                reduce_result(results)
             self._purge(self._safe_str(self.job.name))
         except Exception as e:
             log.error('Job %s failed: %s',
@@ -161,7 +161,7 @@ class InfernoJob(object):
         if self.rule.result_processor:
             self._notify_parent(JOB_PROCESS)
             self.rule.result_processor(
-                results, params=self.rule.params, job_id=job_id)
+                results, params=self.params, job_id=job_id)
 
     def _purge(self, job_name):
         if not self.settings.get('no_purge'):
