@@ -195,7 +195,8 @@ def main(argv=sys.argv):
         logging.basicConfig(level=logging.INFO, format=f)
         log.error('Error setting up logging [%s]: %s' % (log_config, e))
 
-    log.info('Starting inferno-%s with: \n%r', __version__, settings)
+    log.info('Starting inferno-%s', __version__)
+    log.debug('Settings: \n%r', settings)
 
     for path in settings.get('extra_python_paths'):
         sys.path.insert(0, path)
