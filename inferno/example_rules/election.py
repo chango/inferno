@@ -26,6 +26,11 @@ def candidate_filter(parts, params):
         yield parts
 
 
+def occupation_count_filter(parts, params):
+    if parts['count_occupation_candidate'] > 1000:
+        yield parts
+
+
 RULES = [
     InfernoRule(
         name='presidential_2012',
@@ -36,9 +41,8 @@ RULES = [
             'cand_nm':alphanumeric,
             'contbr_occupation':alphanumeric,
         },
-        parts_preprocess=[
-            candidate_filter,
-            count],
+        parts_preprocess=[candidate_filter, count],
+        parts_postprocess=[occupation_count_filter],
         csv_fields=(
             'cmte_id', 'cand_id', 'cand_nm', 'contbr_nm', 'contbr_city',
             'contbr_st', 'contbr_zip', 'contbr_employer', 'contbr_occupation',
@@ -47,7 +51,7 @@ RULES = [
         ),
         csv_dialect='excel',
         keysets={
-            'contributions_by_candidate_name':Keyset(
+            'by_candidate':Keyset(
                 key_parts=['cand_nm'],
                 value_parts=['count', 'contb_receipt_amt'],
                 column_mappings={
@@ -55,10 +59,11 @@ RULES = [
                     'contb_receipt_amt': 'amount',
                 },
              ),
-            'contributions_by_occupation_and_candidate_name':Keyset(
+            'by_occupation':Keyset(
                 key_parts=['contbr_occupation', 'cand_nm'],
                 value_parts=['count', 'contb_receipt_amt'],
                 column_mappings={
+                    'count': 'count_occupation_candidate',
                     'cand_nm': 'candidate',
                     'contb_receipt_amt': 'amount',
                     'contbr_occupation': 'occupation',

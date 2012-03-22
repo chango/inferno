@@ -64,10 +64,10 @@ Output
 Run the last name counting map/reduce job::
 
     diana@ubuntu:~$ inferno -i names.last_names_json
-    2012-03-09 INFO [inferno.lib.job] Processing tags: ['example:chunk:users']
-    2012-03-09 INFO [inferno.lib.job] Started job last_names_json@533:40914:c355f processing 1 blobs
-    2012-03-09 INFO [inferno.lib.job] Done waiting for job last_names_json@533:40914:c355f
-    2012-03-09 INFO [inferno.lib.job] Finished job job last_names_json@533:40914:c355f
+    2012-03-09 Processing tags: ['example:chunk:users']
+    2012-03-09 Started job last_names_json@533:40914:c355f processing 1 blobs
+    2012-03-09 Done waiting for job last_names_json@533:40914:c355f
+    2012-03-09 Finished job job last_names_json@533:40914:c355f
 
 The output::
 

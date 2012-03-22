@@ -11,10 +11,10 @@ def keyset_result(iter, params, **kwargs):
         return name
 
     def _post_process(parts_list, params):
-        if hasattr(params, 'result_postprocess'):
+        if hasattr(params, 'parts_postprocess'):
             # each post-processor may generate multiple 'parts',
             # these need to be fed into subsequent post-processors
-            for name in params.result_postprocess:
+            for name in params.parts_postprocess:
                 func = getattr(params, name)
                 new_list = []
                 for parts in parts_list:

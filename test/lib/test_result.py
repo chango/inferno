@@ -68,7 +68,7 @@ class TestKeysetResult(object):
             'Martin,30']
         mapping = {'count': 'last_name_count'}
         self.params.keysets['last_name_keyset']['column_mappings'] = mapping
-        self.params.result_postprocess = ['some_filter', 'some_expander']
+        self.params.parts_postprocess = ['some_filter', 'some_expander']
         self.params.__setattr__('some_filter', some_filter)
         self.params.__setattr__('some_expander', some_expander)
         self._assert_keyset_result(data, self.params, expected)
