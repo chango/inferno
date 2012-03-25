@@ -16,6 +16,8 @@ VERSION = re.compile(r".*__version__ = '(.*?)'", re.S).match(info).group(1)
 install_requires = [
     'argparse',
     'pyyaml',
+    'ujson',
+    'tornado',
 ]
 
 tests_require = install_requires + [
