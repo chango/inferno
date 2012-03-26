@@ -41,7 +41,7 @@ class DaemonPid(object):
             next_run = last_run + delta
             result = next_run < now
             if not result:
-                log.info('Skipping job: %s (last: %s, next: %s)',
+                log.debug('Skipping job: %s (last: %s, next: %s)',
                     job.rule_name, last_run.strftime(self._format),
                     next_run.strftime(self._format))
             return result

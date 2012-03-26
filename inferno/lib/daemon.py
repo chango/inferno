@@ -4,16 +4,16 @@ import pickle
 import time
 
 from multiprocessing import Pipe
+from multiprocessing.process import Process
 from multiprocessing.reduction import reduce_connection
 from threading import RLock
-from multiprocessing.process import Process
 
-from inferno.lib.pid import DaemonPid
-from inferno.lib.job_factory import JobFactory
-from inferno.lib.lookup_rules import get_rules
 from inferno.lib.disco_ball import DiscoBall
+from inferno.lib.job_factory import JobFactory
 from inferno.lib.lookup_rules import get_rule_dict
+from inferno.lib.lookup_rules import get_rules
 from inferno.lib.lookup_rules import get_rules_by_name
+from inferno.lib.pid import DaemonPid
 
 
 log = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ def run_rule_async(rule_name, automatic_cycle, settings, reply_to):
                 response_sent = True
                 job.wait()
             else:
-                pipe.send({'error': "job didn't start"})
+                pipe.send({'info': "not enough blobs"})
                 pipe.close()
                 response_sent = True
         else:
