@@ -64,7 +64,7 @@ class TestKeysetResult(object):
             'last_name,last_name_count',
             'Harvey,20',
             'Harvey,20',
-            'Martin,30', 
+            'Martin,30',
             'Martin,30']
         mapping = {'count': 'last_name_count'}
         self.params.keysets['last_name_keyset']['column_mappings'] = mapping

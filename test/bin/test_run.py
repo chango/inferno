@@ -27,7 +27,7 @@ class TestOptions(object):
             'day_offset': None,
             'immediate_rule': None,
             'rules_directory': None,
-            'start_paused': False, 
+            'start_paused': False,
             'example_rules': None}
         eq_(options, expected)
 

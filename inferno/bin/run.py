@@ -161,6 +161,27 @@ def _get_settings(options):
     return settings
 
 
+def _setup_logging(settings):
+    def _log_stdout(log):
+        f = '%(asctime)s %(levelname)-5.5s [%(name)s] %(message)s'
+        logging.basicConfig(level=logging.INFO, format=f)
+
+    log = logging.getLogger(__name__)
+    if settings['immediate_rule']:
+        _log_stdout(log)
+    else:
+        try:
+            log_config = settings.get('log_config')
+            logging.config.fileConfig(
+                log_config, disable_existing_loggers=False)
+        except Exception as e:
+            log.error('Error setting up logging [%s]: %s' % (log_config, e))
+            _log_stdout(log)
+
+    log.info('Starting inferno-%s', __version__)
+    log.debug('Settings: \n%r', settings)
+
+
 def main(argv=sys.argv):
     options = _get_options(argv[1:])
     settings = _get_settings(options)
@@ -185,18 +206,7 @@ def main(argv=sys.argv):
         finally:
             return
 
-    log = logging.getLogger(__name__)
-
-    try:
-        log_config = settings.get('log_config')
-        logging.config.fileConfig(log_config, disable_existing_loggers=False)
-    except Exception as e:
-        f = '%(asctime)s,%(msecs)03d %(levelname)-5.5s [%(name)s] %(message)s'
-        logging.basicConfig(level=logging.INFO, format=f)
-        log.error('Error setting up logging [%s]: %s' % (log_config, e))
-
-    log.info('Starting inferno-%s', __version__)
-    log.debug('Settings: \n%r', settings)
+    _setup_logging(settings)
 
     for path in settings.get('extra_python_paths'):
         sys.path.insert(0, path)

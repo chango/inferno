@@ -223,5 +223,5 @@ class InfernoRule(object):
             map_function=fstr(self.map_function),
             reduce_function=fstr(self.reduce_function),
             keysets=self.params.keysets,
-            parts_preprocess=self.params.parts_preprocess, 
+            parts_preprocess=self.params.parts_preprocess,
             parts_postprocess=self.params.parts_postprocess)
