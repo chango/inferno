@@ -15,18 +15,32 @@ from inferno.lib.settings import InfernoSettings
 class TestExamples(object):
 
     json_data = """
-{"first_name":"Joan", "last_name":"Términos"}
-{"first_name":"Willow", "last_name":"Harvey"}
-{"first_name":"Noam", "last_name":"Clarke"}
-{"first_name":"Joan", "last_name":"Harvey"}
-{"first_name":"Beatty", "last_name":"Clarke"}
+{"first_name":"Homer", "last_name":"Simpson"}
+{"first_name":"Manjula", "last_name":"Nahasapeemapetilon"}
+{"first_name":"Herbert", "last_name":"Powell"}
+{"first_name":"Ruth", "last_name":"Powell"}
+{"first_name":"Bart", "last_name":"Simpson"}
+{"first_name":"Apu", "last_name":"Nahasapeemapetilon"}
+{"first_name":"Marge", "last_name":"Simpson"}
+{"first_name":"Janey", "last_name":"Powell"}
+{"first_name":"Maggie", "last_name":"Simpson"}
+{"first_name":"Sanjay", "last_name":"Nahasapeemapetilon"}
+{"first_name":"Lisa", "last_name":"Simpson"}
+{"first_name":"Maggie", "last_name":"Términos"}
 """
     csv_data = """
-Joan,Términos
-Willow,Harvey
-Noam,Clarke
-Joan,Harvey
-Beatty,Clarke
+Homer,Simpson
+Manjula,Nahasapeemapetilon
+Herbert,Powell
+Ruth,Powell
+Bart,Simpson
+Apu,Nahasapeemapetilon
+Marge,Simpson
+Janey,Powell
+Maggie,Simpson
+Sanjay,Nahasapeemapetilon
+Lisa,Simpson
+Maggie,Términos
 """
 
     def setUp(self):
@@ -51,8 +65,9 @@ Beatty,Clarke
             immediate_rule='names.last_names_json')
         expected = [
             'last_name,count',
-            'Clarke,2',
-            'Harvey,2',
+            'Nahasapeemapetilon,3',
+            'Powell,3',
+            'Simpson,5',
             'Términos,1']
         self._assert_integration_test(settings, expected, self.json_data)
 
@@ -62,8 +77,9 @@ Beatty,Clarke
             immediate_rule='names.last_names_csv')
         expected = [
             'last_name,count',
-            'Clarke,2',
-            'Harvey,2',
+            'Nahasapeemapetilon,3',
+            'Powell,3',
+            'Simpson,5',
             'Términos,1']
         self._assert_integration_test(settings, expected, self.csv_data)
 
@@ -73,13 +89,21 @@ Beatty,Clarke
             immediate_rule='names.first_and_last_names')
         expected = [
             'first_name,count',
-            'Beatty,1',
-            'Joan,2',
-            'Noam,1',
-            'Willow,1',
+            'Apu,1',
+            'Bart,1',
+            'Herbert,1',
+            'Homer,1',
+            'Janey,1',
+            'Lisa,1',
+            'Maggie,2',
+            'Manjula,1',
+            'Marge,1',
+            'Ruth,1',
+            'Sanjay,1',
             'last_name,count',
-            'Clarke,2',
-            'Harvey,2',
+            'Nahasapeemapetilon,3',
+            'Powell,3',
+            'Simpson,5',
             'Términos,1']
         self._assert_integration_test(settings, expected, self.json_data)
 
@@ -89,8 +113,9 @@ Beatty,Clarke
             immediate_rule='names.last_names_result')
         expected = [
             'last_name,count',
-            'Clarke,2',
-            'Harvey,2',
+            'Nahasapeemapetilon,3',
+            'Powell,3',
+            'Simpson,5',
             'Términos,1']
         self._assert_integration_test(settings, expected, self.json_data)
         tags = self.ddfs.list(self.custom_tag_prefix)
@@ -110,4 +135,5 @@ Beatty,Clarke
     def _assert_integration_test(self, settings, expected, data):
         self._chunk_test_data(settings, data)
         JobFactory.execute_immediate_rule(settings)
-        eq_(self.capture_stdout.getvalue(), '\r\n'.join(expected) + '\r\n')
+        actual = self.capture_stdout.getvalue()
+        eq_(actual, '\r\n'.join(expected) + '\r\n')
