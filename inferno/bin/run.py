@@ -10,6 +10,8 @@ from datetime import date
 from time import mktime
 from time import strptime
 
+from setproctitle import setproctitle
+
 from inferno.lib import __version__
 from inferno.lib.job_factory import JobFactory
 from inferno.lib.settings import InfernoSettings
@@ -213,8 +215,10 @@ def main(argv=sys.argv):
 
     if options['immediate_rule']:
         # run inferno in 'immediate' mode
+        setproctitle('inferno - immediate.%s' % options['immediate_rule'])
         JobFactory.execute_immediate_rule(settings)
     else:
         # run inferno in 'daemon' mode
         from inferno.lib.daemon import InfernoDaemon
+        setproctitle('inferno - master')
         InfernoDaemon(settings).start()

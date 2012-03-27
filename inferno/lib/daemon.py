@@ -1,12 +1,16 @@
 import logging
 import os
 import pickle
+import signal
+import sys
 import time
 
 from multiprocessing import Pipe
 from multiprocessing.process import Process
 from multiprocessing.reduction import reduce_connection
 from threading import RLock
+
+from setproctitle import setproctitle
 
 from inferno.lib.disco_ball import DiscoBall
 from inferno.lib.job_factory import JobFactory
@@ -29,8 +33,7 @@ def unpickle_connection(pickled_connection):
 
 
 def run_rule_async(rule_name, automatic_cycle, settings, reply_to):
-    import sys
-
+    setproctitle("inferno - %s" % rule_name)
     pipe = unpickle_connection(reply_to)
     response_sent = False
     pid_created = False
@@ -141,8 +144,6 @@ class InfernoDaemon(object):
         os._exit(0)
 
     def start(self):
-        import signal
-
         signal.signal(signal.SIGTERM, self.die)
 
         log.info('Starting Inferno... (pid=%s)', os.getpid())

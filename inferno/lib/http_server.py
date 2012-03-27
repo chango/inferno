@@ -3,12 +3,13 @@ import logging
 import os
 import StringIO
 
-from tornado.httpserver import HTTPServer
-from tornado.ioloop import IOLoop
-
 import tornado.web
 import ujson
 import yaml
+
+from setproctitle import setproctitle
+from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
 
 import inferno.lib.daemon
 
@@ -210,6 +211,7 @@ MAPPINGS = [
 
 
 def launch_server(base_path, port, pipe):
+    setproctitle("inferno - disco_ball")
     path = os.path.join(base_path, "disco_ball", "templates")
     application = tornado.web.Application(MAPPINGS, template_path=path)
     application.pipe = inferno.lib.daemon.unpickle_connection(pipe)
