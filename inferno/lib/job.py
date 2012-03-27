@@ -68,7 +68,6 @@ class InfernoJob(object):
     def start(self):
         self.start_time = time.time()
         self.archiver = self._determine_job_blobs()
-        log.info('Starting job %s (pid=%s)', self.job.name, os.getpid())
         if self._enough_blobs(self.archiver.blob_count):
             if self.rule.rule_init_function:
                 self.rule.rule_init_function(self.params)

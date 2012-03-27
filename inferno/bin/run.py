@@ -165,7 +165,7 @@ def _get_settings(options):
 
 def _setup_logging(settings):
     def _log_stdout(log):
-        f = '%(asctime)s %(levelname)-5.5s [%(name)s] %(message)s'
+        f = '%(asctime)s %(levelname)-5.5s %(process)d [%(name)s] %(message)s'
         logging.basicConfig(level=logging.INFO, format=f)
 
     log = logging.getLogger(__name__)

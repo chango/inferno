@@ -146,7 +146,7 @@ class InfernoDaemon(object):
     def start(self):
         signal.signal(signal.SIGTERM, self.die)
 
-        log.info('Starting Inferno... (pid=%s)', os.getpid())
+        log.info('Starting Inferno...')
         auto_rules = get_rules(self.settings['rules_directory'])
 
         port = self.settings.get('inferno_http_port', 6970)
