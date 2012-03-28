@@ -57,7 +57,7 @@ def run_rule_async(rule_name, automatic_cycle, settings, reply_to):
                 response_sent = True
                 job.wait()
             else:
-                pipe.send({'error': "job didn't start"})
+                pipe.send({'warn': "job didn't start"})
                 pipe.close()
                 response_sent = True
         else:

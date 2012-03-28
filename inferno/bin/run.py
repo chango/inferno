@@ -14,6 +14,7 @@ from inferno.lib import __version__
 from inferno.lib.job_factory import JobFactory
 from inferno.lib.settings import InfernoSettings
 
+log = logging.getLogger(__name__)
 
 def _get_options(argv):
     desc = 'Inferno: a python map/reduce platform powered by disco.'
@@ -130,9 +131,17 @@ def _get_options(argv):
         help="additional rule parameters (in yaml)")
 
     parser.add_argument(
+        "-l",
+        "--parameter-file",
+        dest="parameter_file",
+        default=None,
+        action="append",
+        help="additional rule parameters (in a yaml file)")
+
+    parser.add_argument(
         "--example_rules",
         dest="example_rules",
-        help="additional rule parameters (in yaml)")
+        help="create example rules")
 
     options = parser.parse_args(argv)
 
@@ -147,7 +156,14 @@ def _get_options(argv):
     for parameter in options.parameters:
         result.update(yaml.load(parameter))
 
+    if options.parameter_file:
+        try:
+            result.update(yaml.load(open(options.parameter_file, "r")))
+        except Exception as e:
+            log.error("Error opening parameter file: %s %s" % (options.parameter_file, e))
+
     return result
+
 
 
 def _get_settings(options):
@@ -185,7 +201,6 @@ def main(argv=sys.argv):
         finally:
             return
     
-    log = logging.getLogger(__name__)
 
     try:
         log_config = settings.get('log_config')

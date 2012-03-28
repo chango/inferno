@@ -23,19 +23,27 @@ def json_reader(stream, size=None, url=None, params=None):
 
 def csv_reader(stream, size=None, url=None, params=None):
     import csv
-    fieldnames = params.csv_fields
-    dialect = params.csv_dialect
-    for line in stream:
+    import __builtin__
+    fieldnames = getattr(params, 'csv_fields', None)
+    dialect = getattr(params, 'csv_dialect', 'excel')
+
+    reader = csv.reader(stream, dialect=dialect)
+    done = False
+    while not done:
         try:
-            reader = csv.DictReader(
-                [line], fieldnames=fieldnames, dialect=dialect)
-            for parts in reader:
-                if None in parts:
-                    # remove extra data values
-                    del parts[None]
-                yield parts
-        except:
+            line = reader.next()
+            if not fieldnames:
+                fieldnames = [str(x) for x in range(len(line))]
+            parts = dict(__builtin__.map(None, fieldnames, line))
+
+            if None in parts:
+                # remove extra data values
+                del parts[None]
+
+            yield parts
+        except StopIteration as e:
+            done = True
+        except Exception as ee:
             # just skip bad lines
             import disco.util
-            disco.util.msg('csv line error: %r' % line)
-            pass
+            disco.util.msg('csv line error: %s' % ee)
