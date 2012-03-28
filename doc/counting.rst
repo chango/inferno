@@ -74,7 +74,25 @@ the next.
 
 **Input**
 
+    Example data transition during the **input** step::
+
+.. image:: input.png
+   :height: 600px
+   :width: 800 px
+   :align: center
+   :scale: 60 %
+   :alt: data -> input
+
 **Map**
+
+    Example data transition during the **map** step::
+
+.. image:: map.png
+   :height: 600px
+   :width: 800 px
+   :align: center
+   :scale: 60 %
+   :alt: input -> map
 
 **Reduce**
 
