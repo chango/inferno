@@ -60,7 +60,7 @@ Verify that the data is in ddfs::
 Inferno Rule
 ------------
 
-For the porpose of this intoductory example, think of a map/reduce job as a 
+For the purpose of this introductory example, think of a map/reduce job as a 
 series of four steps, where the output of each step is used as the input to 
 the next.
 
