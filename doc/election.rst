@@ -44,11 +44,11 @@ Contributions by Candidate
 
 Run the contributions_by_candidate_name map/reduce job::
 
-    diana@ubuntu:~$ inferno -i election.presidential_2012.contributions_by_candidate_name
-    2012-03-19 INFO  [inferno.lib.job] Processing tags: ['gov:chunk:presidential_campaign_finance']
-    2012-03-19 INFO  [inferno.lib.job] Started job presidential_2012@533:87210:81a1b processing 1 blobs
-    2012-03-19 INFO  [inferno.lib.job] Done waiting for job presidential_2012@533:87210:81a1b
-    2012-03-19 INFO  [inferno.lib.job] Finished job presidential_2012@533:87210:81a1b
+    diana@ubuntu:~$ inferno -i election.presidential_2012.by_candidate
+    2012-03-19 Processing tags: ['gov:chunk:presidential_campaign_finance']
+    2012-03-19 Started job presidential_2012@533:87210:81a1b processing 1 blobs
+    2012-03-19 Done waiting for job presidential_2012@533:87210:81a1b
+    2012-03-19 Finished job presidential_2012@533:87210:81a1b
 
 The output in CSV::
 
@@ -80,32 +80,34 @@ Contributions by Occupation
 
 Run the contributions_by_occupation_and_candidate_name map/reduce job::
 
-    diana@ubuntu:~$ inferno  -i election.presidential_2012.contributions_by_occupation_and_candidate_name > occupations.csv
-    2012-03-19 INFO  [inferno.lib.job] Processing tags: ['gov:chunk:presidential_campaign_finance']
-    2012-03-19 INFO  [inferno.lib.job] Started job presidential_2012@533:87782:c7c98 processing 1 blobs
-    2012-03-19 INFO  [inferno.lib.job] Done waiting for job presidential_2012@533:87782:c7c98
-    2012-03-19 INFO  [inferno.lib.job] Finished job presidential_2012@533:87782:c7c98
+    diana@ubuntu:~$ inferno  -i election.presidential_2012.by_occupation > occupations.csv
+    2012-03-19 Processing tags: ['gov:chunk:presidential_campaign_finance']
+    2012-03-19 Started job presidential_2012@533:87782:c7c98 processing 1 blobs
+    2012-03-19 Done waiting for job presidential_2012@533:87782:c7c98
+    2012-03-19 Finished job presidential_2012@533:87782:c7c98
 
 The output::
 
-    diana@ubuntu:~$ tail -n 20 occupations.csv 
-    YOUTH CARE WORKER,"Paul, Ron",7,268.96
-    YOUTH CAREER SPECIALIST,"Obama, Barack",3,96.0
-    YOUTH DEVELOPMENT,"Obama, Barack",5,450.0
-    YOUTH DIRECTOR,"Obama, Barack",5,550.0
-    YOUTH MINISTER,"Obama, Barack",3,275.0
-    YOUTH MINISTER,"Paul, Ron",6,230.24
-    YOUTH MINISTER,"Santorum, Rick",1,250.0
-    YOUTH MINISTRY DIRECTOR,"Paul, Ron",2,150.0
-    YOUTH OUTREACH DIRECTOR,"Romney, Mitt",1,1000.0
-    YOUTH PROGRAMS DIRECTOR,"Obama, Barack",6,130.0
-    YOUTH SERVICE COORDINATOR,"Obama, Barack",5,350.0
-    YOUTH SERVICES LIBRARIAN,"Obama, Barack",3,290.0
-    YOUTH SPECIALIST,"Obama, Barack",4,525.0
-    YOUTH WORKER,"Paul, Ron",8,595.12
-    ZEN BUDDHIST PRIEST,"Obama, Barack",1,300.0
-    ZEPPOS AND ASSOCIATES,"Obama, Barack",1,1000.0
-    ZIG ZAG RESTAURANT GROUP,"Paul, Ron",5,950.0
-    ZIMMERMANS DAIRY,"Paul, Ron",5,83.71
-    ZOMBIE SLAYER,"Paul, Ron",8,1556.0
-    ZOOLOGIST,"Obama, Barack",1,100.0
+    diana@ubuntu:~$ grep retired occupations.csv
+    retired,gingrich newt,8810,2279602.27
+    retired,obama barack,74465,15086766.92
+    retired,paul ron,9373,1800563.88
+    retired,romney mitt,12798,6483596.24
+    retired,santorum rick,1752,421952.98
+
+The output as a table:
+
++------------+---------------+--------+-----------------+
+| Occupation | Candidate     | Count  | Amount          |
++============+===============+========+=================+
+| retired    | Obama Barack  | 74,465 | $ 15,086,766.92 |
++------------+---------------+--------+-----------------+
+| retired    | Romney Mitt   | 12,798 | $  6,483,596.24 |
++------------+---------------+--------+-----------------+
+| retired    | Gingrich Newt |  8,810 | $  2,279,602.27 |
++------------+---------------+--------+-----------------+
+| retired    | Paul Ron      |  9,373 | $  1,800,563.88 |
++------------+---------------+--------+-----------------+
+| retired    | Santorum Rick |  1,752 | $    421,952.98 |
++------------+---------------+--------+-----------------+
+

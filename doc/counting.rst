@@ -38,11 +38,18 @@ Make sure `disco <http://discoproject.org/>`_ is running::
 Here's our input data::
 
     diana@ubuntu:~$ cat data.txt 
-    {"first_name":"Joan", "last_name":"Términos"}
-    {"first_name":"Willow", "last_name":"Harvey"}
-    {"first_name":"Noam", "last_name":"Clarke"}
-    {"first_name":"Joan", "last_name":"Harvey"}
-    {"first_name":"Beatty", "last_name":"Clarke"}
+    {"first_name":"Homer", "last_name":"Simpson"}
+    {"first_name":"Manjula", "last_name":"Nahasapeemapetilon"}
+    {"first_name":"Herbert", "last_name":"Powell"}
+    {"first_name":"Ruth", "last_name":"Powell"}
+    {"first_name":"Bart", "last_name":"Simpson"}
+    {"first_name":"Apu", "last_name":"Nahasapeemapetilon"}
+    {"first_name":"Marge", "last_name":"Simpson"}
+    {"first_name":"Janey", "last_name":"Powell"}
+    {"first_name":"Maggie", "last_name":"Simpson"}
+    {"first_name":"Sanjay", "last_name":"Nahasapeemapetilon"}
+    {"first_name":"Lisa", "last_name":"Simpson"}
+    {"first_name":"Maggie", "last_name":"Términos"}
 
 Toss the input data into `disco's distributed filesystem <http://discoproject.org/doc/howto/ddfs.html>`_ (ddfs)::
 
@@ -51,12 +58,9 @@ Toss the input data into `disco's distributed filesystem <http://discoproject.or
 
 Verify that the data is in ddfs::
 
-    diana@ubuntu:~$ ddfs xcat example:chunk:users
-    {"first_name":"Joan", "last_name":"Términos"}
-    {"first_name":"Willow", "last_name":"Harvey"}
-    {"first_name":"Noam", "last_name":"Clarke"}
-    {"first_name":"Joan", "last_name":"Harvey"}
-    {"first_name":"Beatty", "last_name":"Clarke"}
+    diana@ubuntu:~$ ddfs xcat example:chunk:users | head -2
+    {"first_name":"Homer", "last_name":"Simpson"}
+    {"first_name":"Manjula", "last_name":"Nahasapeemapetilon"}
 
 Output
 ------
@@ -64,14 +68,15 @@ Output
 Run the last name counting map/reduce job::
 
     diana@ubuntu:~$ inferno -i names.last_names_json
-    2012-03-09 INFO [inferno.lib.job] Processing tags: ['example:chunk:users']
-    2012-03-09 INFO [inferno.lib.job] Started job last_names_json@533:40914:c355f processing 1 blobs
-    2012-03-09 INFO [inferno.lib.job] Done waiting for job last_names_json@533:40914:c355f
-    2012-03-09 INFO [inferno.lib.job] Finished job job last_names_json@533:40914:c355f
+    2012-03-09 Processing tags: ['example:chunk:users']
+    2012-03-09 Started job last_names_json@533:40914:c355f processing 1 blobs
+    2012-03-09 Done waiting for job last_names_json@533:40914:c355f
+    2012-03-09 Finished job job last_names_json@533:40914:c355f
 
 The output::
 
     last_name,count
-    Clarke,2
-    Harvey,2
+    Nahasapeemapetilon,3
+    Powell,3
+    Simpson,5
     Términos,1

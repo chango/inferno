@@ -100,6 +100,7 @@ class InfernoRule(object):
                  # other
                  rule_init_function=None,
                  parts_preprocess=None,
+                 parts_postprocess=None,
                  field_transforms=None,
                  **kwargs):
 
@@ -179,6 +180,15 @@ class InfernoRule(object):
         else:
             self.params.parts_preprocess = []
 
+        # postprocess
+        if parts_postprocess:
+            self.params.parts_postprocess = map(
+                lambda func: func.__name__, parts_postprocess)
+            for func in parts_postprocess:
+                self.params.__setattr__(func.__name__, func)
+        else:
+            self.params.parts_postprocess = []
+
         # transforms
         if field_transforms:
             self.params.field_transforms = {}
@@ -213,4 +223,5 @@ class InfernoRule(object):
             map_function=fstr(self.map_function),
             reduce_function=fstr(self.reduce_function),
             keysets=self.params.keysets,
-            parts_preprocess=self.params.parts_preprocess)
+            parts_preprocess=self.params.parts_preprocess,
+            parts_postprocess=self.params.parts_postprocess)

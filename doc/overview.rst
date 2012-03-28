@@ -13,21 +13,34 @@ valid JSON, etc.
 **people.json**
 ::
 
-    {"first_name":"Joan", "last_name":"Términos"}
-    {"first_name":"Willow", "last_name":"Harvey"}
-    {"first_name":"Noam", "last_name":"Clarke"}
-    {"first_name":"Joan", "last_name":"Harvey"}
-    {"first_name":"Beatty", "last_name":"Clarke"}
+    {"first_name":"Homer", "last_name":"Simpson"}
+    {"first_name":"Manjula", "last_name":"Nahasapeemapetilon"}
+    {"first_name":"Herbert", "last_name":"Powell"}
+    {"first_name":"Ruth", "last_name":"Powell"}
+    {"first_name":"Bart", "last_name":"Simpson"}
+    {"first_name":"Apu", "last_name":"Nahasapeemapetilon"}
+    {"first_name":"Marge", "last_name":"Simpson"}
+    {"first_name":"Janey", "last_name":"Powell"}
+    {"first_name":"Maggie", "last_name":"Simpson"}
+    {"first_name":"Sanjay", "last_name":"Nahasapeemapetilon"}
+    {"first_name":"Lisa", "last_name":"Simpson"}
+    {"first_name":"Maggie", "last_name":"Términos"}
 
 **people.csv**
 ::
 
-    first_name,last_name
-    Joan,Términos
-    Willow,Harvey
-    Noam,Clarke
-    Joan,Harvey
-    Beatty,Clarke
+    Homer,Simpson
+    Manjula,Nahasapeemapetilon
+    Herbert,Powell
+    Ruth,Powell
+    Bart,Simpson
+    Apu,Nahasapeemapetilon
+    Marge,Simpson
+    Janey,Powell
+    Maggie,Simpson
+    Sanjay,Nahasapeemapetilon
+    Lisa,Simpson
+    Maggie,Términos
 
 **people.db**
 
@@ -37,8 +50,9 @@ If you had this same data in a database, you would just use SQL to query it.
 
     SELECT last_name, COUNT(*) FROM users GROUP BY last_name;
 
-    Clarke, 2
-    Harvey, 2
+    Nahasapeemapetilon, 3
+    Powell, 3
+    Simpson, 5
     Términos, 1
 
 **Terminal**
@@ -49,8 +63,9 @@ Or if the data was small enough, you might just use command line utilities.
 
     diana@ubuntu:~$ awk -F ',' '{print $2}' people.csv | sort | uniq -c
 
-    2 Clarke
-    2 Harvey
+    3 Nahasapeemapetilon
+    3 Powell
+    5 Simpson
     1 Términos
 
 **Inferno**
@@ -76,8 +91,9 @@ Here's what a similar query using Inferno would look like:
     diana@ubuntu:~$ inferno -i names.last_names_json
 
     last_name,count
-    Clarke,2
-    Harvey,2
+    Nahasapeemapetilon,3
+    Powell,3
+    Simpson,5
     Términos,1
 
 Don't worry about the details - we'll cover this rule in depth 

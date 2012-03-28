@@ -3,12 +3,13 @@ import logging
 import os
 import StringIO
 
-from tornado.httpserver import HTTPServer
-from tornado.ioloop import IOLoop
-
 import tornado.web
 import ujson
 import yaml
+
+from setproctitle import setproctitle
+from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
 
 import inferno.lib.daemon
 
@@ -181,7 +182,7 @@ class JobResultHandler(RequestHandler):
 
     def get(self, *args, **kwargs):
         from inferno.lib.disco_ext import sorted_iterator
-        from inferno.lib.result import keyset_result
+        from inferno.lib.result import reduce_result
 
         def flush_callback(stringio):
             self.write(stringio.getvalue())
@@ -191,13 +192,10 @@ class JobResultHandler(RequestHandler):
         job_id = args[0]
         jobinfo = self.get_jobinfo(job_id)
         if jobinfo:
-            keyset_result(
+            reduce_result(
                 sorted_iterator(jobinfo['results']),
-                params=None,
                 output_stream=StringIO.StringIO(),
-                flush_callback=flush_callback,
-                generate_header=False,
-                skip_keyset=True)
+                flush_callback=flush_callback)
 
 
 MAPPINGS = [
@@ -213,6 +211,7 @@ MAPPINGS = [
 
 
 def launch_server(base_path, port, pipe):
+    setproctitle("inferno - disco_ball")
     path = os.path.join(base_path, "disco_ball", "templates")
     application = tornado.web.Application(MAPPINGS, template_path=path)
     application.pipe = inferno.lib.daemon.unpickle_connection(pipe)

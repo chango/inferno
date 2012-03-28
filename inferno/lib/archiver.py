@@ -34,8 +34,6 @@ class Archiver(object):
                 self._archive_tags()
             except Exception as e:
                 log.error('Archiving error: %s', e, exc_info=sys.exc_info())
-            finally:
-                log.info('Archiving complete')
 
     def _archive_tags(self):
         for tag, blobs in self.tag_map.iteritems():
