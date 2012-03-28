@@ -30,7 +30,7 @@ DDFS
 The first step is to place this file in 
 `Disco's Distributed Filesystem <http://discoproject.org/doc/howto/ddfs.html>`_ (DDFS). 
 Once placed in DDFS, this file is referred to by Disco as a **blob**. 
-DDFS is a tag-based filesystem: Instead of organizing files into directories, 
+DDFS is a tag-based filesystem. Instead of organizing files into directories, 
 you **tag** a collection of blobs with a **tag_name** for lookup later.
 
 I this case, we'll be tagging our data file as **example:chunk:users**.
@@ -71,11 +71,42 @@ the next.
    :scale: 75 %
    :alt: input -> map -> reduce -> output
 
+
+**Input**
+
+**Map**
+
+**Reduce**
+
+
+
+**Output**
+
+    Unless you create and specify your own **result_processor**, Inferno 
+    defaults to the **keyset_result** processor which simply uses a CSV writer 
+    to print the results from the reduce step to standard out.
+
+    Other common ``result_processor`` use cases include: populating a cache, 
+    persisting to a database, writing back to 
+    `DDFS <http://discoproject.org/doc/howto/ddfs.html>`_ or 
+    `DiscoDB <http://discoproject.org/doc/contrib/discodb/discodb.html>`_, etc.
+
+    Example data transition during the **output** step::
+
+.. image:: output.png
+   :height: 600px
+   :width: 800 px
+   :align: center
+   :scale: 60 %
+   :alt: reduce -> output
+
+Example Rule
+------------
+
 The inferno map/reduce rule (inferno/example_rules/names.py)::
 
     from inferno.lib.rule import chunk_json_keyset_stream
     from inferno.lib.rule import InfernoRule
-    from inferno.lib.rule import Keyset
 
 
     def count(parts, params):
