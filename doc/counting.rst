@@ -35,6 +35,12 @@ you **tag** a collection of blobs with a **tag_name** for lookup later.
 
 I this case, we'll be tagging our data file as **example:chunk:users**.
 
+.. image:: tag_blobs.png
+   :height: 300px
+   :width: 600 px
+   :scale: 75 %
+   :alt: tag_name -> [blob1, blob2, blob3]
+
 Make sure `disco <http://discoproject.org/>`_ is running::
 
     diana@ubuntu:~$ disco start
@@ -58,15 +64,12 @@ For the porpose of this intoductory example, think of a map/reduce job as a
 series of four steps, where the output of each step is used as the input to 
 the next.
 
-.. aafig::
-    :aspect: 60
-    :scale: 150
-    :proportional:
-    :textual:
-    
-    +--------+     +-------+     +--------+     +--------+
-    | Input  + --> + Map   | --> | Reduce | --> | Output |
-    +--------+     +-------+     +--------+     +--------+
+.. image:: simple_map_reduce.png
+   :height: 100px
+   :width: 600 px
+   :align: center
+   :scale: 75 %
+   :alt: input -> map -> reduce -> output
 
 The inferno map/reduce rule (inferno/example_rules/names.py)::
 
