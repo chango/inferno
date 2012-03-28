@@ -16,7 +16,9 @@ from inferno.lib import __version__
 from inferno.lib.job_factory import JobFactory
 from inferno.lib.settings import InfernoSettings
 
+
 log = logging.getLogger(__name__)
+
 
 def _get_options(argv):
     desc = 'Inferno: a python map/reduce platform powered by disco.'
@@ -162,10 +164,10 @@ def _get_options(argv):
         try:
             result.update(yaml.load(open(options.parameter_file, "r")))
         except Exception as e:
-            log.error("Error opening parameter file: %s %s" % (options.parameter_file, e))
+            message = "Error opening parameter file: %s %s"
+            log.error(message % (options.parameter_file, e))
 
     return result
-
 
 
 def _get_settings(options):
@@ -223,7 +225,6 @@ def main(argv=sys.argv):
             print 'Error creating example rules dir %r' % (e)
         finally:
             return
-    
 
     _setup_logging(settings)
 

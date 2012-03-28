@@ -14,6 +14,7 @@ class TestOptions(object):
         options = _get_options([])
         expected = {
             'parameters': [],
+            'parameter_file': None,
             'force': False,
             'profile': False,
             'debug': False,
@@ -85,7 +86,7 @@ class TestOptions(object):
 
     def test_parameters(self):
         self._assert_parameters('-P')
-        self._assert_parameters('--parameter')
+        self._assert_parameters('--parameters')
 
     def _assert_force(self, flag):
         options = _get_options([flag])

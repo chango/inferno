@@ -16,11 +16,11 @@ def alphanumeric(val):
 
 def candidate_filter(parts, params):
     active = [
-        'P20002721', # Santorum, Rick
-        'P60003654', # Gingrich, Newt
-        'P80000748', # Paul, Ron
-        'P80003338', # Obama, Barack
-        'P80003353', # Romney, Mitt
+        'P20002721',  # Santorum, Rick
+        'P60003654',  # Gingrich, Newt
+        'P80000748',  # Paul, Ron
+        'P80003338',  # Obama, Barack
+        'P80003353',  # Romney, Mitt
     ]
     if parts['cand_id'] in active:
         yield parts
