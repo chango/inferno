@@ -78,7 +78,14 @@ the next.
 
 **Reduce**
 
+    Example data transition during the **reduce** step::
 
+.. image:: reduce.png
+   :height: 600px
+   :width: 800 px
+   :align: center
+   :scale: 60 %
+   :alt: map -> reduce
 
 **Output**
 
