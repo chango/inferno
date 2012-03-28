@@ -1,39 +1,12 @@
 Example 1 - Count Last Names
 ============================
 
-Rule
-----
-
-The inferno map/reduce rule (inferno/example_rules/names.py)::
-
-    from inferno.lib.rule import chunk_json_keyset_stream
-    from inferno.lib.rule import InfernoRule
-    from inferno.lib.rule import Keyset
-
-
-    def count(parts, params):
-        parts['count'] = 1
-        yield parts
-
-
-    RULES = [
-        InfernoRule(
-            name='last_names_json',
-            source_tags=['test:integration:chunk:users'],
-            map_input_stream=chunk_json_keyset_stream,
-            parts_preprocess=[count],
-            key_parts=['last_name'],
-            value_parts=['count'],
-        ),
-    ]
+The canonical map/reduce example: count the occurrences of words in a 
+document. In this case, we'll count the occurrences of last names in a data 
+file containing a bunch of lines of json.
 
 Input
 -----
-
-Make sure `disco <http://discoproject.org/>`_ is running::
-
-    diana@ubuntu:~$ disco start
-    Master ubuntu:8989 started
 
 Here's our input data::
 
@@ -51,7 +24,23 @@ Here's our input data::
     {"first_name":"Lisa", "last_name":"Simpson"}
     {"first_name":"Maggie", "last_name":"Términos"}
 
-Toss the input data into `disco's distributed filesystem <http://discoproject.org/doc/howto/ddfs.html>`_ (ddfs)::
+DDFS
+----
+
+The first step is to place this file in 
+`Disco's Distributed Filesystem <http://discoproject.org/doc/howto/ddfs.html>`_ (DDFS). 
+Once placed in DDFS, this file is referred to by Disco as a **blob**. 
+DDFS is a tag-based filesystem: Instead of organizing files into directories, 
+you **tag** a collection of blobs with a **tag_name** for lookup later.
+
+I this case, we'll be tagging our data file as **example:chunk:users**.
+
+Make sure `disco <http://discoproject.org/>`_ is running::
+
+    diana@ubuntu:~$ disco start
+    Master ubuntu:8989 started
+
+Toss the input data into DDFS::
 
     diana@ubuntu:~$ ddfs chunk example:chunk:users ./data.txt 
     created: disco://localhost/ddfs/vol0/blob/99/data_txt-0$533-406a9-e50
@@ -61,6 +50,46 @@ Verify that the data is in ddfs::
     diana@ubuntu:~$ ddfs xcat example:chunk:users | head -2
     {"first_name":"Homer", "last_name":"Simpson"}
     {"first_name":"Manjula", "last_name":"Nahasapeemapetilon"}
+
+Inferno Rule
+------------
+
+For the porpose of this intoductory example, think of a map/reduce job as a 
+series of four steps, where the output of each step is used as the input to 
+the next.
+
+.. aafig::
+    :aspect: 60
+    :scale: 150
+    :proportional:
+    :textual:
+    
+    +--------+     +-------+     +--------+     +--------+
+    | Input  + --> + Map   | --> | Reduce | --> | Output |
+    +--------+     +-------+     +--------+     +--------+
+
+The inferno map/reduce rule (inferno/example_rules/names.py)::
+
+    from inferno.lib.rule import chunk_json_keyset_stream
+    from inferno.lib.rule import InfernoRule
+    from inferno.lib.rule import Keyset
+
+
+    def count(parts, params):
+        parts['count'] = 1
+        yield parts
+
+
+    RULES = [
+        InfernoRule(
+            name='last_names_json',
+            source_tags=['example:chunk:users'],
+            map_input_stream=chunk_json_keyset_stream,
+            parts_preprocess=[count],
+            key_parts=['last_name'],
+            value_parts=['count'],
+        ),
+    ]
 
 Output
 ------

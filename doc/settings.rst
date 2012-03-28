@@ -26,7 +26,8 @@ On a development machine, the recommended place to put Inferno settings is:
 **~/.inferno**
 
 1. Create a file called ``.inferno`` in your home directory.
-2. Point it to your Disco master (``server``), and the example rules directory we just created (``rules_directory``).
+2. Add your Disco master (``server``).
+3. Add the example rules directory we just created (``rules_directory``).
 
 When you're done, it should look something like the following.
 

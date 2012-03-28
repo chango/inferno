@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 
 
 def _get_options(argv):
-    desc = 'Inferno: a python map/reduce platform powered by disco.'
+    desc = 'Inferno: a python map/reduce library powered by disco.'
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument(
