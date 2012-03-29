@@ -85,7 +85,7 @@ the next.
     intended for CSV data that was placed in DDFS using the ``ddfs chunk`` 
     command. 
 
-    If the input data is lines of JSON, you would indtead set the 
+    If the input data is lines of JSON, you would instead set the 
     **map_input_stream** to use the **chunk_json_keyset_stream** reader in 
     your Inferno rule.
 
