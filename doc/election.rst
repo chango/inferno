@@ -7,6 +7,7 @@ In this example we'll introduce a few more key Inferno concepts:
     * **field_transforms**: input data casting
     * **parts_preprocess**: a pre-map hook
     * **parts_postprocess**: a post-reduce hook
+    * **column_mappings**: rename columns post-reduce
 
 Inferno Rule
 ------------
@@ -15,7 +16,7 @@ An Inferno rule to query the 2012 presidential campaign finance data.
 (``inferno/example_rules/election.py``):
 
 .. literalinclude:: ../inferno/example_rules/election.py
-   :emphasize-lines: 44-49, 58, 66
+   :emphasize-lines: 44-49, 58, 61, 66, 69
 
 Input
 -----
@@ -88,7 +89,7 @@ Contributions by Occupation
 
 Run the **contributions_by_occupation_and_candidate_name** job::
 
-    diana@ubuntu:~$ inferno  -i election.presidential_2012.by_occupation > occupations.csv
+    diana@ubuntu:~$ inferno -i election.presidential_2012.by_occupation > occupations.csv
     2012-03-19 Processing tags: ['gov:chunk:presidential_campaign_finance']
     2012-03-19 Started job presidential_2012@533:87782:c7c98 processing 1 blobs
     2012-03-19 Done waiting for job presidential_2012@533:87782:c7c98
