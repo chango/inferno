@@ -3,7 +3,7 @@ Example 1 - Count Last Names
 
 The canonical map/reduce example: count the occurrences of words in a 
 document. In this case, we'll count the occurrences of last names in a data 
-file containing a bunch of lines of json.
+file containing lines of json.
 
 Input
 -----
