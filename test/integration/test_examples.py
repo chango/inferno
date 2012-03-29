@@ -15,18 +15,18 @@ from inferno.lib.settings import InfernoSettings
 class TestExamples(object):
 
     json_data = """
-{"first_name":"Homer", "last_name":"Simpson"}
-{"first_name":"Manjula", "last_name":"Nahasapeemapetilon"}
-{"first_name":"Herbert", "last_name":"Powell"}
-{"first_name":"Ruth", "last_name":"Powell"}
-{"first_name":"Bart", "last_name":"Simpson"}
-{"first_name":"Apu", "last_name":"Nahasapeemapetilon"}
-{"first_name":"Marge", "last_name":"Simpson"}
-{"first_name":"Janey", "last_name":"Powell"}
-{"first_name":"Maggie", "last_name":"Simpson"}
-{"first_name":"Sanjay", "last_name":"Nahasapeemapetilon"}
-{"first_name":"Lisa", "last_name":"Simpson"}
-{"first_name":"Maggie", "last_name":"Términos"}
+{"first":"Homer", "last":"Simpson"}
+{"first":"Manjula", "last":"Nahasapeemapetilon"}
+{"first":"Herbert", "last":"Powell"}
+{"first":"Ruth", "last":"Powell"}
+{"first":"Bart", "last":"Simpson"}
+{"first":"Apu", "last":"Nahasapeemapetilon"}
+{"first":"Marge", "last":"Simpson"}
+{"first":"Janey", "last":"Powell"}
+{"first":"Maggie", "last":"Simpson"}
+{"first":"Sanjay", "last":"Nahasapeemapetilon"}
+{"first":"Lisa", "last":"Simpson"}
+{"first":"Maggie", "last":"Términos"}
 """
     csv_data = """
 Homer,Simpson
@@ -64,7 +64,7 @@ Maggie,Términos
             rules_directory=self.rules_dir,
             immediate_rule='names.last_names_json')
         expected = [
-            'last_name,count',
+            'last,count',
             'Nahasapeemapetilon,3',
             'Powell,3',
             'Simpson,5',
@@ -76,7 +76,7 @@ Maggie,Términos
             rules_directory=self.rules_dir,
             immediate_rule='names.last_names_csv')
         expected = [
-            'last_name,count',
+            'last,count',
             'Nahasapeemapetilon,3',
             'Powell,3',
             'Simpson,5',
@@ -88,7 +88,7 @@ Maggie,Términos
             rules_directory=self.rules_dir,
             immediate_rule='names.first_and_last_names')
         expected = [
-            'first_name,count',
+            'first,count',
             'Apu,1',
             'Bart,1',
             'Herbert,1',
@@ -100,7 +100,7 @@ Maggie,Términos
             'Marge,1',
             'Ruth,1',
             'Sanjay,1',
-            'last_name,count',
+            'last,count',
             'Nahasapeemapetilon,3',
             'Powell,3',
             'Simpson,5',
@@ -112,7 +112,7 @@ Maggie,Términos
             rules_directory=self.rules_dir,
             immediate_rule='names.last_names_result')
         expected = [
-            'last_name,count',
+            'last,count',
             'Nahasapeemapetilon,3',
             'Powell,3',
             'Simpson,5',
