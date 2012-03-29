@@ -89,7 +89,7 @@ the next.
     **map_input_stream** to use the **chunk_json_keyset_stream** reader in 
     your Inferno rule instead.
 
-    Example data transition during the **input** step::
+    Example data transition during the **input** step:
 
 .. image:: input.png
    :height: 600px
@@ -109,7 +109,7 @@ the next.
    relevant key and value parts by declaring **key_parts** and **value_parts** 
    in your Inferno rule.
 
-   Example data transition during the **map** step::
+   Example data transition during the **map** step:
 
 .. image:: map.png
    :height: 600px
@@ -120,7 +120,7 @@ the next.
 
 **Reduce**
 
-    Example data transition during the **reduce** step::
+    Example data transition during the **reduce** step:
 
 .. image:: reduce.png
    :height: 600px
@@ -140,7 +140,7 @@ the next.
     `DDFS <http://discoproject.org/doc/howto/ddfs.html>`_ or 
     `DiscoDB <http://discoproject.org/doc/contrib/discodb/discodb.html>`_, etc.
 
-    Example data transition during the **output** step::
+    Example data transition during the **output** step:
 
 .. image:: output.png
    :height: 600px
