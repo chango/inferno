@@ -26,7 +26,7 @@ Make sure `Disco <http://discoproject.org/>`_ is running::
     diana@ubuntu:~$ disco start
     Master ubuntu:8989 started
 
-The 2012 presidential campaign finance 
+Get the 2012 presidential campaign finance 
 `data <ftp://ftp.fec.gov/FEC/Presidential_Map/2012/P00000001/P00000001-ALL.zip>`_ 
 (from the `FEC <http://www.fec.gov/disclosurep/PDownload.do>`_)::
 
