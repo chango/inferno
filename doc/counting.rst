@@ -1,7 +1,7 @@
 Example 1 - Count Last Names
 ============================
 
-The canonical map/reduce example: count the occurrences of words in a 
+The canonical map/reduce example: **count** the occurrences of words in a 
 document. In this case, we'll count the occurrences of last names in a data 
 file containing lines of json.
 
@@ -41,7 +41,7 @@ In this case, we'll be tagging our data file as **example:chunk:users**.
    :scale: 75 %
    :alt: tag_name -> [blob1, blob2, blob3]
 
-Make sure `disco <http://discoproject.org/>`_ is running::
+Make sure `Disco <http://discoproject.org/>`_ is running::
 
     diana@ubuntu:~$ disco start
     Master ubuntu:8989 started
@@ -77,9 +77,9 @@ the next.
     The input step of an Inferno map/reduce job is responsible for parsing and 
     readying the input data for the map step.
 
-    If you're using Inferno's built in keyset map/reduce functionality, this 
-    step mostly amounts to transforming your CSV or JSON input into python 
-    dictionaries.
+    If you're using Inferno's built in **keyset** map/reduce functionality, 
+    this step mostly amounts to transforming your CSV or JSON input into 
+    python dictionaries.
 
     The default Inferno input reader is **chunk_csv_keyset_stream**, which is
     intended for CSV data that was placed in DDFS using the ``ddfs chunk`` 
@@ -88,6 +88,18 @@ the next.
     If the input data is lines of JSON, you would set the 
     **map_input_stream** to use the **chunk_json_keyset_stream** reader in 
     your Inferno rule instead.
+
+    .. code-block:: python
+       :emphasize-lines: 3,4
+
+        InfernoRule(
+            name='last_names_json',
+            source_tags=['example:chunk:users'],
+            map_input_stream=chunk_json_keyset_stream,
+            parts_preprocess=[count],
+            key_parts=['last'],
+            value_parts=['count'],
+        )
 
     Example data transition during the **input** step:
 
@@ -109,6 +121,18 @@ the next.
    relevant key and value parts by declaring **key_parts** and **value_parts** 
    in your Inferno rule.
 
+    .. code-block:: python
+       :emphasize-lines: 6,7
+
+        InfernoRule(
+            name='last_names_json',
+            source_tags=['example:chunk:users'],
+            map_input_stream=chunk_json_keyset_stream,
+            parts_preprocess=[count],
+            key_parts=['last'],
+            value_parts=['count'],
+        )
+
    Example data transition during the **map** step:
 
 .. image:: map.png
@@ -126,7 +150,7 @@ the next.
    Inferno's default **reduce_function** is the **keyset_reduce**. It will sum
    the value parts yielded by the map step, grouped by the key parts.
 
-   In this example, we're only summing one value: the ``count``. You can 
+   In this example, we're only summing one value (the ``count``). You can 
    define and sum many value parts, as you'll see :doc:`here </election>` in 
    the next example.
 
@@ -159,10 +183,10 @@ the next.
    :scale: 60 %
    :alt: reduce -> output
 
-Example Rule
+Inferno Rule
 ------------
 
-The inferno map/reduce rule (inferno/example_rules/names.py)::
+The Inferno map/reduce rule (``inferno/example_rules/names.py``)::
 
     from inferno.lib.rule import chunk_json_keyset_stream
     from inferno.lib.rule import InfernoRule
