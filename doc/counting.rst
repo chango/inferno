@@ -170,7 +170,7 @@ the next.
 
     Unless you create and specify your own **result_processor**, Inferno 
     defaults to the **keyset_result** processor which simply uses a CSV writer 
-    to print the results from the reduce step to standard out.
+    to print the results from the reduce step to standard output.
 
     Other common result processor use cases include: populating a cache, 
     persisting to a database, writing back to 
