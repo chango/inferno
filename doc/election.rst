@@ -1,6 +1,13 @@
 Example 2 - Campaign Finance
 ============================
 
+In this example we'll introduce a few more key Inferno concepts:
+
+    * Inferno rules with **multiple keysets**
+    * **field_transforms**: input data casting
+    * **parts_preprocess**: a pre-map hook
+    * **parts_postprocess**: a post-reduce hook
+
 Inferno Rule
 ------------
 
@@ -16,7 +23,9 @@ Make sure `Disco <http://discoproject.org/>`_ is running::
     diana@ubuntu:~$ disco start
     Master ubuntu:8989 started
 
-The 2012 presidential campaign finance data (from the `FEC <http://www.fec.gov/disclosurep/PDownload.do>`_)::
+The 2012 presidential campaign finance 
+`data <ftp://ftp.fec.gov/FEC/Presidential_Map/2012/P00000001/P00000001-ALL.zip>`_ 
+(from the `FEC <http://www.fec.gov/disclosurep/PDownload.do>`_)::
 
     diana@ubuntu:~$ head -4 P00000001-ALL.txt
     cmte_id,cand_id,cand_nm,contbr_nm,contbr_city,contbr_st,contbr_zip,contbr_employer,contbr_occupation,contb_receipt_amt...
@@ -100,14 +109,14 @@ The output as a table:
 +------------+---------------+--------+-----------------+
 | Occupation | Candidate     | Count  | Amount          |
 +============+===============+========+=================+
-| retired    | Obama Barack  | 74,465 | $ 15,086,766.92 |
+| Retired    | Obama Barack  | 74,465 | $ 15,086,766.92 |
 +------------+---------------+--------+-----------------+
-| retired    | Romney Mitt   | 12,798 | $  6,483,596.24 |
+| Retired    | Romney Mitt   | 12,798 | $  6,483,596.24 |
 +------------+---------------+--------+-----------------+
-| retired    | Gingrich Newt |  8,810 | $  2,279,602.27 |
+| Retired    | Gingrich Newt |  8,810 | $  2,279,602.27 |
 +------------+---------------+--------+-----------------+
-| retired    | Paul Ron      |  9,373 | $  1,800,563.88 |
+| Retired    | Paul Ron      |  9,373 | $  1,800,563.88 |
 +------------+---------------+--------+-----------------+
-| retired    | Santorum Rick |  1,752 | $    421,952.98 |
+| Retired    | Santorum Rick |  1,752 | $    421,952.98 |
 +------------+---------------+--------+-----------------+
 
