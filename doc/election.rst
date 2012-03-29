@@ -1,8 +1,8 @@
 Example 2 - Campaign Finance
 ============================
 
-Rule
-----
+Inferno Rule
+------------
 
 The Inferno map/reduce rule (``inferno/example_rules/election.py``):
 

@@ -85,9 +85,12 @@ the next.
     intended for CSV data that was placed in DDFS using the ``ddfs chunk`` 
     command. 
 
-    If the input data is lines of JSON, you would set the 
+    If the input data is lines of JSON, you would indtead set the 
     **map_input_stream** to use the **chunk_json_keyset_stream** reader in 
-    your Inferno rule instead.
+    your Inferno rule.
+
+    The input reader will process all DDFS tags that are prefixed with the 
+    tag names defined in **source_tags** of your Inferno rule.
 
     .. code-block:: python
        :emphasize-lines: 3,4
