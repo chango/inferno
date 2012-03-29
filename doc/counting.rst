@@ -109,7 +109,7 @@ the next.
    relevant key and value parts by declaring **key_parts** and **value_parts** 
    in your Inferno rule.
 
-    Example data transition during the **map** step::
+   Example data transition during the **map** step::
 
 .. image:: map.png
    :height: 600px
