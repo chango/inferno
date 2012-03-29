@@ -77,17 +77,17 @@ the next.
     The input step of an Inferno map/reduce job is responsible for parsing and 
     readying the input data for the map step.
 
-    The default Inferno input reader is **chunk_csv_keyset_stream**, meaning 
-    that it can automatically stream lines from a CSV file that is placed in
-    DDFS using the ``ddfs chunk`` command. 
+    If you're using Inferno's built in keyset map/reduce functionality, this 
+    step mostly amounts to transforming your CSV or JSON input into python 
+    dictionaries.
 
-    If the input is lines of JSON, you could set the **map_input_stream** to 
-    use the **chunk_json_keyset_stream** reader instead.
+    The default Inferno input reader is **chunk_csv_keyset_stream**, which is
+    intended for CSV data that was placed in DDFS using the ``ddfs chunk`` 
+    command. 
 
-    Either way, if you're using Inferno's built in keyset map/reduce 
-    functionality, this step mostly amounts to transforming your CSV/JSON
-    input, etc into python dictionaries for further processing in the 
-    **map** step.
+    If the input data is lines of JSON, you would set the 
+    **map_input_stream** to use the **chunk_json_keyset_stream** reader 
+    instead.
 
     Example data transition during the **input** step::
 
