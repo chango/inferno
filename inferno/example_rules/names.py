@@ -12,7 +12,7 @@ def count(parts, params):
 RULES = [
     InfernoRule(
         name='last_names_json',
-        source_tags=['test:integration:chunk:users'],
+        source_tags=['example:chunk:users'],
         map_input_stream=chunk_json_keyset_stream,
         parts_preprocess=[count],
         partitions=2,
@@ -21,7 +21,7 @@ RULES = [
     ),
     InfernoRule(
         name='last_names_csv',
-        source_tags=['test:integration:chunk:users'],
+        source_tags=['example:chunk:users'],
         map_input_stream=chunk_csv_keyset_stream,
         csv_fields=('first', 'last'),
         csv_dialect='excel',
@@ -32,7 +32,7 @@ RULES = [
     ),
     InfernoRule(
         name='last_names_result',
-        source_tags=['test:integration:chunk:users'],
+        source_tags=['example:chunk:users'],
         map_input_stream=chunk_json_keyset_stream,
         parts_preprocess=[count],
         partitions=2,
@@ -42,7 +42,7 @@ RULES = [
     ),
     InfernoRule(
         name='first_and_last_names',
-        source_tags=['test:integration:chunk:users'],
+        source_tags=['example:chunk:users'],
         map_input_stream=chunk_json_keyset_stream,
         parts_preprocess=[count],
         partitions=2,
