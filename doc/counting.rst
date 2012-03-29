@@ -211,8 +211,8 @@ The Inferno map/reduce rule (``inferno/example_rules/names.py``)::
         ),
     ]
 
-Output
-------
+Execution
+---------
 
 Run the last name counting map/reduce job::
 
