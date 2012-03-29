@@ -11,29 +11,29 @@ Input
 Here's our input data::
 
     diana@ubuntu:~$ cat data.txt 
-    {"first_name":"Homer", "last_name":"Simpson"}
-    {"first_name":"Manjula", "last_name":"Nahasapeemapetilon"}
-    {"first_name":"Herbert", "last_name":"Powell"}
-    {"first_name":"Ruth", "last_name":"Powell"}
-    {"first_name":"Bart", "last_name":"Simpson"}
-    {"first_name":"Apu", "last_name":"Nahasapeemapetilon"}
-    {"first_name":"Marge", "last_name":"Simpson"}
-    {"first_name":"Janey", "last_name":"Powell"}
-    {"first_name":"Maggie", "last_name":"Simpson"}
-    {"first_name":"Sanjay", "last_name":"Nahasapeemapetilon"}
-    {"first_name":"Lisa", "last_name":"Simpson"}
-    {"first_name":"Maggie", "last_name":"Términos"}
+    {"first":"Homer", "last":"Simpson"}
+    {"first":"Manjula", "last":"Nahasapeemapetilon"}
+    {"first":"Herbert", "last":"Powell"}
+    {"first":"Ruth", "last":"Powell"}
+    {"first":"Bart", "last":"Simpson"}
+    {"first":"Apu", "last":"Nahasapeemapetilon"}
+    {"first":"Marge", "last":"Simpson"}
+    {"first":"Janey", "last":"Powell"}
+    {"first":"Maggie", "last":"Simpson"}
+    {"first":"Sanjay", "last":"Nahasapeemapetilon"}
+    {"first":"Lisa", "last":"Simpson"}
+    {"first":"Maggie", "last":"Términos"}
 
 DDFS
 ----
 
 The first step is to place this file in 
 `Disco's Distributed Filesystem <http://discoproject.org/doc/howto/ddfs.html>`_ (DDFS). 
-Once placed in DDFS, this file is referred to by Disco as a **blob**. 
+Once placed in DDFS, a file is referred to by Disco as a **blob**. 
 DDFS is a tag-based filesystem. Instead of organizing files into directories, 
 you **tag** a collection of blobs with a **tag_name** for lookup later.
 
-I this case, we'll be tagging our data file as **example:chunk:users**.
+In this case, we'll be tagging our data file as **example:chunk:users**.
 
 .. image:: tag_blobs.png
    :height: 300px
@@ -54,8 +54,8 @@ Toss the input data into DDFS::
 Verify that the data is in ddfs::
 
     diana@ubuntu:~$ ddfs xcat example:chunk:users | head -2
-    {"first_name":"Homer", "last_name":"Simpson"}
-    {"first_name":"Manjula", "last_name":"Nahasapeemapetilon"}
+    {"first":"Homer", "last":"Simpson"}
+    {"first":"Manjula", "last":"Nahasapeemapetilon"}
 
 Inferno Rule
 ------------
@@ -145,7 +145,7 @@ The inferno map/reduce rule (inferno/example_rules/names.py)::
             source_tags=['example:chunk:users'],
             map_input_stream=chunk_json_keyset_stream,
             parts_preprocess=[count],
-            key_parts=['last_name'],
+            key_parts=['last'],
             value_parts=['count'],
         ),
     ]
@@ -163,7 +163,7 @@ Run the last name counting map/reduce job::
 
 The output::
 
-    last_name,count
+    last,count
     Nahasapeemapetilon,3
     Powell,3
     Simpson,5
