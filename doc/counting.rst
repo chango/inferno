@@ -46,7 +46,7 @@ And here's the Inferno rule (``inferno/example_rules/names.py``)::
 DDFS
 ----
 
-The first step is to place this file in 
+The first step is to place the data file in 
 `Disco's Distributed Filesystem <http://discoproject.org/doc/howto/ddfs.html>`_ (DDFS). 
 Once placed in DDFS, a file is referred to by Disco as a **blob**. 
 
