@@ -86,8 +86,8 @@ the next.
     command. 
 
     If the input data is lines of JSON, you would set the 
-    **map_input_stream** to use the **chunk_json_keyset_stream** reader 
-    instead.
+    **map_input_stream** to use the **chunk_json_keyset_stream** reader in 
+    your Inferno rule instead.
 
     Example data transition during the **input** step::
 
@@ -99,6 +99,15 @@ the next.
    :alt: data -> input
 
 **Map**
+
+   The map step of an Inferno map/reduce job is responsible for extracting 
+   the relevant key and value parts from the incoming python dictionaries and 
+   yielding one, none, or many of them for further processing by the reduce 
+   step.
+
+   Inferno's default **map_function** is the **keyset_map**. You define the 
+   relevant key and value parts by declaring **key_parts** and **value_parts** 
+   in your Inferno rule.
 
     Example data transition during the **map** step::
 
