@@ -61,9 +61,9 @@ Verify that the data is in DDFS::
 Map Reduce
 ----------
 
-For the purpose of this introductory example, think of a map/reduce job as a 
-series of four steps, where the output of each step is used as the input to 
-the next.
+For the purpose of this introductory example, think of an Inferno map/reduce 
+job as a series of four steps, where the output of each step is used as the 
+input to the next.
 
 .. image:: simple_map_reduce.png
    :height: 100px
