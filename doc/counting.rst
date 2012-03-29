@@ -30,6 +30,7 @@ DDFS
 The first step is to place this file in 
 `Disco's Distributed Filesystem <http://discoproject.org/doc/howto/ddfs.html>`_ (DDFS). 
 Once placed in DDFS, a file is referred to by Disco as a **blob**. 
+
 DDFS is a tag-based filesystem. Instead of organizing files into directories, 
 you **tag** a collection of blobs with a **tag_name** for lookup later.
 
