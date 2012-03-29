@@ -46,12 +46,12 @@ Make sure `disco <http://discoproject.org/>`_ is running::
     diana@ubuntu:~$ disco start
     Master ubuntu:8989 started
 
-Toss the input data into DDFS::
+Place the input data in DDFS::
 
     diana@ubuntu:~$ ddfs chunk example:chunk:users ./data.txt 
     created: disco://localhost/ddfs/vol0/blob/99/data_txt-0$533-406a9-e50
 
-Verify that the data is in ddfs::
+Verify that the data is in DDFS::
 
     diana@ubuntu:~$ ddfs xcat example:chunk:users | head -2
     {"first":"Homer", "last":"Simpson"}
@@ -120,7 +120,17 @@ the next.
 
 **Reduce**
 
-    Example data transition during the **reduce** step:
+   The reduce step of an Inferno map/reduce job is responsible for summarizing 
+   the results of your map/reduce query.
+
+   Inferno's default **reduce_function** is the **keyset_reduce**. It will sum
+   the value parts yielded by the map step, grouped by the key parts.
+
+   In this example, we're only summing one value: the ``count``. You can 
+   define and sum many value parts, as you'll see :doc:`here </election>` in 
+   the next example.
+
+   Example data transition during the **reduce** step:
 
 .. image:: reduce.png
    :height: 600px
@@ -135,7 +145,7 @@ the next.
     defaults to the **keyset_result** processor which simply uses a CSV writer 
     to print the results from the reduce step to standard out.
 
-    Other common ``result_processor`` use cases include: populating a cache, 
+    Other common result processor use cases include: populating a cache, 
     persisting to a database, writing back to 
     `DDFS <http://discoproject.org/doc/howto/ddfs.html>`_ or 
     `DiscoDB <http://discoproject.org/doc/contrib/discodb/discodb.html>`_, etc.
