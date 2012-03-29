@@ -5,7 +5,7 @@ Example Rules
 -------------
 
 The Inferno project comes with a few example rules. Tell inferno where to
-put those rules so that we can test your inferno install.
+put those rules so that we can test your Inferno install.
 
 ::
 

@@ -8,7 +8,7 @@ file containing lines of json.
 Input
 -----
 
-Here's our input data::
+Here's the input data::
 
     diana@ubuntu:~$ cat data.txt 
     {"first":"Homer", "last":"Simpson"}
@@ -23,6 +23,25 @@ Here's our input data::
     {"first":"Sanjay", "last":"Nahasapeemapetilon"}
     {"first":"Lisa", "last":"Simpson"}
     {"first":"Maggie", "last":"Términos"}
+
+Inferno Rule
+------------
+
+And here's the Inferno rule (``inferno/example_rules/names.py``)::
+
+    def count(parts, params):
+        parts['count'] = 1
+        yield parts
+
+
+    InfernoRule(
+        name='last_names_json',
+        source_tags=['example:chunk:users'],
+        map_input_stream=chunk_json_keyset_stream,
+        parts_preprocess=[count],
+        key_parts=['last'],
+        value_parts=['count'],
+    )
 
 DDFS
 ----
@@ -118,7 +137,7 @@ input to the next.
 
    The map step of an Inferno map/reduce job is responsible for extracting 
    the relevant key and value parts from the incoming python dictionaries and 
-   yielding one, none, or many of them for further processing by the reduce 
+   yielding one, none, or many of them for further processing in the reduce 
    step.
 
    Inferno's default **map_function** is the **keyset_map**. You define the 
@@ -187,35 +206,10 @@ input to the next.
    :scale: 60 %
    :alt: reduce -> output
 
-Inferno Rule
-------------
-
-The Inferno map/reduce rule (``inferno/example_rules/names.py``)::
-
-    from inferno.lib.rule import chunk_json_keyset_stream
-    from inferno.lib.rule import InfernoRule
-
-
-    def count(parts, params):
-        parts['count'] = 1
-        yield parts
-
-
-    RULES = [
-        InfernoRule(
-            name='last_names_json',
-            source_tags=['example:chunk:users'],
-            map_input_stream=chunk_json_keyset_stream,
-            parts_preprocess=[count],
-            key_parts=['last'],
-            value_parts=['count'],
-        ),
-    ]
-
 Execution
 ---------
 
-Run the last name counting map/reduce job::
+Run the last name counting job::
 
     diana@ubuntu:~$ inferno -i names.last_names_json
     2012-03-09 Processing tags: ['example:chunk:users']
