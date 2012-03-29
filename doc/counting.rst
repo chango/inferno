@@ -57,8 +57,8 @@ Verify that the data is in ddfs::
     {"first":"Homer", "last":"Simpson"}
     {"first":"Manjula", "last":"Nahasapeemapetilon"}
 
-Inferno Rule
-------------
+Map Reduce
+----------
 
 For the purpose of this introductory example, think of a map/reduce job as a 
 series of four steps, where the output of each step is used as the input to 
@@ -73,6 +73,21 @@ the next.
 
 
 **Input**
+
+    The input step of an Inferno map/reduce job is responsible for parsing and 
+    readying the input data for the map step.
+
+    The default Inferno input reader is **chunk_csv_keyset_stream**, meaning 
+    that it can automatically stream lines from a CSV file that is placed in
+    DDFS using the ``ddfs chunk`` command. 
+
+    If the input is lines of JSON, you could set the **map_input_stream** to 
+    use the **chunk_json_keyset_stream** reader instead.
+
+    Either way, if you're using Inferno's built in keyset map/reduce 
+    functionality, this step mostly amounts to transforming your CSV/JSON
+    input, etc into python dictionaries for further processing in the 
+    **map** step.
 
     Example data transition during the **input** step::
 
