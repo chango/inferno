@@ -14,6 +14,7 @@ Inferno Rule
 The Inferno map/reduce rule (``inferno/example_rules/election.py``):
 
 .. literalinclude:: ../inferno/example_rules/election.py
+   :emphasize-lines: 44-49, 58, 66
 
 Input
 -----
@@ -51,7 +52,7 @@ Output
 Contributions by Candidate
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run the contributions_by_candidate_name map/reduce job::
+Run the **contributions_by_candidate_name** job::
 
     diana@ubuntu:~$ inferno -i election.presidential_2012.by_candidate
     2012-03-19 Processing tags: ['gov:chunk:presidential_campaign_finance']
@@ -87,7 +88,7 @@ The output as a table:
 Contributions by Occupation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run the contributions_by_occupation_and_candidate_name map/reduce job::
+Run the **contributions_by_occupation_and_candidate_name** job::
 
     diana@ubuntu:~$ inferno  -i election.presidential_2012.by_occupation > occupations.csv
     2012-03-19 Processing tags: ['gov:chunk:presidential_campaign_finance']

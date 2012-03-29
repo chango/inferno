@@ -5,15 +5,18 @@ from inferno.lib.rule import InfernoRule
 from inferno.lib.rule import Keyset
 
 
+# an example field_transform
+def alphanumeric(val):
+    return re.sub(r'\W+', ' ', val).strip().lower()
+
+
+# an example parts_preprocess that modifies the map input
 def count(parts, params):
     parts['count'] = 1
     yield parts
 
 
-def alphanumeric(val):
-    return re.sub(r'\W+', ' ', val).strip().lower()
-
-
+# an example parts_preprocess that filters the map input
 def candidate_filter(parts, params):
     active = [
         'P20002721',  # Santorum, Rick
@@ -26,6 +29,7 @@ def candidate_filter(parts, params):
         yield parts
 
 
+# an example parts_postprocess that filters the reduce output
 def occupation_count_filter(parts, params):
     if parts['count_occupation_candidate'] > 1000:
         yield parts

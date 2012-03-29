@@ -18,11 +18,6 @@ column_mappings
 
 	TODO
 
-table
------
-
-	TODO
-
 parts_preprocess
 ----------------
 
