@@ -11,7 +11,8 @@ In this example we'll introduce a few more key Inferno concepts:
 Inferno Rule
 ------------
 
-The Inferno map/reduce rule (``inferno/example_rules/election.py``):
+An Inferno rule to query the 2012 presidential campaign finance data. 
+(``inferno/example_rules/election.py``):
 
 .. literalinclude:: ../inferno/example_rules/election.py
    :emphasize-lines: 44-49, 58, 66
@@ -46,11 +47,8 @@ Verify that the data is in DDFS'::
     C00410118,"P20002978","Bachmann, Michelle","HARVEY, WILLIAM","MOBILE","AL","366010290","RETIRED","RETIRED",50...
     C00410118,"P20002978","Bachmann, Michelle","BLEVINS, DARONDA","PIGGOTT","AR","724548253","NONE","RETIRED",250...
 
-Output
-------
-
 Contributions by Candidate
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 Run the **contributions_by_candidate_name** job::
 
@@ -86,7 +84,7 @@ The output as a table:
 +----------------+---------+-----------------+
 
 Contributions by Occupation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 
 Run the **contributions_by_occupation_and_candidate_name** job::
 
