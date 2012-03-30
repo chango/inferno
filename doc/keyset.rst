@@ -1,23 +1,6 @@
 Inferno Keysets
 ===============
 
-	TODO
-
-key_parts
----------
-
-	TODO
-
-value_parts
------------
-
-	TODO
-
-column_mappings
----------------
-
-	TODO
-
 parts_preprocess
 ----------------
 
@@ -25,7 +8,7 @@ Part pre-processors are typically used to filter, expand, or modify the data
 before sending it to the map step. 
 
 The **parts_preprocess** functions are called before the **field_transforms** 
-functions, to ready the data for the **map_function**.
+to ready the data for the **map_function**.
 
 Note that a ``parts_preprocess`` function always takes ``parts`` and 
 ``params``, and must ``yield`` one, none, or many parts.
@@ -73,7 +56,8 @@ Example parts_preprocess:
         parts_preprocess=[
             insert_country_region,
             geo_filter,
-            slice_phrase
+            slice_phrase, 
+            count
         ],
         key_parts=['country_code', 'region', 'slice'],
         value_parts=['count'],
@@ -134,3 +118,21 @@ Example field_transforms:
         key_parts=['key1', 'key2', 'key3'],
         value_parts=['value2', 'value2', 'value3'],
     ),
+
+    
+    TODO
+
+key_parts
+---------
+
+    TODO
+
+value_parts
+-----------
+
+    TODO
+
+column_mappings
+---------------
+
+    TODO
