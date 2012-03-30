@@ -25,9 +25,9 @@ Mailing list:
 
 Developers:
 
-    * `Tim Spurway <https://twitter.com/t1m>`_
-    * `Diana Clarke <https://twitter.com/diana_clarke>`_
-    * `Mazdak Rezvani <https://twitter.com/mazdak>`_
+    * Tim Spurway (`@t1m <https://twitter.com/t1m>`_)
+    * Diana Clarke (`@diana_clarke <https://twitter.com/diana_clarke>`_)
+    * Mazdak Rezvani (`@mazdak <https://twitter.com/mazdak>`_)
 
 Source/Bug Tracker:
 
