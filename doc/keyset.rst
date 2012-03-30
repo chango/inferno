@@ -85,11 +85,11 @@ field_transforms
 Field transforms are typically used to cast data from one type to another, 
 or otherwise prepare the input for the map step. 
 
-The **field_transforms** happen before the **map_funtion** is called, but 
+The **field_transforms** happen before the **map_function** is called, but 
 after **parts_preprocess** functions.
 
 You often see ``field_transforms`` like ``trim_to_255`` when the results of a 
-map/reduce job are persisted to a database in a custom ``result_processor``.
+map/reduce are persisted to a database using a custom ``result_processor``.
 
 Example field_transforms:
 
@@ -120,7 +120,7 @@ Example field_transforms:
             return 0
 
 .. code-block:: python
-   :emphasize-lines: 4-11
+   :emphasize-lines: 4-9
 
     InfernoRule(
         name='some_rule_name',
