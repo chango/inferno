@@ -11,7 +11,7 @@ Inferno is an open-source python
 `Disco <http://discoproject.org/>`_, and focused on the following. 
 
     * Query language for large amounts of structured text (csv, json, etc)
-    * Continuous and scheduled map/reduce daemon with an HTTP interface
+    * A ontinuous and scheduled map/reduce daemon with an HTTP interface
 
 Questions?
 ==========
