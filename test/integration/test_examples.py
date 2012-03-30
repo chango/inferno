@@ -26,7 +26,7 @@ class TestExamples(object):
 {"first":"Maggie", "last":"Simpson"}
 {"first":"Sanjay", "last":"Nahasapeemapetilon"}
 {"first":"Lisa", "last":"Simpson"}
-{"first":"Maggie", "last":"Términos"}
+{"first":"Maggie", "last":"Térmińoš"}
 """
     csv_data = """
 Homer,Simpson
@@ -40,7 +40,7 @@ Janey,Powell
 Maggie,Simpson
 Sanjay,Nahasapeemapetilon
 Lisa,Simpson
-Maggie,Términos
+Maggie,Térmińoš
 """
 
     def setUp(self):
@@ -68,7 +68,7 @@ Maggie,Términos
             'Nahasapeemapetilon,3',
             'Powell,3',
             'Simpson,5',
-            'Términos,1']
+            'Térmińoš,1']
         self._assert_integration_test(settings, expected, self.json_data)
 
     def test_csv(self):
@@ -80,7 +80,7 @@ Maggie,Términos
             'Nahasapeemapetilon,3',
             'Powell,3',
             'Simpson,5',
-            'Términos,1']
+            'Térmińoš,1']
         self._assert_integration_test(settings, expected, self.csv_data)
 
     def test_many_keysets(self):
@@ -104,7 +104,7 @@ Maggie,Términos
             'Nahasapeemapetilon,3',
             'Powell,3',
             'Simpson,5',
-            'Términos,1']
+            'Térmińoš,1']
         self._assert_integration_test(settings, expected, self.json_data)
 
     def test_tag_results(self):
@@ -116,7 +116,7 @@ Maggie,Términos
             'Nahasapeemapetilon,3',
             'Powell,3',
             'Simpson,5',
-            'Términos,1']
+            'Térmińoš,1']
         self._assert_integration_test(settings, expected, self.json_data)
         tags = self.ddfs.list(self.custom_tag_prefix)
         eq_(len(tags), 1)
