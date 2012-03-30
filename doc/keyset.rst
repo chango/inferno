@@ -48,7 +48,7 @@ Example parts_preprocess:
                 yield parts_copy
 
 .. code-block:: python
-   :emphasize-lines: 4-8
+   :emphasize-lines: 4-9
 
     InfernoRule(
         name='some_rule_name',
@@ -119,20 +119,14 @@ Example field_transforms:
         value_parts=['value2', 'value2', 'value3'],
     ),
 
-    
-    TODO
+parts_postprocess
+----------------
 
 key_parts
 ---------
 
-    TODO
-
 value_parts
 -----------
 
-    TODO
-
 column_mappings
 ---------------
-
-    TODO

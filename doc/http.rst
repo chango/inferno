@@ -1,4 +1,2 @@
 Inferno HTTP Interface
 ======================
-
-	TODO

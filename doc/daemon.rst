@@ -1,4 +1,2 @@
 Inferno Daemon
 ==============
-
-	TODO
