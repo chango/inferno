@@ -10,8 +10,11 @@ Inferno is an open-source python
 `map/reduce <http://en.wikipedia.org/wiki/MapReduce>`_ library, powered by 
 `Disco <http://discoproject.org/>`_, and focused on the following. 
 
-    * Query language for large amounts of structured text (csv, json, etc)
-    * A Continuous and scheduled map/reduce daemon with an HTTP interface
+    * A **query language** for large amounts of **structured text** 
+      (csv, json, etc).
+    * A continuous and scheduled **map/reduce daemon** with an HTTP interface 
+      that automatically launches map/reduce jobs to handle a constant 
+      stream of incoming data.
 
 Questions?
 ==========
