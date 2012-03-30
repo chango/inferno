@@ -13,6 +13,22 @@ Inferno is an open-source python
     * Query language for large amounts of structured text (csv, json, etc)
     * Continuous and scheduled map/reduce daemon with an HTTP interface
 
+Questions?
+==========
+
+Mailing list: 
+
+    * https://groups.google.com/group/python-inferno
+
+Developers:
+
+    * `Tim Spurway <https://twitter.com/t1m>`_
+    * `Diana Clarke <https://twitter.com/diana_clarke>`_
+    * `Mazdak Rezvani <https://twitter.com/mazdak>`_
+
+Source/Bug Tracker:
+
+    * https://bitbucket.org/chango/inferno
 
 Table of Contents
 =================
