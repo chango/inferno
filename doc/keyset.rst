@@ -34,6 +34,12 @@ Example parts_preprocess:
 
 ::
 
+    def count(parts, params):
+        parts['count'] = 1
+        yield parts
+
+::
+
     def geo_filter(parts, params):
         if parts['country_code'] in params.geo_codes:
             yield parts
@@ -48,8 +54,8 @@ Example parts_preprocess:
 
 ::
 
-    def slice(parts, params):
-        terms = parts['search_term'].strip().lower().split(' ')
+    def slice_phrase(parts, params):
+        terms = parts['phrase'].strip().lower().split(' ')
         terms_size = len(terms)
         for index, term in enumerate(terms):
             for inner_index in xrange(index, terms_size):
@@ -59,18 +65,18 @@ Example parts_preprocess:
                 yield parts_copy
 
 .. code-block:: python
-   :emphasize-lines: 5-9
+   :emphasize-lines: 4-8
 
     InfernoRule(
         name='some_rule_name',
         source_tags=['some:ddfs:tag'],
         parts_preprocess=[
-            geo_filter,
             insert_country_region,
-            slice
+            geo_filter,
+            slice_phrase
         ],
-        key_parts=['key1', 'key2', 'key3'],
-        value_parts=['value2', 'value2', 'value3'],
+        key_parts=['country_code', 'region', 'slice'],
+        value_parts=['count'],
     ),
 
 field_transforms
@@ -114,7 +120,7 @@ Example field_transforms:
             return 0
 
 .. code-block:: python
-   :emphasize-lines: 5-10
+   :emphasize-lines: 4-11
 
     InfernoRule(
         name='some_rule_name',
