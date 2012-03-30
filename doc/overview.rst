@@ -79,8 +79,9 @@ Here's what a similar query using Inferno would look like:
 ::
 
     InfernoRule(
-        name='last_names_csv',
+        name='last_names_json',
         source_tags=['example:chunk:users'],
+        map_input_stream=chunk_json_keyset_stream,
         parts_preprocess=[count],
         key_parts=['last'],
         value_parts=['count'],
@@ -88,7 +89,7 @@ Here's what a similar query using Inferno would look like:
 
 ::
 
-    diana@ubuntu:~$ inferno -i names.last_names_csv
+    diana@ubuntu:~$ inferno -i names.last_names_json
 
     last,count
     Nahasapeemapetilon,3
