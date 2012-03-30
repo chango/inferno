@@ -21,17 +21,57 @@ column_mappings
 parts_preprocess
 ----------------
 
-Part pre-pocessors are typically used to filter, expand, or edit the input to
-the map step. 
+Part pre-processors are typically used to filter, expand, or modify the data 
+before sending it to the map step. 
 
-The ``parts_preprocess`` functions are called before the ``field_transforms`` 
-functions, to ready the data for the ``map_funtion``.
+The **parts_preprocess** functions are called before the **field_transforms** 
+functions, to ready the data for the **map_function**.
 
-Note that a ``parts_preprocess`` functions always take ``parts`` and 
+Note that a ``parts_preprocess`` function always takes ``parts`` and 
 ``params``, and must ``yield`` one, none, or many parts.
 
 Example parts_preprocess:
 
+::
+
+    def geo_filter(parts, params):
+        if parts['country_code'] in params.geo_codes:
+            yield parts
+
+::
+
+    def insert_country_region(parts, params):
+        record = params.geo_ip.record_by_addr(str(parts['ip']))
+        parts['country_code'] = record['country_code']
+        parts['region'] = record['region']
+        yield parts
+
+::
+
+    def slice(parts, params):
+        terms = parts['search_term'].strip().lower().split(' ')
+        terms_size = len(terms)
+        for index, term in enumerate(terms):
+            for inner_index in xrange(index, terms_size):
+                slice_val = ' '.join(terms[index:inner_index + 1]).strip()
+                parts_copy = parts.copy()
+                parts_copy['slice'] = slice_val
+                yield parts_copy
+
+.. code-block:: python
+   :emphasize-lines: 5-9
+
+    InfernoRule(
+        name='some_rule_name',
+        source_tags=['some:ddfs:tag'],
+        parts_preprocess=[
+            geo_filter,
+            insert_country_region,
+            slice
+        ],
+        key_parts=['key1', 'key2', 'key3'],
+        value_parts=['value2', 'value2', 'value3'],
+    ),
 
 field_transforms
 ----------------
@@ -39,8 +79,8 @@ field_transforms
 Field transforms are typically used to cast data from one type to another, 
 or otherwise prepare the input for the map step. 
 
-Field transform happen before the ``map_funtion`` is called, but after 
-``parts_preprocess``.
+The **field_transforms** happen before the **map_funtion** is called, but 
+after **parts_preprocess** functions.
 
 You often see ``field_transforms`` like ``trim_to_255`` when the results of a 
 map/reduce job are persisted to a database in a custom ``result_processor``.
@@ -77,9 +117,8 @@ Example field_transforms:
    :emphasize-lines: 5-10
 
     InfernoRule(
-        name='a_rule_with_field_transforms',
+        name='some_rule_name',
         source_tags=['some:ddfs:tag'],
-        map_input_stream=chunk_json_keyset_stream,
         field_transforms={
             'key1':trim_to_255,
             'key2':alphanumeric,
