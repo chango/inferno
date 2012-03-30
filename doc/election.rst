@@ -51,7 +51,7 @@ Verify that the data is in DDFS::
 Contributions by Candidate
 --------------------------
 
-Run the **contributions_by_candidate_name** job::
+Run the contributions by candidate job::
 
     diana@ubuntu:~$ inferno -i election.presidential_2012.by_candidate
     2012-03-19 Processing tags: ['gov:chunk:presidential_campaign_finance']
@@ -87,7 +87,7 @@ The output as a table:
 Contributions by Occupation
 ---------------------------
 
-Run the **contributions_by_occupation_and_candidate_name** job::
+Run the contributions by occupation job::
 
     diana@ubuntu:~$ inferno -i election.presidential_2012.by_occupation > occupations.csv
     2012-03-19 Processing tags: ['gov:chunk:presidential_campaign_finance']
