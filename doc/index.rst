@@ -43,10 +43,10 @@ Table of Contents
      settings
      counting
      election
+     daemon
      keyset
      rule
      command
-     daemon
      http
 
 Indices and tables
