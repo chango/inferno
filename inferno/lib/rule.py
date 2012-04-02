@@ -69,7 +69,7 @@ class InfernoRule(object):
                  # map
                  map_init_function=lambda x, y: x,
                  map_function=keyset_map,
-                 map_input_stream=chunk_csv_stream,
+                 map_input_stream=chunk_csv_keyset_stream,
                  map_output_stream=(
                      map_output_stream, disco_output_stream),
 
