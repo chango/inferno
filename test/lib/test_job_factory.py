@@ -60,7 +60,7 @@ class TestJobFactory(object):
             'max_workers': 8,
             'log_config': '/etc/inferno/log.ini',
             'parts_preprocess': [],
-            'parts_postprocess': [],}
+            'parts_postprocess': []}
         job = JobFactory.create_job(rule, settings)
 
         # check disco/ddfs

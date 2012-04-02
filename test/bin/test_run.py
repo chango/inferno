@@ -13,6 +13,7 @@ class TestOptions(object):
     def test_defaults(self):
         options = _get_options([])
         expected = {
+            'data_file': None,
             'parameters': [],
             'parameter_file': None,
             'force': False,

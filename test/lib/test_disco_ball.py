@@ -92,7 +92,8 @@ class TestRuleHandler(DiscoBallHandlerTestCase):
             'map_input_stream': [
                 'disco.worker.classic.func.task_input_stream',
                 'disco.worker.classic.func.disco_input_stream',
-                'inferno.lib.reader.csv_reader'],
+                'inferno.lib.reader.csv_reader',
+                'inferno.lib.reader.keyset_multiplier'],
             'map_function': 'inferno.lib.map.keyset_map',
             'reduce_function': 'inferno.lib.reduce.keyset_reduce',
             'parts_preprocess': [],
