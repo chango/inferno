@@ -141,6 +141,12 @@ def _get_options(argv):
         help="additional rule parameters (in a yaml file)")
 
     parser.add_argument(
+        "--data-file",
+        dest="data_file",
+        default=None,
+        help="arbitrary data file made available to job")
+
+    parser.add_argument(
         "--example_rules",
         dest="example_rules",
         help="create example rules")
@@ -163,6 +169,13 @@ def _get_options(argv):
             result.update(yaml.load(open(options.parameter_file, "r")))
         except Exception as e:
             log.error("Error opening parameter file: %s %s" % (options.parameter_file, e))
+
+    if options.data_file:
+        try:
+            data_file = open(options.data_file).readlines()
+            result['data_file'] = data_file
+        except Exception as e:
+            log.error("Could not open/process data file: %s" % options.data_file)
 
     return result
 
