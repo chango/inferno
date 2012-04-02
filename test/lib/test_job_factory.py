@@ -1,3 +1,6 @@
+import disco.core
+
+from mock import patch
 from nose.tools import eq_
 
 from inferno.lib.job_factory import JobFactory
@@ -7,7 +10,9 @@ from inferno.lib.settings import InfernoSettings
 
 class TestJobFactory(object):
 
-    def TODO_create(self):
+    @patch.object(disco.core.Disco, 'jobinfo')
+    def test_create(self, mock_jobinfo):
+        mock_jobinfo.return_value = {'results': ['url_1', 'url_2']}
         rule = InfernoRule(
             name='some_rule_name',
             source_tags=['some_tag'],
@@ -54,7 +59,8 @@ class TestJobFactory(object):
             'spawn_delay': 5,
             'max_workers': 8,
             'log_config': '/etc/inferno/log.ini',
-            'parts_preprocess': []}
+            'parts_preprocess': [],
+            'parts_postprocess': [],}
         job = JobFactory.create_job(rule, settings)
 
         # check disco/ddfs
