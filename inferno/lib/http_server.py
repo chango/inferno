@@ -101,9 +101,9 @@ class ModuleHandler(RequestHandler):
 
     def get(self, *args, **kwargs):
         module = args[0]
-        rules = self.request_app('get_rules', module)
-        if rules:
-            urls = [self.build_url(rule.name, relative=True) for rule in rules]
+        rule_names = self.request_app('get_rules', module)
+        if rule_names:
+            urls = [self.build_url(name, relative=True) for name in rule_names]
             self.write({module: urls})
         else:
             self.send_error(message='could not find rules')
@@ -112,9 +112,9 @@ class ModuleHandler(RequestHandler):
 class RuleHandler(RequestHandler):
 
     def get(self, *args, **kwargs):
-        rule = self.request_app('get_rule_summary', *args)
-        if rule:
-            self.write(rule.summary_dict())
+        summary = self.request_app('get_rule_summary', *args)
+        if summary:
+            self.write(summary)
         else:
             self.send_error(message='could not find rule')
 
