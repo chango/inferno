@@ -48,10 +48,18 @@ class DiscoBall(threading.Thread):
         return mods
 
     def get_rules(self, module_name):
-        return self.instance.rules.get(module_name)
+        rule_names = []
+        rules = self.instance.rules.get(module_name)
+        if rules:
+            rule_names = [rule.name for rule in rules]
+        return rule_names
 
     def get_rule_summary(self, module_name, rule_name):
-        return self.instance.get_rule_named(module_name, rule_name)
+        summary = {}
+        rule = self.instance.get_rule_named(module_name, rule_name)
+        if rule:
+            summary = rule.summary_dict()
+        return summary
 
     def run_job(self, module_name, rule_name, params):
         rule = self.instance.get_rule_named(module_name, rule_name)
@@ -97,6 +105,7 @@ class DiscoBall(threading.Thread):
                         except Exception as e:
                             error_msg = "Error executing service %s. %s"
                             log.error(error_msg, msg, e)
+                            parent.send(None)
 
         except Exception as e:
             error_msg = "Unable to start DiscoBall on port %s for job %s. %s"
