@@ -31,9 +31,9 @@ def unpickle_connection(pickled_connection):
     (func, args) = pickle.loads(pickled_connection)
     return func(*args)
 
-
 def run_rule_async(rule_name, automatic_cycle, settings, reply_to):
     setproctitle("inferno - %s" % rule_name)
+    signal.signal(signal.SIGHUP, signal.SIG_IGN)
     pipe = unpickle_connection(reply_to)
     response_sent = False
     pid_created = False
@@ -138,6 +138,7 @@ class InfernoDaemon(object):
     def die(self, x=None, y=None):
         print 'dying...'
         try:
+            self.disco_ball.stopped = True
             self.disco_ball.server.terminate()
         except:
             pass

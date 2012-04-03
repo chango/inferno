@@ -79,7 +79,7 @@ class DiscoBall(threading.Thread):
             while not self.stopped:
                 msg = args = None
                 try:
-                    if parent.poll(5):
+                    if parent.poll(2):
                         msg, args = parent.recv()
                 except Exception as err:
                     error_msg = "Error receiving message from Tornado: %s"
