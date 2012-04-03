@@ -215,8 +215,6 @@ def launch_server(base_path, port, pipe):
     path = os.path.join(base_path, "disco_ball", "templates")
     application = tornado.web.Application(MAPPINGS, template_path=path)
     application.pipe = inferno.lib.daemon.unpickle_connection(pipe)
-    #2.x sockets = tornado.netutil.bind_sockets(port)
     server = HTTPServer(application)
-    #2.x server.add_sockets(sockets)
     server.listen(port)
     IOLoop.instance().start()
