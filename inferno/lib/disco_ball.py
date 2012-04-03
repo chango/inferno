@@ -97,6 +97,7 @@ class DiscoBall(threading.Thread):
                         except Exception as e:
                             error_msg = "Error executing service %s. %s"
                             log.error(error_msg, msg, e)
+                            parent.send(None)
 
         except Exception as e:
             error_msg = "Unable to start DiscoBall on port %s for job %s. %s"
