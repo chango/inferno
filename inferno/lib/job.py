@@ -184,10 +184,13 @@ class InfernoJob(object):
         self._update_state(stage)
         # if we are daemon spawn, tell mommy where we are
         if self.parent and self.full_job_id:
-            msg = ujson.dumps(self.job_msg)
-            msg = urllib.urlencode([('msg', msg)])
-            url = '%s/_status/%s' % (self.parent, self.full_job_id)
-            urllib2.urlopen(url, data=msg, timeout=5)
+            try:
+                msg = ujson.dumps(self.job_msg)
+                msg = urllib.urlencode([('msg', msg)])
+                url = '%s/_status/%s' % (self.parent, self.full_job_id)
+                urllib2.urlopen(url, data=msg, timeout=5)
+            except Exception as e:
+                log.error("Error communicating with parent: %s" % e)
 
     def _enough_blobs(self, blob_count):
         if not blob_count or (blob_count < self.rule.min_blobs and
