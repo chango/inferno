@@ -115,7 +115,8 @@ class InfernoDaemon(object):
                 if rule.name == rule_name:
                     return rule
 
-    def run_rule(self, rule, automatic_cycle=False, params=None):
+    def run_rule(self, rule, automatic_cycle=False,
+                 params=None, wait_for_id=False):
         try:
             job_settings = self.settings.copy()
             if params:
@@ -125,14 +126,15 @@ class InfernoDaemon(object):
             name = rule.qualified_name
             args = (name, automatic_cycle, job_settings, reply_to)
             Process(target=run_rule_async, args=args).start()
-            msg = parent.recv()
-            if msg and 'job' in msg:
-                job = msg['job']
-                self.history[job['job_name']] = job
-                return msg['job']
-            elif 'error' in msg:
-                log.error('Error creating job: %s' % msg)
-                return None
+            if wait_for_id:
+                msg = parent.recv()
+                if msg and 'job' in msg:
+                    job = msg['job']
+                    self.history[job['job_name']] = job
+                    return msg['job']
+                elif 'error' in msg:
+                    log.error('Error creating job: %s' % msg)
+                    return None
         except Exception as e:
             log.error("Error running rule: %s" % e)
             raise e

@@ -64,7 +64,7 @@ class DiscoBall(threading.Thread):
     def run_job(self, module_name, rule_name, params):
         rule = self.instance.get_rule_named(module_name, rule_name)
         if rule:
-            return self.instance.run_rule(rule, False, params)
+            return self.instance.run_rule(rule, False, params, True)
         else:
             return None
 

@@ -87,7 +87,7 @@ class InfernoJob(object):
 
             # actual id is only assigned after starting the job
             self.full_job_id = self.job.name
-            self._update_state(JOB_RUN)
+            self._notify_parent(JOB_RUN)
             return self.job
         return None
 
