@@ -188,7 +188,7 @@ class InfernoJob(object):
                 msg = ujson.dumps(self.job_msg)
                 msg = urllib.urlencode([('msg', msg)])
                 url = '%s/_status/%s' % (self.parent, self.full_job_id)
-                urllib2.urlopen(url, data=msg, timeout=5)
+                urllib2.urlopen(url, data=msg)
             except Exception as e:
                 log.error("Error communicating with parent: %s" % e)
 
