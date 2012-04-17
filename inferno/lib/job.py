@@ -87,7 +87,7 @@ class InfernoJob(object):
 
             # actual id is only assigned after starting the job
             self.full_job_id = self.job.name
-            self._notify_parent(JOB_RUN)
+            #self._notify_parent(JOB_RUN)
             return self.job
         return None
 
@@ -188,9 +188,11 @@ class InfernoJob(object):
                 msg = ujson.dumps(self.job_msg)
                 msg = urllib.urlencode([('msg', msg)])
                 url = '%s/_status/%s' % (self.parent, self.full_job_id)
-                urllib2.urlopen(url, data=msg)
+                urllib2.urlopen(url, data=msg) #, timeout=5)
             except Exception as e:
-                log.error("Error communicating with parent: %s" % e)
+                import traceback
+                trace = traceback.format_exc(15)
+                log.error("Error communicating with parent: %s stage= %s\n%s" % (e, stage, trace))
 
     def _enough_blobs(self, blob_count):
         if not blob_count or (blob_count < self.rule.min_blobs and
