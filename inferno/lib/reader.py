@@ -24,6 +24,7 @@ def json_reader(stream, size=None, url=None, params=None):
 def csv_reader(stream, size=None, url=None, params=None):
     import csv
     import __builtin__
+
     fieldnames = getattr(params, 'csv_fields', None)
     dialect = getattr(params, 'csv_dialect', 'excel')
 
@@ -32,14 +33,14 @@ def csv_reader(stream, size=None, url=None, params=None):
     while not done:
         try:
             line = reader.next()
+            if not line:
+                continue
             if not fieldnames:
                 fieldnames = [str(x) for x in range(len(line))]
             parts = dict(__builtin__.map(None, fieldnames, line))
-
             if None in parts:
                 # remove extra data values
                 del parts[None]
-
             yield parts
         except StopIteration as e:
             done = True

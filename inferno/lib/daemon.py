@@ -31,6 +31,7 @@ def unpickle_connection(pickled_connection):
     (func, args) = pickle.loads(pickled_connection)
     return func(*args)
 
+
 def run_rule_async(rule_name, automatic_cycle, settings, reply_to):
     setproctitle("inferno - %s" % rule_name)
     signal.signal(signal.SIGHUP, signal.SIG_IGN)
@@ -115,7 +116,8 @@ class InfernoDaemon(object):
                 if rule.name == rule_name:
                     return rule
 
-    def run_rule(self, rule, automatic_cycle=False, params=None):
+    def run_rule(self, rule, automatic_cycle=False,
+                 params=None, wait_for_id=False):
         try:
             job_settings = self.settings.copy()
             if params:
@@ -125,26 +127,31 @@ class InfernoDaemon(object):
             name = rule.qualified_name
             args = (name, automatic_cycle, job_settings, reply_to)
             Process(target=run_rule_async, args=args).start()
-            msg = parent.recv()
-            if msg and 'job' in msg:
-                job = msg['job']
-                self.history[job['job_name']] = job
-                return msg['job']
-            elif 'error' in msg:
-                log.error('Error creating job: %s' % msg)
-                return None
+            if wait_for_id:
+                msg = parent.recv()
+                if msg and 'job' in msg:
+                    job = msg['job']
+                    self.history[job['job_name']] = job
+                    return msg['job']
+                elif 'error' in msg:
+                    log.error('Error creating job: %s' % msg)
+                    return None
         except Exception as e:
             log.error("Error running rule: %s" % e)
             raise e
 
     def die(self, x=None, y=None):
-        print 'dying...'
-        try:
-            self.disco_ball.stopped = True
-            self.disco_ball.server.terminate()
-        except:
-            pass
-        os._exit(0)
+        pid = os.getpid()
+        if not self.disco_ball.stopped:
+            print 'dying... %d' % pid
+            try:
+                self.disco_ball.stopped = True
+                self.disco_ball.server.terminate()
+            except:
+                pass
+            os._exit(0)
+        else:
+            print 'dead... %d' % pid
 
     def start(self):
         signal.signal(signal.SIGTERM, self.die)

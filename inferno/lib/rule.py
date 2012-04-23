@@ -83,6 +83,7 @@ class InfernoRule(object):
                  result_tag=None,
                  save=False,
                  sort=True,
+                 sorted_results=True,
 
                  # keysets
                  keysets=None,
@@ -99,6 +100,7 @@ class InfernoRule(object):
 
                  # other
                  rule_init_function=None,
+                 rule_cleanup=None,
                  parts_preprocess=None,
                  parts_postprocess=None,
                  field_transforms=None,
@@ -145,7 +147,7 @@ class InfernoRule(object):
         self.result_tag = result_tag
         self.save = save
         self.sort = sort
-        if self.sort:
+        if self.sort and sorted_results:
             self.result_iterator = sorted_iterator
         else:
             self.result_iterator = result_iterator
@@ -198,6 +200,7 @@ class InfernoRule(object):
 
         # other
         self.rule_init_function = rule_init_function
+        self.rule_cleanup = rule_cleanup
 
     def __str__(self):
         return '<InfernoRule: %s>' % self.name
@@ -222,7 +225,7 @@ class InfernoRule(object):
             map_input_stream=fname(self.map_input_stream),
             map_function=fstr(self.map_function),
             reduce_function=fstr(self.reduce_function),
-#            keysets=self.params.keysets,
-#            parts_preprocess=self.params.parts_preprocess,
-#            parts_postprocess=self.params.parts_postprocess
+            keysets=self.params.keysets,
+            parts_preprocess=self.params.parts_preprocess,
+            parts_postprocess=self.params.parts_postprocess
         )

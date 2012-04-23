@@ -17,6 +17,7 @@ from inferno.lib.result import reduce_result
 log = logging.getLogger(__name__)
 
 JOB_ARCHIVE = 'job.archive'
+JOB_CLEANUP = 'job.cleanup'
 JOB_BLOBS = 'job.blobs'
 JOB_DONE = 'job.done'
 JOB_PROCESS = 'job.process'
@@ -87,7 +88,7 @@ class InfernoJob(object):
 
             # actual id is only assigned after starting the job
             self.full_job_id = self.job.name
-            self._update_state(JOB_RUN)
+            #self._notify_parent(JOB_RUN)
             return self.job
         return None
 
@@ -120,6 +121,9 @@ class InfernoJob(object):
         else:
             if not self.settings.get('debug'):
                 self._archive_tags(self.archiver)
+            if self.rule.rule_cleanup:
+                self._notify_parent(JOB_CLEANUP)
+                self.rule.rule_cleanup(self, )
             self._notify_parent(JOB_DONE)
         log.info('Finished job %s', self.job.name)
 
@@ -184,10 +188,15 @@ class InfernoJob(object):
         self._update_state(stage)
         # if we are daemon spawn, tell mommy where we are
         if self.parent and self.full_job_id:
-            msg = ujson.dumps(self.job_msg)
-            msg = urllib.urlencode([('msg', msg)])
-            url = '%s/_status/%s' % (self.parent, self.full_job_id)
-            urllib2.urlopen(url, data=msg, timeout=5)
+            try:
+                msg = ujson.dumps(self.job_msg)
+                msg = urllib.urlencode([('msg', msg)])
+                url = '%s/_status/%s' % (self.parent, self.full_job_id)
+                urllib2.urlopen(url, data=msg) #, timeout=5)
+            except Exception as e:
+                import traceback
+                trace = traceback.format_exc(15)
+                log.error("Error communicating with parent: %s stage= %s\n%s" % (e, stage, trace))
 
     def _enough_blobs(self, blob_count):
         if not blob_count or (blob_count < self.rule.min_blobs and

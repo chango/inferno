@@ -97,7 +97,7 @@ class TestCSVReader(object):
 
     def test_csv_reader(self):
         fields = ('field_1', 'field_2', 'field_3')
-        values = 'value_1	value_2	value_3'
+        values = 'value_1\tvalue_2\tvalue_3'
         expected = [{
             'field_1': 'value_1',
             'field_2': 'value_2',
@@ -106,7 +106,7 @@ class TestCSVReader(object):
 
     def test_more_fields_than_input(self):
         fields = ('field_1', 'field_2', 'field_3')
-        values = 'value_1	value_2'
+        values = 'value_1\tvalue_2'
         expected = [{
             'field_1': 'value_1',
             'field_2': 'value_2',
@@ -115,7 +115,7 @@ class TestCSVReader(object):
 
     def test_less_fields_than_input(self):
         fields = ('field_1', 'field_2', 'field_3')
-        values = 'value_1	value_2	value_3	value_4'
+        values = 'value_1\tvalue_2\tvalue_3\tvalue_4'
         expected = [{
             'field_1': 'value_1',
             'field_2': 'value_2',
@@ -124,7 +124,7 @@ class TestCSVReader(object):
 
     def test_empty_value_in_the_middle(self):
         fields = ('field_1', 'field_2', 'field_3')
-        values = 'value_1		value_3'
+        values = 'value_1\t\tvalue_3'
         expected = [{
             'field_1': 'value_1',
             'field_2': '',
@@ -133,11 +133,26 @@ class TestCSVReader(object):
 
     def test_empty_values_on_each_side(self):
         fields = ('field_1', 'field_2', 'field_3')
-        values = '	value_2	'
+        values = '\tvalue_2\t'
         expected = [{
             'field_1': '',
             'field_2': 'value_2',
             'field_3': ''}]
+        self._assert_csv_reader(fields, values, expected)
+
+    def test_no_fields(self):
+        fields = None
+        values = 'value_1\tvalue_2\tvalue_3'
+        expected = [{
+            '0': 'value_1',
+            '1': 'value_2',
+            '2': 'value_3'}]
+        self._assert_csv_reader(fields, values, expected)
+
+    def test_empty_line(self):
+        fields = ('field_1', 'field_2', 'field_3')
+        values = '\n'
+        expected = []
         self._assert_csv_reader(fields, values, expected)
 
     def _assert_csv_reader(self, fields, values, expected):
