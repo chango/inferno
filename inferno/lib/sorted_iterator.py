@@ -2,10 +2,11 @@ from inferno.lib.peekable import peekable
 from heapq import heappush, heappop
 
 
-class AltSortedIterator(object):
+class SortedIterator(object):
+
     def enheap(self, i):
         try:
-            key, value = i.next()
+            key, value = next(i)
             heappush(self.collection, (key, value, i))
         except StopIteration:
             return
@@ -13,8 +14,11 @@ class AltSortedIterator(object):
     def __init__(self, inputs):
         self.collection = []
         for i in inputs:
-            self.enheap(i)
-        
+            self.enheap(iter(i))
+
+    def __iter__(self):
+        return self
+
     def next(self):
         if not self.collection:
             raise StopIteration
@@ -24,7 +28,7 @@ class AltSortedIterator(object):
         return key, value
 
 
-class SortedIterator(object):
+class AltSortedIterator(object):
 
     def __init__(self, inputs):
         self.collection = [peekable(input) for input in inputs]
