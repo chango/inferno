@@ -17,6 +17,7 @@ from inferno.lib.result import reduce_result
 log = logging.getLogger(__name__)
 
 JOB_ARCHIVE = 'job.archive'
+JOB_CLEANUP = 'job.cleanup'
 JOB_BLOBS = 'job.blobs'
 JOB_DONE = 'job.done'
 JOB_PROCESS = 'job.process'
@@ -120,6 +121,9 @@ class InfernoJob(object):
         else:
             if not self.settings.get('debug'):
                 self._archive_tags(self.archiver)
+            if self.rule.rule_cleanup:
+                self._notify_parent(JOB_CLEANUP)
+                self.rule.rule_cleanup(self, )
             self._notify_parent(JOB_DONE)
         log.info('Finished job %s', self.job.name)
 

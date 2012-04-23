@@ -5,6 +5,7 @@ import time
 
 from datetime import datetime
 from datetime import timedelta
+from inferno.lib.datefile import Datefile
 
 
 log = logging.getLogger(__name__)
@@ -14,7 +15,6 @@ class DaemonPid(object):
 
     def __init__(self, settings):
         self._settings = settings
-        self._format = '%Y-%m-%d %H:%M:%S'
 
     @property
     def processes(self):
@@ -31,20 +31,28 @@ class DaemonPid(object):
         return result
 
     def should_run(self, job):
-        path = self._last_run_path(job)
-        if not os.path.exists(path):
+        last_run = Datefile(self._settings['pid_dir'], "%s.last_run" % job.rule_name)
+        if last_run.is_older_than(job.rule.time_delta):
             return True
-        with open(path) as f:
-            now = datetime.utcnow()
-            delta = timedelta(**job.rule.time_delta)
-            last_run = datetime.strptime(f.read().strip(), self._format)
-            next_run = last_run + delta
-            result = next_run < now
-            if not result:
-                log.debug('Skipping job: %s (last: %s, next: %s)',
-                    job.rule_name, last_run.strftime(self._format),
-                    next_run.strftime(self._format))
-            return result
+        else:
+            log.debug('Skipping job: %s (last: %s)',
+                job.rule_name, last_run)
+
+
+#        path = self._last_run_path(job)
+#        if not os.path.exists(path):
+#            return True
+#        with open(path) as f:
+#            now = datetime.utcnow()
+#            delta = timedelta(**job.rule.time_delta)
+#            last_run = datetime.strptime(f.read().strip(), self._format)
+#            next_run = last_run + delta
+#            result = next_run < now
+#            if not result:
+#                log.debug('Skipping job: %s (last: %s, next: %s)',
+#                    job.rule_name, last_run.strftime(self._format),
+#                    next_run.strftime(self._format))
+#            return result
 
     def create_pid(self, job):
         path = self._get_pid_path(job)

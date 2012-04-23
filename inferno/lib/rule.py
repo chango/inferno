@@ -100,6 +100,7 @@ class InfernoRule(object):
 
                  # other
                  rule_init_function=None,
+                 rule_cleanup=None,
                  parts_preprocess=None,
                  parts_postprocess=None,
                  field_transforms=None,
@@ -199,6 +200,7 @@ class InfernoRule(object):
 
         # other
         self.rule_init_function = rule_init_function
+        self.rule_cleanup = rule_cleanup
 
     def __str__(self):
         return '<InfernoRule: %s>' % self.name
