@@ -1,6 +1,9 @@
 from inferno.lib.peekable import peekable
 
 
+class AltSortedIterator(object):
+    pass
+
 class SortedIterator(object):
 
     def __init__(self, inputs):

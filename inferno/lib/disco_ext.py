@@ -35,6 +35,4 @@ def sorted_iterator(urls,
         if instream:
             inputs.append(instream)
 
-    sorted_iter = SortedIterator(inputs)
-    for item in sorted_iter:
-        yield item
+    return SortedIterator(inputs)
