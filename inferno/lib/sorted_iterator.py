@@ -1,8 +1,28 @@
 from inferno.lib.peekable import peekable
+from heapq import heappush, heappop
 
 
 class AltSortedIterator(object):
-    pass
+    def enheap(self, i):
+        try:
+            key, value = i.next()
+            heappush(self.collection, (key, value, i))
+        except StopIteration:
+            return
+
+    def __init__(self, inputs):
+        self.collection = []
+        for i in inputs:
+            self.enheap(i)
+        
+    def next(self):
+        if not self.collection:
+            raise StopIteration
+
+        key, value, i = heappop(self.collection)
+        self.enheap(i)
+        return key, value
+
 
 class SortedIterator(object):
 
