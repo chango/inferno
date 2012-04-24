@@ -4,7 +4,6 @@ import os
 import time
 
 from datetime import datetime
-from datetime import timedelta
 from inferno.lib.datefile import Datefile
 
 
@@ -38,6 +37,9 @@ class DaemonPid(object):
             log.debug('Skipping job: %s (last: %s)',
                 job.rule_name, last_run)
         return False
+
+    def create_last_run(self, job):
+        Datefile(self._pid_dir, "%s.last_run" % job.rule_name, timestamp=datetime.utcnow())
 
     def create_pid(self, job):
         path = self._get_pid_path(job)
