@@ -31,6 +31,11 @@ JOB_WAIT = 'job.wait'
 JOB_ERROR = 'job.error'
 
 
+def chango_partition(key, nr_partitions, params):
+    import binascii
+    return binascii.crc32(key) % nr_partitions
+
+
 class InfernoJob(object):
 
     def __init__(self, rule, settings, parent=None):
@@ -84,7 +89,8 @@ class InfernoJob(object):
                   scheduler=self.rule.scheduler,
                   reduce_output_stream=self.rule.reduce_output_stream,
                   sort=self.rule.sort,
-                  profile=self.settings.get('profile'))
+                  profile=self.settings.get('profile'),
+                  partition=chango_partition)
 
             # actual id is only assigned after starting the job
             self.full_job_id = self.job.name
