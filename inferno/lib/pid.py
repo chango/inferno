@@ -37,6 +37,7 @@ class DaemonPid(object):
         else:
             log.debug('Skipping job: %s (last: %s)',
                 job.rule_name, last_run)
+        return False
 
     def create_pid(self, job):
         path = self._get_pid_path(job)

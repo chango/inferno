@@ -1,6 +1,7 @@
 import os
 import shutil
 import tempfile
+from datetime import datetime
 
 from disco.worker.classic.worker import Params
 
@@ -8,6 +9,7 @@ from nose.tools import assert_raises
 from nose.tools import raises
 from nose.tools import eq_
 from nose.tools import ok_
+from inferno.lib.datefile import Datefile
 
 from inferno.lib.job import InfernoJob
 from inferno.lib.pid import DaemonPid
@@ -54,16 +56,22 @@ class TestDaemonPid(object):
         eq_(int(actual[0]['pid']), os.getpid())
 
     def test_should_run(self):
-        path = self.pid._last_run_path(self.job)
         # without last run file
-        eq_(os.path.exists(path), False)
         eq_(self.pid.should_run(self.job), True)
+
+        print 'hee --> %s %s' % (self.pid._pid_dir,self.job.rule_name)
+
         # with last run file that's new
-        self.pid.create_last_run(self.job)
+        d = Datefile(self.pid._pid_dir, "%s.last_run" % self.job.rule_name,
+                 timestamp=datetime.utcnow())
+        print 'yo --> %s' % d.timestamp
+
+
         eq_(self.pid.should_run(self.job), False)
+
         # with last run file that's old
-        with open(path, 'w') as f:
-            f.write('2005-12-01 12:34:56')
+        Datefile(self.pid._pid_dir, "%s.last_run" % self.job.rule_name,
+            timestamp=Datefile.EPOCH)
         eq_(self.pid.should_run(self.job), True)
 
     def _make_temp_pid_dir(self):

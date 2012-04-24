@@ -2,16 +2,20 @@ import os
 from datetime import datetime
 from datetime import timedelta
 
-class Datefile(object):
 
+class Datefile(object):
+    EPOCH = datetime(1970, 1, 1)
     def __init__(self, pid_dir, file_name, format='%Y-%m-%d %H:%M:%S', timestamp=None):
         if not os.path.exists(pid_dir):
             os.mkdir(pid_dir)
         self.format = format
         self.path = os.path.join(pid_dir, file_name)
-        if os.path.exists(self.path):
+        if os.path.exists(self.path) and timestamp is None:
             with open(self.path) as f:
                 self.timestamp = datetime.strptime(f.read().strip(), format)
+        elif timestamp is None:
+            # ensure newly created Datefiles are 'old' by default
+            self.touch(self.EPOCH)
         else:
             self.touch(timestamp)
 
@@ -26,7 +30,7 @@ class Datefile(object):
         return self.timestamp + delta
 
     def touch(self, new_timestamp=None):
-        if not new_timestamp:
+        if new_timestamp is None:
             new_timestamp = datetime.utcnow()
         with open(self.path, 'w') as f:
             f.write(new_timestamp.strftime(self.format))
