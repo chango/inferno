@@ -26,6 +26,9 @@ chunk_json_keyset_stream = chain_stream + (json_reader, keyset_multiplier)
 chunk_csv_stream = chain_stream + (csv_reader,)
 chunk_csv_keyset_stream = chain_stream + (csv_reader, keyset_multiplier)
 
+def crc_partition(key, nr_partitions, params):
+    import binascii
+    return binascii.crc32(key) % nr_partitions
 
 class Keyset(object):
 
@@ -59,6 +62,7 @@ class InfernoRule(object):
                  min_blobs=1,
                  max_blobs=sys.maxint,
                  partitions=200,
+                 partition_function=crc_partition,
                  scheduler=None,
                  time_delta=None,
 
@@ -123,6 +127,7 @@ class InfernoRule(object):
         self.min_blobs = min_blobs
         self.max_blobs = max_blobs
         self.partitions = partitions
+        self.partition_function = partition_function
         self.scheduler = scheduler
         self.time_delta = time_delta
         if self.time_delta is None:
