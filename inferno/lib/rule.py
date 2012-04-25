@@ -83,6 +83,9 @@ class InfernoRule(object):
                      reduce_output_stream, disco_output_stream),
 
                  # result
+                 # result_iterator_override -->
+                 #   see inferno.lib.disco_ext.sorted_iterator for signature
+                 result_iterator_override=None,
                  result_processor=keyset_result,
                  result_tag=None,
                  save=False,
@@ -152,7 +155,9 @@ class InfernoRule(object):
         self.result_tag = result_tag
         self.save = save
         self.sort = sort
-        if self.sort and sorted_results:
+        if result_iterator_override:
+            self.result_iterator = result_iterator_override
+        elif self.sort and sorted_results:
             self.result_iterator = sorted_iterator
         else:
             self.result_iterator = result_iterator
