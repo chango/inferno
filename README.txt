@@ -26,3 +26,6 @@ point to that disco master.
 
     diana@ubuntu:~$ cat ~/.inferno
     server: disco://localhost
+
+
+hi
