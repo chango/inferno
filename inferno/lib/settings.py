@@ -21,6 +21,7 @@ defaults = {
     'server': 'localhost',
     'rules_directory': '/apps/project/project/rules',
     'extra_python_paths': [],
+    'worker': 'disco.worker.classic.worker.Worker',
 }
 
 
