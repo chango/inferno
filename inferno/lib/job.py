@@ -41,7 +41,21 @@ class InfernoJob(object):
         rule_params = dict(rule.params.__dict__)
         rule_params.update(settings)
         self.params = Params(**rule_params)
-        self.job = Job(name=rule.name, master=self.disco.master)
+
+        try:
+            # attempt to allow for overriden worker class from settings file
+            worker_mod, dot, worker_class = settings.get('worker').rpartition('.')
+            print 'worker_mod, dot, worker_class: %s, %s, %s' % (worker_mod, dot, worker_class)
+            mod = __import__(worker_mod, globals(), locals(), [worker_class])
+            worker = eval("mod.%s()" % worker_class, globals(), locals())
+            self.job = Job(name=rule.name,
+                master=self.disco.master,
+                worker=worker)
+        except Exception as e:
+            log.warn("Error instantiating worker: %s %s - loading default worker"
+                        % (settings.get('worker'), e))
+            self.job = Job(name=rule.name,
+                master=self.disco.master)
         self.full_job_id = None
         self.parent = parent
         self.jobinfo = None
