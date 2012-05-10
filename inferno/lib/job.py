@@ -45,9 +45,10 @@ class InfernoJob(object):
         try:
             # attempt to allow for overriden worker class from settings file
             worker_mod, dot, worker_class = settings.get('worker').rpartition('.')
-            print 'worker_mod, dot, worker_class: %s, %s, %s' % (worker_mod, dot, worker_class)
-            mod = __import__(worker_mod, globals(), locals(), [worker_class])
-            worker = eval("mod.%s()" % worker_class, globals(), locals())
+            #print 'worker_mod, dot, worker_class: %s, %s, %s' % (worker_mod, dot, worker_class)
+            mod = __import__(worker_mod, {}, {}, worker_mod)
+            worker = getattr(mod, worker_class)()
+            # eval("mod.%s()" % worker_class, globals(), locals())
             self.job = Job(name=rule.name,
                 master=self.disco.master,
                 worker=worker)
