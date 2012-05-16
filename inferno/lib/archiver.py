@@ -49,27 +49,33 @@ class Archiver(object):
         blob_count = 0
         source_tags, archived_blobs = self._source_and_archived_sets(tags)
         for tag in source_tags:
-            blobs = [tuple(sorted(b)) for b in self.ddfs.blobs(tag)]
-            blobs = set(blobs) - archived_blobs
-            if blobs:
-                tag_map[tag] = list(blobs)[:(self.max_blobs - blob_count)]
-                blob_count += len(blobs)
-                if blob_count >= self.max_blobs:
-                    break
+            blobs = self._labelled_blobs(tag)
+            fresh_blobs = set(blobs.keys()) - set(archived_blobs.keys())
+            if not fresh_blobs:
+                continue
+
+            fresh_blobs = [blobs[x] for x in fresh_blobs]
+            tag_map[tag] = fresh_blobs[:(self.max_blobs - blob_count)]
+            blob_count += len(fresh_blobs)
+            if blob_count >= self.max_blobs:
+                break
         return tag_map
 
     def _source_and_archived_sets(self, tags):
         source_tags = set()
-        archived_blobs = set()
+        archived_blobs = dict()
         for prefix in tags:
             for tag in self.ddfs.list(prefix):
                 source_tags.add(tag)
                 if (self.archive_mode and
                     not tag.startswith(self.archive_prefix)):
-                    blobs = self.ddfs.blobs(self._get_archive_name(tag))
-                    archived_blobs.update([tuple(sorted(b)) for b in blobs])
+                    archived_blobs.update(self._labelled_blobs(self.get_archive_name(tag)))
         source_tags = sorted(source_tags, reverse=True)
         return source_tags, archived_blobs
+
+    def _labelled_blobs(self, tag):
+        blobs = self.ddfs.blobs(tag)
+        return dict(map(lambda x: (x[0].rsplit('/', 1)[1]), x), blobs)
 
     def _get_archive_name(self, tag):
         tag_parts = tag.split(':')
