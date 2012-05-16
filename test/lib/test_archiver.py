@@ -65,8 +65,8 @@ class TestArchiver(object):
 
         # incoming and archived tags point to the same blobs
         expected_blobs = [
-            ('b13.1', 'b13.2', 'b13.3'),
-            ('b13.1.a', 'b13.2.a', 'b13.3.a')]
+            ('/b13.1', '/b13.2', '/b13.3'),
+            ('/b13.1.a', '/b13.2.a', '/b13.3.a')]
         incoming_blobs = self.archiver.ddfs.blobs(incoming_tag)
         archived_blobs = self.archiver.ddfs.blobs(archived_tag)
         eq_(incoming_blobs, expected_blobs)
@@ -78,7 +78,7 @@ class TestBuildTagMap(object):
     def _setup(self, archive_mode=True, max_blobs=100, archive_some=False):
         ddfs = DDFS()
         if archive_some:
-            blobs = ('b13.1', 'b13.2', 'b13.3')
+            blobs = ('/b13.1', '/b13.2', '/b13.3')
             ddfs.ddfs['processed:data:chunk:2011-11-13'] = [blobs]
         self.archiver = Archiver(
             ddfs=ddfs,
@@ -106,26 +106,26 @@ class TestBuildTagMap(object):
     def test_max_blobs_some_of_one_tag(self):
         expected = {
             'incoming:data:chunk:2011-11-14': [
-                ('b14.1', 'b14.2', 'b14.3'),
-                ('b14.1.a', 'b14.2.a', 'b14.3.a')]}
+                ('/b14.1', '/b14.2', '/b14.3'),
+                ('/b14.1.a', '/b14.2.a', '/b14.3.a')]}
         self._assert_max_blobs(expected, max_blobs=2)
 
     def test_max_blobs_exactly_one_tag(self):
         expected = {
             'incoming:data:chunk:2011-11-14': [
-                ('b14.1', 'b14.2', 'b14.3'),
-                ('b14.1.a', 'b14.2.a', 'b14.3.a'),
-                ('b14.1.b', 'b14.2.b', 'b14.3.b')]}
+                ('/b14.1', '/b14.2', '/b14.3'),
+                ('/b14.1.a', '/b14.2.a', '/b14.3.a'),
+                ('/b14.1.b', '/b14.2.b', '/b14.3.b')]}
         self._assert_max_blobs(expected, max_blobs=3)
 
     def test_max_blobs_more_than_one_tag(self):
         expected = {
             'incoming:data:chunk:2011-11-13': [
-                ('b13.1.a', 'b13.2.a', 'b13.3.a')],
+                ('/b13.1.a', '/b13.2.a', '/b13.3.a')],
             'incoming:data:chunk:2011-11-14': [
-                ('b14.1', 'b14.2', 'b14.3'),
-                ('b14.1.a', 'b14.2.a', 'b14.3.a'),
-                ('b14.1.b', 'b14.2.b', 'b14.3.b')]}
+                ('/b14.1', '/b14.2', '/b14.3'),
+                ('/b14.1.a', '/b14.2.a', '/b14.3.a'),
+                ('/b14.1.b', '/b14.2.b', '/b14.3.b')]}
         self._assert_max_blobs(expected, max_blobs=4)
 
     def _assert_max_blobs(self, expected, max_blobs):
@@ -136,31 +136,31 @@ class TestBuildTagMap(object):
     def _assert_full_tag_map(self):
         expected = {
             'incoming:data:chunk:2011-11-11': [
-                ('b11.1', 'b11.2', 'b11.3')],
+                ('/b11.1', '/b11.2', '/b11.3')],
             'incoming:data:chunk:2011-11-12': [
-                ('b12.1', 'b12.2', 'b12.3')],
+                ('/b12.1', '/b12.2', '/b12.3')],
             'incoming:data:chunk:2011-11-13': [
-                ('b13.1', 'b13.2', 'b13.3'),
-                ('b13.1.a', 'b13.2.a', 'b13.3.a')],
+                ('/b13.1', '/b13.2', '/b13.3'),
+                ('/b13.1.a', '/b13.2.a', '/b13.3.a')],
             'incoming:data:chunk:2011-11-14': [
-                ('b14.1', 'b14.2', 'b14.3'),
-                ('b14.1.a', 'b14.2.a', 'b14.3.a'),
-                ('b14.1.b', 'b14.2.b', 'b14.3.b')]}
+                ('/b14.1', '/b14.2', '/b14.3'),
+                ('/b14.1.a', '/b14.2.a', '/b14.3.a'),
+                ('/b14.1.b', '/b14.2.b', '/b14.3.b')]}
         self._compare_blobs(self.archiver.tag_map, expected)
         eq_(self.archiver.blob_count, 7)
 
     def _assert_tag_map_minus_processed(self):
         expected = {
             'incoming:data:chunk:2011-11-11': [
-                ('b11.1', 'b11.2', 'b11.3')],
+                ('/b11.1', '/b11.2', '/b11.3')],
             'incoming:data:chunk:2011-11-12': [
-                ('b12.1', 'b12.2', 'b12.3')],
+                ('/b12.1', '/b12.2', '/b12.3')],
             'incoming:data:chunk:2011-11-13': [
-                ('b13.1.a', 'b13.2.a', 'b13.3.a')],
+                ('/b13.1.a', '/b13.2.a', '/b13.3.a')],
             'incoming:data:chunk:2011-11-14': [
-                ('b14.1', 'b14.2', 'b14.3'),
-                ('b14.1.a', 'b14.2.a', 'b14.3.a'),
-                ('b14.1.b', 'b14.2.b', 'b14.3.b')]}
+                ('/b14.1', '/b14.2', '/b14.3'),
+                ('/b14.1.a', '/b14.2.a', '/b14.3.a'),
+                ('/b14.1.b', '/b14.2.b', '/b14.3.b')]}
         self._compare_blobs(self.archiver.tag_map, expected)
         eq_(self.archiver.blob_count, 6)
 
