@@ -69,13 +69,13 @@ class Archiver(object):
                 source_tags.add(tag)
                 if (self.archive_mode and
                     not tag.startswith(self.archive_prefix)):
-                    archived_blobs.update(self._labelled_blobs(self.get_archive_name(tag)))
+                    archived_blobs.update(self._labelled_blobs(self._get_archive_name(tag)))
         source_tags = sorted(source_tags, reverse=True)
         return source_tags, archived_blobs
 
     def _labelled_blobs(self, tag):
         blobs = self.ddfs.blobs(tag)
-        return dict(map(lambda x: (x[0].rsplit('/', 1)[1]), x), blobs)
+        return dict(map(lambda x: (x[0].rsplit('/', 1)[1], x), blobs))
 
     def _get_archive_name(self, tag):
         tag_parts = tag.split(':')
