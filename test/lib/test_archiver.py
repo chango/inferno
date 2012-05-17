@@ -80,7 +80,7 @@ class TestArchiver(object):
 
         self.archiver.archive()
 
-        eq_(len(self.archiver.ddfs.blobs(processed_tag)) == 1)
+        eq_(len(self.archiver.ddfs.blobs(processed_tag)), 1)
 
 class TestBuildTagMap(object):
 
