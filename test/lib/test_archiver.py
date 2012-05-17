@@ -72,6 +72,15 @@ class TestArchiver(object):
         eq_(incoming_blobs, expected_blobs)
         eq_(archived_blobs, expected_blobs)
 
+    def test_replica_agnostic_archive(self):
+        incoming_tag = "incoming:froody:chunk:2012-05-17"
+        processed_tag = "processed:froody:chunk:2012-05-17"
+
+        self._setup(tags=[incoming_tag])
+
+        self.archiver.archive()
+
+        eq_(len(self.archiver.ddfs.blobs(processed_tag)) == 1)
 
 class TestBuildTagMap(object):
 
