@@ -2,7 +2,7 @@ import logging
 import os
 import threading
 
-from multiprocessing import Pipe
+from multiprocessing import Queue
 from multiprocessing import Process
 
 import inferno.lib.daemon
@@ -77,35 +77,38 @@ class DiscoBall(threading.Thread):
     def run(self, *args, **kwargs):
         try:
             log.info('starting the disco ball....')
-            parent, kid = Pipe()
-            pipe = inferno.lib.daemon.pickle_connection(kid)
+            from_parent, from_child = Queue(), Queue()
             self.server = Process(target=launch_server,
-                    args=(self.base_path, self.port, pipe))
+                    args=(self.base_path, self.port, from_parent, from_child))
             self.server.daemon = True
             self.server.start()
 
             while not self.stopped:
                 msg = args = None
                 try:
-                    if parent.poll(2):
-                        msg, args = parent.recv()
+                    msg, args = from_child.get(True, 2)
+                except Queue.Empty:
+                    continue
                 except Exception as err:
                     error_msg = "Error receiving message from Tornado: %s"
                     log.error(error_msg, err)
-                if msg:
+
+                if not msg:
+                    continue
+
+                try:
+                    result = getattr(self, msg)(*args)
+                except Exception as er:
+                    error_msg = "Error executing RPC for message: %s. %s"
+                    log.error(error_msg, msg, er)
+                    from_parent.put(None)
+                else:
                     try:
-                        result = getattr(self, msg)(*args)
-                    except Exception as er:
-                        error_msg = "Error executing RPC for message: %s. %s"
-                        log.error(error_msg, msg, er)
-                        parent.send(None)
-                    else:
-                        try:
-                            parent.send(result)
-                        except Exception as e:
-                            error_msg = "Error executing service %s. %s"
-                            log.error(error_msg, msg, e)
-                            parent.send(None)
+                        from_parent.put(result)
+                    except Exception as e:
+                        error_msg = "Error executing service %s. %s"
+                        log.error(error_msg, msg, e)
+                        from_parent.put(None)
 
         except Exception as e:
             error_msg = "Unable to start DiscoBall on port %s for job %s. %s"

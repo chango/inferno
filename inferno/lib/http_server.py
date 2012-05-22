@@ -48,13 +48,12 @@ class RequestHandler(tornado.web.RequestHandler):
             return func(*args)
         try:
             reply = None
-            pipe = self.application.pipe
             try:
-                pipe.send((msg, args))
+                self.application.from_child.put((msg, args))
             except Exception as e:
                 self.send_error("Comm. error: %s" % e)
             else:
-                reply = pipe.recv()
+                reply = self.application.from_parent.get()
             return reply
         except Exception as e:
             self.send_error('Error receiving message: %s' % e)
@@ -210,11 +209,12 @@ MAPPINGS = [
 ]
 
 
-def launch_server(base_path, port, pipe):
+def launch_server(base_path, port, from_parent, from_child):
     setproctitle("inferno - disco_ball")
     path = os.path.join(base_path, "disco_ball", "templates")
     application = tornado.web.Application(MAPPINGS, template_path=path)
-    application.pipe = inferno.lib.daemon.unpickle_connection(pipe)
+    application.from_parent = from_parent
+    application.from_child = from_child
     server = HTTPServer(application)
     server.listen(port)
     IOLoop.instance().start()
