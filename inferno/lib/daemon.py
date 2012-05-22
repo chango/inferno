@@ -1,11 +1,13 @@
 import logging
 import os
+import pickle
 import signal
 import sys
 import time
 
 from multiprocessing import Queue
 from multiprocessing.process import Process
+from multiprocessing.reduction import reduce_connection
 from threading import RLock
 
 from setproctitle import setproctitle
@@ -19,6 +21,15 @@ from inferno.lib.pid import DaemonPid
 
 
 log = logging.getLogger(__name__)
+
+
+def pickle_connection(connection):
+    return pickle.dumps(reduce_connection(connection))
+
+
+def unpickle_connection(pickled_connection):
+    (func, args) = pickle.loads(pickled_connection)
+    return func(*args)
 
 
 def run_rule_async(rule_name, automatic_cycle, settings, queue):
