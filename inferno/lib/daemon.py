@@ -1,13 +1,11 @@
 import logging
 import os
-import pickle
 import signal
 import sys
 import time
 
-from multiprocessing import Pipe
+from multiprocessing import Queue
 from multiprocessing.process import Process
-from multiprocessing.reduction import reduce_connection
 from threading import RLock
 
 from setproctitle import setproctitle
@@ -23,21 +21,12 @@ from inferno.lib.pid import DaemonPid
 log = logging.getLogger(__name__)
 
 
-def pickle_connection(connection):
-    return pickle.dumps(reduce_connection(connection))
-
-
-def unpickle_connection(pickled_connection):
-    (func, args) = pickle.loads(pickled_connection)
-    return func(*args)
-
-
-def run_rule_async(rule_name, automatic_cycle, settings, reply_to):
+def run_rule_async(rule_name, automatic_cycle, settings, queue):
     setproctitle("inferno - %s" % rule_name)
     signal.signal(signal.SIGHUP, signal.SIG_IGN)
     signal.signal(signal.SIGINT, signal.SIG_IGN)
     signal.signal(signal.SIGTERM, signal.SIG_IGN)
-    pipe = unpickle_connection(reply_to)
+
     response_sent = False
     pid_created = False
     parent = 'http://127.0.0.1:%d' % settings.get('inferno_http_port', 6970)
@@ -58,21 +47,18 @@ def run_rule_async(rule_name, automatic_cycle, settings, reply_to):
 
         if not automatic_cycle or pid_created:
             if job.start():
-                pipe.send({'job': job.job_msg})
-                pipe.close()
+                queue.put({'job': job.job_msg})
                 response_sent = True
                 job.wait()
             else:
-                pipe.send({'info': "not enough blobs"})
-                pipe.close()
+                queue.put({'info': "not enough blobs"})
                 response_sent = True
         else:
-            pipe.send({'warn': "no pid"})
-            pipe.close()
+            queue.put({'warn': "no pid"})
             response_sent = True
     except Exception as e:
         if not response_sent:
-            pipe.send({'error': e.message})
+            queue.put({'error': e.message})
         log.error('Error running job %s: %s',
                   job.rule_name, e, exc_info=sys.exc_info())
     finally:
@@ -122,13 +108,12 @@ class InfernoDaemon(object):
             job_settings = self.settings.copy()
             if params:
                 job_settings.update(params)
-            parent, kid = Pipe()
-            reply_to = pickle_connection(kid)
             name = rule.qualified_name
-            args = (name, automatic_cycle, job_settings, reply_to)
+            queue = Queue()
+            args = (name, automatic_cycle, job_settings, queue)
             Process(target=run_rule_async, args=args).start()
             if wait_for_id:
-                msg = parent.recv()
+                msg = queue.get(True)
                 if msg and 'job' in msg:
                     job = msg['job']
                     self.history[job['job_name']] = job

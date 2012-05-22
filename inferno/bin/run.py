@@ -254,3 +254,6 @@ def main(argv=sys.argv):
         from inferno.lib.daemon import InfernoDaemon
         setproctitle('inferno - master')
         InfernoDaemon(settings).start()
+
+if __name__ == '__main__':
+    main()

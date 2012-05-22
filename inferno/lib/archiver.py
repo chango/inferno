@@ -75,7 +75,7 @@ class Archiver(object):
 
     def _labelled_blobs(self, tag):
         blobs = self.ddfs.blobs(tag)
-        return dict(map(lambda x: (x[0].rsplit('/', 1)[1], x), blobs))
+        return dict(map(lambda blob: (blob[0].rsplit('/', 1)[1], blob), blobs))
 
     def _get_archive_name(self, tag):
         tag_parts = tag.split(':')
