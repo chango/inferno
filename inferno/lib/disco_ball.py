@@ -2,6 +2,7 @@ import logging
 import os
 import threading
 
+from Queue import Empty
 from multiprocessing import Queue
 from multiprocessing import Process
 
@@ -87,7 +88,7 @@ class DiscoBall(threading.Thread):
                 msg = args = None
                 try:
                     msg, args = from_child.get(True, 2)
-                except Queue.Empty:
+                except Empty:
                     continue
                 except Exception as err:
                     error_msg = "Error receiving message from Tornado: %s"
