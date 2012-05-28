@@ -116,6 +116,7 @@ class InfernoDaemon(object):
     def run_rule(self, rule, automatic_cycle=False,
                  params=None, wait_for_id=False):
         try:
+            print 'trying job %s' % rule.name
             job_settings = self.settings.copy()
             if params:
                 job_settings.update(params)
@@ -158,6 +159,7 @@ class InfernoDaemon(object):
         port = self.settings.get('inferno_http_port', 6970)
         self.disco_ball = DiscoBall(instance=self, port=port)
         self.disco_ball.spin()
+        print 'finished spinning ball'
 
         # keep cycling through the automatic rules
         while not self.stopped:

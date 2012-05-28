@@ -211,6 +211,7 @@ MAPPINGS = [
 
 def launch_server(base_path, port, from_parent, from_child):
     setproctitle("inferno - disco_ball")
+    print 'in launch server'
     path = os.path.join(base_path, "disco_ball", "templates")
     application = tornado.web.Application(MAPPINGS, template_path=path)
     application.from_parent = from_parent

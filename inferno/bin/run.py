@@ -245,6 +245,7 @@ def main(argv=sys.argv):
     for path in settings.get('extra_python_paths'):
         sys.path.insert(0, path)
 
+    print 'Settings: %s' % settings
     if options['immediate_rule']:
         # run inferno in 'immediate' mode
         setproctitle('inferno - immediate.%s' % options['immediate_rule'])

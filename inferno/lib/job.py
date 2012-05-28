@@ -4,6 +4,7 @@ import time
 import ujson
 import urllib2
 import urllib
+import datetime
 
 from disco.core import Params
 from disco.job import Job
@@ -45,10 +46,8 @@ class InfernoJob(object):
         try:
             # attempt to allow for overriden worker class from settings file
             worker_mod, dot, worker_class = settings.get('worker').rpartition('.')
-            #print 'worker_mod, dot, worker_class: %s, %s, %s' % (worker_mod, dot, worker_class)
             mod = __import__(worker_mod, {}, {}, worker_mod)
             worker = getattr(mod, worker_class)()
-            # eval("mod.%s()" % worker_class, globals(), locals())
             self.job = Job(name=rule.name,
                 master=self.disco.master,
                 worker=worker)
@@ -169,7 +168,10 @@ class InfernoJob(object):
         if self.job_options.result_tag:
             self._notify_parent(JOB_TAG)
             result_name = 'disco:job:results:%s' % job_name
-            tag_name = '%s:%s' % (self.job_options.result_tag, job_name)
+            if self.job_options.result_tag.contains('%d'):
+                tag_name = '%s:%s:%s' % (self.job_options.result_tag, datetime.datetime.today().date(), job_name)
+            else:
+                tag_name = '%s:%s' % (self.job_options.result_tag, job_name)
             log.info('Tagging result: %s', tag_name)
             try:
                 self.ddfs.tag(tag_name, list(self.ddfs.blobs(result_name)))
