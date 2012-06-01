@@ -55,6 +55,16 @@ def _get_options(argv):
         help="directory to search for Inferno rules")
 
     parser.add_argument(
+        "-q",
+        "--just-query",
+        dest="just_query",
+        default=False,
+        action="store_true",
+        help="print out the blobs of the source query and \
+        generated SQL, but don't execute the rule (only useful \
+        for debugging rules in immediate mode)")
+
+    parser.add_argument(
         "-f",
         "--force",
         dest="force",

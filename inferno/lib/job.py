@@ -5,6 +5,7 @@ import ujson
 import urllib2
 import urllib
 import datetime
+import pprint
 
 from disco.core import Params
 from disco.job import Job
@@ -82,6 +83,9 @@ class InfernoJob(object):
     def start(self):
         self.start_time = time.time()
         self.archiver = self._determine_job_blobs()
+        if self.settings.get('just_query'):
+            self.query()
+            return None
         if self._enough_blobs(self.archiver.blob_count):
             if self.rule.rule_init_function:
                 self.rule.rule_init_function(self.params)
@@ -106,6 +110,12 @@ class InfernoJob(object):
             #self._notify_parent(JOB_RUN)
             return self.job
         return None
+
+    def query(self):
+        log.info ("Query information:")
+        pprint.pprint({'source query': self.archiver.tags,
+                       'tag results': self.archiver.tag_map,
+                       'total_blobs': self.archiver.blob_count})
 
     def _safe_str(self, value):
         try:
