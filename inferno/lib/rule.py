@@ -120,7 +120,7 @@ class InfernoRule(object):
             self.params = Params()
 
         if not scheduler:
-            scheduler = {'force_local': True, 'max_cores': 200}
+            scheduler = {'force_local': False, 'max_cores': 200}
 
         # name, on/off
         self.run = run
