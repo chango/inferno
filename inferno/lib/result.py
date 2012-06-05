@@ -56,7 +56,7 @@ def reduce_result(iter, **kwargs):
     writer = csv.writer(output_stream)
     count = 0
     for keys, values in iter:
-        data = keys[1:] + values
+        data = keys + values
         row = [unicode(x).encode('utf-8') for x in data]
         writer.writerow(row)
         count += 1
