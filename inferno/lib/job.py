@@ -93,7 +93,6 @@ class InfernoJob(object):
 
 
         self.start_time = time.time()
-        self.archiver = self._determine_job_blobs()
         if self.settings.get('just_query'):
             self.query()
             return None
