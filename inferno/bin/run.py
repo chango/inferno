@@ -153,6 +153,14 @@ def _get_options(argv):
         help="additional rule parameters (in a yaml file)")
 
     parser.add_argument(
+        "-M",
+        "--map-results",
+        dest="map_results",
+        default=None,
+        help="skip map phase - use the supplied job id to get map results to send to reduce for this rule")
+
+
+    parser.add_argument(
         "--data-file",
         dest="data_file",
         default=None,

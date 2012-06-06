@@ -81,6 +81,17 @@ class InfernoJob(object):
         )
 
     def start(self):
+        # process the map-results option (ie. skip map phase and grab map results from job id/ddfs
+        map_job_id = self.settings.get('map_results')
+        self.archiver = self._determine_job_blobs()
+        job_blobs = self.archiver.job_blobs
+        map_function = self.rule.map_function
+        if map_job_id:
+            map_function = None
+            self.settings['debug'] = True # we can't reliably archive, so let's debug
+            map_results = self.disco.mapresults(map_job_id)
+
+
         self.start_time = time.time()
         self.archiver = self._determine_job_blobs()
         if self.settings.get('just_query'):
@@ -90,8 +101,8 @@ class InfernoJob(object):
             if self.rule.rule_init_function:
                 self.rule.rule_init_function(self.params)
             self.job.run(name=self.rule.name,
-                  input=self.archiver.job_blobs,
-                  map=self.rule.map_function,
+                  input=job_blobs,
+                  map=map_function,
                   reduce=self.rule.reduce_function,
                   params=self.params,
                   partitions=self.rule.partitions,
@@ -107,7 +118,6 @@ class InfernoJob(object):
 
             # actual id is only assigned after starting the job
             self.full_job_id = self.job.name
-            #self._notify_parent(JOB_RUN)
             return self.job
         return None
 
@@ -178,10 +188,7 @@ class InfernoJob(object):
         if self.job_options.result_tag:
             self._notify_parent(JOB_TAG)
             result_name = 'disco:job:results:%s' % job_name
-            if self.job_options.result_tag.contains('%d'):
-                tag_name = '%s:%s:%s' % (self.job_options.result_tag, datetime.datetime.today().date(), job_name)
-            else:
-                tag_name = '%s:%s' % (self.job_options.result_tag, job_name)
+            tag_name = '%s:%s' % (self.job_options.result_tag, job_name)
             log.info('Tagging result: %s', tag_name)
             try:
                 self.ddfs.tag(tag_name, list(self.ddfs.blobs(result_name)))
