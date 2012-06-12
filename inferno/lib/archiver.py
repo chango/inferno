@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 class Archiver(object):
 
-    def __init__(self, ddfs, archive_prefix, archive_mode, max_blobs, tags):
+    def __init__(self, ddfs, tags, archive_prefix='processed', archive_mode=False, max_blobs=sys.maxint):
         self.tags = tags
         self.ddfs = ddfs
         self.max_blobs = max_blobs
