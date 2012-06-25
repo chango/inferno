@@ -231,7 +231,7 @@ def _setup_logging(settings):
             _log_stdout(log)
 
     log.info('Starting inferno-%s', __version__)
-    log.debug('Settings: \n%r', settings)
+    log.info('Settings: \n%r', settings)
 
 
 def main(argv=sys.argv):
@@ -263,7 +263,6 @@ def main(argv=sys.argv):
     for path in settings.get('extra_python_paths'):
         sys.path.insert(0, path)
 
-    print 'Settings: %s' % settings
     if options['immediate_rule']:
         # run inferno in 'immediate' mode
         setproctitle('inferno - immediate.%s' % options['immediate_rule'])
