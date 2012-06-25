@@ -22,7 +22,7 @@ put those rules so that we can test your Inferno install.
 Settings File
 -------------
 
-On a development machine, the recommended place to put Inferno settings is:
+On a development machine, the recommended place to put Inferno settings is: 
 **~/.inferno**
 
 1. Create a file called ``.inferno`` in your home directory.
@@ -36,3 +36,5 @@ When you're done, it should look something like the following.
     diana@ubuntu:~$ cat /home/diana/.inferno
     server: localhost
     rules_directory: /home/diana/example_rules
+
+Note: The other place inferno looks for these settings is inside **/etc/inferno/settings.yaml**

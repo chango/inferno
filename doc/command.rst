@@ -5,13 +5,14 @@ Inferno Command Line Interface
 
     diana@ubuntu:~$ inferno --help
     usage: inferno [-h] [-v] [-s SERVER] [-e SETTINGS_FILE] [-i IMMEDIATE_RULE]
-                   [-y RULES_DIRECTORY] [-f] [-x] [-D] [-d] [-p] [-t SOURCE_TAGS]
-                   [-r RESULT_TAG] [-S DAY_START] [-R DAY_RANGE] [-O DAY_OFFSET]
-                   [-P PARAMETERS] [-l PARAMETER_FILE]
-                   [--example_rules EXAMPLE_RULES]
-    
+               [-y RULES_DIRECTORY] [-q] [-f] [-x] [-D] [-d] [-p]
+               [-t SOURCE_TAGS] [-r RESULT_TAG] [-S DAY_START] [-R DAY_RANGE]
+               [-O DAY_OFFSET] [-P PARAMETERS] [-l PARAMETER_FILE]
+               [-M MAP_RESULTS] [--data-file DATA_FILE]
+               [--example_rules EXAMPLE_RULES]
+
     Inferno: a python map/reduce library powered by disco.
-    
+
     optional arguments:
       -h, --help            show this help message and exit
       -v, --version         show program's version number and exit
@@ -23,6 +24,9 @@ Inferno Command Line Interface
                             execute <module>.<rule> immediately and exit
       -y RULES_DIRECTORY, --rules-directory RULES_DIRECTORY
                             directory to search for Inferno rules
+      -q, --just-query      print out the blobs of the source query and generated
+                            SQL, but don't execute the rule (only useful for
+                            debugging rules in immediate mode)
       -f, --force           force processing of blobs
       -x, --start-paused    start Inferno without starting any automatic rules
                             (pause mode)
@@ -43,5 +47,11 @@ Inferno Command Line Interface
                             additional rule parameters (in yaml)
       -l PARAMETER_FILE, --parameter-file PARAMETER_FILE
                             additional rule parameters (in a yaml file)
+      -M MAP_RESULTS, --map-results MAP_RESULTS
+                            skip map phase - use the supplied job id to get map
+                            results to send to reduce for this rule
+      --data-file DATA_FILE
+                            arbitrary data file made available to job
       --example_rules EXAMPLE_RULES
                             create example rules
+

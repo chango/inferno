@@ -122,6 +122,8 @@ Example field_transforms:
 parts_postprocess
 -----------------
 
+The **parts_postprocess** happen after the **map_function** is called.
+
 key_parts
 ---------
 

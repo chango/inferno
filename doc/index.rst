@@ -44,6 +44,7 @@ Table of Contents
      counting
      election
      daemon
+     workflow
      keyset
      rule
      command
