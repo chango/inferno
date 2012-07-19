@@ -111,6 +111,8 @@ class InfernoRule(object):
                  parts_preprocess=None,
                  parts_postprocess=None,
                  field_transforms=None,
+                 required_files=None,
+                 required_modules=None,
                  **kwargs):
 
         self.qualified_name = name
@@ -211,6 +213,8 @@ class InfernoRule(object):
         # other
         self.rule_init_function = rule_init_function
         self.rule_cleanup = rule_cleanup
+        self.required_modules = required_modules or []
+        self.required_files = required_files or []
 
     def __str__(self):
         return '<InfernoRule: %s>' % self.name

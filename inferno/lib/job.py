@@ -113,7 +113,9 @@ class InfernoJob(object):
                   reduce_output_stream=self.rule.reduce_output_stream,
                   sort=self.rule.sort,
                   profile=self.settings.get('profile'),
-                  partition=self.rule.partition_function)
+                  partition=self.rule.partition_function,
+                  required_files=self.rule.required_files,
+                  required_modules=self.rule.required_modules)
 
             # actual id is only assigned after starting the job
             self.full_job_id = self.job.name
