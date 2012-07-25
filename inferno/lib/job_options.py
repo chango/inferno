@@ -16,7 +16,6 @@ class JobOptions(object):
 
     @property
     def tags(self):
-        tags = []
 
         if self.settings.get('source_tags') is not None:
             tags = self.settings.get('source_tags')
@@ -43,6 +42,15 @@ class JobOptions(object):
                 for tag in tags for day in range(count)]
 
         return [] if tags is None else tags
+
+    @property
+    def urls(self):
+        if self.settings.get('source_urls') is not None:
+            urls = self.settings.get('source_urls')
+        else:
+            urls = self.rule.source_urls
+        return urls if urls else []
+
 
     def _name(self, tag, delta, start):
         return '%s:%s' % (tag, start + timedelta(days=-delta))

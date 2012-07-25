@@ -15,7 +15,6 @@ from inferno.lib.disco_ext import get_disco_handle
 from inferno.lib.job_options import JobOptions
 from inferno.lib.result import reduce_result
 
-
 log = logging.getLogger(__name__)
 
 JOB_ARCHIVE = 'job.archive'
@@ -31,7 +30,6 @@ JOB_START = 'job.start'
 JOB_TAG = 'job.tag'
 JOB_WAIT = 'job.wait'
 JOB_ERROR = 'job.error'
-
 
 class InfernoJob(object):
 
@@ -90,7 +88,6 @@ class InfernoJob(object):
             map_function = None
             self.settings['debug'] = True # we can't reliably archive, so let's debug
             map_results = self.disco.mapresults(map_job_id)
-
 
         self.start_time = time.time()
         if self.settings.get('just_query'):
@@ -166,13 +163,15 @@ class InfernoJob(object):
     def _determine_job_blobs(self):
         self._update_state(JOB_BLOBS)
         tags = self.job_options.tags
+        urls = self.job_options.urls
         log.info('Processing tags: %s', tags)
         archiver = Archiver(
             ddfs=self.ddfs,
             archive_prefix=self.rule.archive_tag_prefix,
             archive_mode=self.rule.archive,
             max_blobs=self.rule.max_blobs,
-            tags=tags)
+            tags=tags,
+            urls=urls)
         return archiver
 
     def _get_job_results(self, jobout):

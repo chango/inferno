@@ -104,6 +104,7 @@ class InfernoRule(object):
                  day_offset=0,
                  day_start=date.today(),
                  source_tags=None,
+                 source_urls=None,
 
                  # other
                  rule_init_function=None,
@@ -171,6 +172,7 @@ class InfernoRule(object):
         self.day_offset = day_offset
         self.day_start = day_start
         self.source_tags = source_tags
+        self.source_urls = source_urls
 
         # keysets
         keyset_dict = {}

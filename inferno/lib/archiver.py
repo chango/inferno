@@ -9,13 +9,14 @@ log = logging.getLogger(__name__)
 
 class Archiver(object):
 
-    def __init__(self, ddfs, tags, archive_prefix='processed', archive_mode=False, max_blobs=sys.maxint):
+    def __init__(self, ddfs, tags, urls=None, archive_prefix='processed', archive_mode=False, max_blobs=sys.maxint):
         self.tags = tags
         self.ddfs = ddfs
         self.max_blobs = max_blobs
         self.archive_mode = archive_mode
         self.archive_prefix = archive_prefix
         self.tag_map = self._build_tag_map(tags)
+        self.urls = urls
 
     @lazy_property
     def blob_count(self):
@@ -23,10 +24,13 @@ class Archiver(object):
 
     @lazy_property
     def job_blobs(self):
-        job_blobs = []
-        for blobs in self.tag_map.itervalues():
-            job_blobs += blobs
-        return job_blobs
+        if self.urls:
+            return self.urls
+        else:
+            job_blobs = []
+            for blobs in self.tag_map.itervalues():
+                job_blobs += blobs
+            return job_blobs
 
     def archive(self):
         if self.tag_map:

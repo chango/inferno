@@ -36,11 +36,14 @@ class DiscoBallHandlerTestCase(tornado.testing.AsyncHTTPTestCase):
         self.assert_json_response_to_post(url, expected)
 
     def assert_csv_response(self, url, expected, code=200):
-        response = self.fetch(url)
-        content_type = 'text/csv; charset=UTF-8'
-        eq_(response.headers['Content-Type'], content_type)
-        eq_(response.body, expected)
-        eq_(response.code, code)
+        try:
+            response = self.fetch(url)
+            content_type = 'text/csv; charset=UTF-8'
+            eq_(response.headers['Content-Type'], content_type)
+            eq_(response.body, expected)
+            eq_(response.code, code)
+        except Exception as e:
+            raise e
 
     def assert_json_response_to_post(self, url, expected, code=200):
         response = self.fetch(url, method='POST', body='')
@@ -51,10 +54,13 @@ class DiscoBallHandlerTestCase(tornado.testing.AsyncHTTPTestCase):
         self._assert_json_response(expected, code, response)
 
     def _assert_json_response(self, expected, code, response):
-        content_type = 'application/json; charset=UTF-8'
-        eq_(response.headers['Content-Type'], content_type)
-        eq_(json.loads(response.body), expected)
-        eq_(response.code, code)
+        try:
+            content_type = 'text/javascript; charset=UTF-8'
+            eq_(response.headers['Content-Type'], content_type)
+            eq_(json.loads(response.body), expected)
+            eq_(response.code, code)
+        except Exception as e:
+            raise e
 
 
 class TestMainHandler(DiscoBallHandlerTestCase):
@@ -208,7 +214,7 @@ class TestJobResultHandler(DiscoBallHandlerTestCase):
         path = self.get_path(self.get_http_port())
         self.put_a_fake_job_in_the_history(path)
         url = '/jobs/%s/results.csv' % FAKE_JOB_ID
-        expected = 'Tim,100\r\nTom,200\r\nSam,300\r\n'
+        expected = 'keyset_1,Tim,100\r\nkeyset_1,Tom,200\r\nkeyset_1,Sam,300\r\n'
         self.assert_csv_response(url, expected)
 
     @patch.object(disco.core.Disco, 'jobinfo')

@@ -1,7 +1,7 @@
 import disco.core
 
 from mock import patch
-from nose.tools import eq_
+from nose.tools import eq_, ok_
 
 from inferno.lib.job_factory import JobFactory
 from inferno.lib.rule import InfernoRule
@@ -74,7 +74,12 @@ class TestJobFactory(object):
         eq_(job.rule.day_offset, 4)
 
         # check job.settings
-        eq_(job.settings, expected_settings)
+        for key, value in expected_settings.iteritems():
+            ok_(key in job.settings)
+            eq_(value, job.settings[key])
 
         # check job.params
-        eq_(vars(job.params), expected_params)
+        params = vars(job.params)
+        for key, value in expected_params.iteritems():
+            ok_(key in params)
+            eq_(value, params[key])

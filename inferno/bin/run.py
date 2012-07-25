@@ -111,6 +111,12 @@ def _get_options(argv):
         help="override the ddfs source tags")
 
     parser.add_argument(
+        "-u",
+        "--source-urls",
+        dest="source_urls",
+        help="override the source urls")
+
+    parser.add_argument(
         "-r",
         "--result-tag",
         dest="result_tag",

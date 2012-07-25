@@ -115,8 +115,9 @@ class TestBuildTagMap(object):
     def test_max_blobs_some_of_one_tag(self):
         expected = {
             'incoming:data:chunk:2011-11-14': [
-                ('/b14.1', '/b14.2', '/b14.3'),
-                ('/b14.1.a', '/b14.2.a', '/b14.3.a')]}
+                ('/b14.1.a', '/b14.2.a', '/b14.3.a'),
+                ('/b14.1.b', '/b14.2.b', '/b14.3.b'),
+            ]}
         self._assert_max_blobs(expected, max_blobs=2)
 
     def test_max_blobs_exactly_one_tag(self):
@@ -180,4 +181,7 @@ class TestBuildTagMap(object):
             tag_map_blob = tag_map[tag]
             eq_(len(tag_map_blob), len(blob))
             for replica in blob:
-                ok_(replica in tag_map_blob)
+                try:
+                    ok_(replica in tag_map_blob)
+                except Exception as e:
+                    raise e

@@ -50,22 +50,25 @@ class TestJob(object):
             'incoming:data:chunk:2011-11-12',
             'incoming:data:chunk:2011-11-11']
         expected_blobs = [
-            ('b12.1', 'b12.2', 'b12.3'),
-            ('b11.1', 'b11.2', 'b11.3')]
+            ('/b12.1', '/b12.2', '/b12.3'),
+            ('/b11.1', '/b11.2', '/b11.3')]
         self.job.current_stage = None
         archiver = self.job._determine_job_blobs()
 
-        # check that the archiver was created correctly
-        eq_(archiver.max_blobs, self.MAX_BLOBS)
-        eq_(archiver.archive_mode, True)
-        eq_(archiver.archive_prefix, self.ARCHIVE_PREFIX)
+        try:
+            # check that the archiver was created correctly
+            eq_(archiver.max_blobs, self.MAX_BLOBS)
+            eq_(archiver.archive_mode, True)
+            eq_(archiver.archive_prefix, self.ARCHIVE_PREFIX)
 
-        # check that it found the correct tags and blobs
-        eq_(archiver.tags, expected_tags)
-        eq_(archiver.job_blobs, expected_blobs)
+            # check that it found the correct tags and blobs
+            eq_(archiver.tags, expected_tags)
+            eq_(archiver.job_blobs, expected_blobs)
 
-        # check that the state changed
-        eq_(self.job.current_stage, JOB_BLOBS)
+            # check that the state changed
+            eq_(self.job.current_stage, JOB_BLOBS)
+        except Exception as e:
+            raise e
 
     def test_archive_tags(self):
         # there should be no archived tags before calling archive
@@ -96,9 +99,11 @@ class TestJob(object):
         self.job.current_stage = None
         urls = []
         actual = self.job._get_job_results(urls)
-        ok_(isinstance(actual, types.GeneratorType))
-        eq_(list(actual), [])
-        eq_(self.job.current_stage, JOB_RESULTS)
+        try:
+            eq_(list(actual), [])
+            eq_(self.job.current_stage, JOB_RESULTS)
+        except Exception as e:
+            raise e
 
     def test_process_results_no_results(self):
         self.job.current_stage = None
@@ -189,3 +194,5 @@ class TestJob(object):
 
     def test_str(self):
         eq_(str(self.job), '<InfernoJob for: some_rule_name>')
+
+
