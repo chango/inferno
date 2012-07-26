@@ -1,6 +1,7 @@
 from inferno.lib.disco_ext import get_disco_handle
 from inferno.lib.job import InfernoJob
 from inferno.lib.lookup_rules import get_rules_by_name
+from inferno.lib.settings import DEFAULT_SETTINGS
 
 
 class JobFactory(object):
@@ -33,5 +34,5 @@ class JobFactory(object):
         return get_disco_handle(server)
 
     @staticmethod
-    def create_job(rule, settings, parent=None):
+    def create_job(rule, settings=DEFAULT_SETTINGS, parent=None):
         return InfernoJob(rule, settings, parent)

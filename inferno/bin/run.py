@@ -182,6 +182,24 @@ def _get_options(argv):
     if options.source_tags:
         options.source_tags = options.source_tags.split(',')
 
+    if options.source_urls:
+        qurls = options.source_urls.split(',')
+        # the urls may be any kind of data, so commas may be quoted - account for this
+        urls = []
+        trail = ''
+        for qurl in qurls:
+            if qurl.endswith('\\'):
+                trail += qurl[:-1] + ','
+            else:
+                if trail:
+                    urls.append(trail + qurl)
+                    trail = ''
+                else:
+                    urls.append(qurl)
+        if trail:
+            urls.append(trail)
+        options.source_urls = urls
+
     if options.day_start:
         options.day_start = date.fromtimestamp(mktime(strptime(
             options.day_start, '%Y-%m-%d')))
@@ -256,7 +274,7 @@ def main(argv=sys.argv):
                     src = os.path.join(src_dir, name)
                     dst = os.path.join(dst_dir, name)
                     shutil.copy(src, dst)
-            print '\n\tCreated example rules dir:\n\n\t\t%s' % (dst_dir)
+            print '\n\tCreated example rules dir:\n\n\t\t%s' % dst_dir
             for name in os.listdir(dst_dir):
                 print '\t\t\t', name
         except Exception as e:
