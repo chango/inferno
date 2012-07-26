@@ -38,3 +38,6 @@ class InfernoSettings(dict):
 
         # final overrides
         super(InfernoSettings, self).__init__(*args, **kwargs)
+
+
+DEFAULT_SETTINGS = InfernoSettings(defaults)
