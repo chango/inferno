@@ -36,19 +36,22 @@ class Keyset(object):
                  key_parts=None,
                  value_parts=None,
                  column_mappings=None,
-                 table=None):
+                 table=None,
+                 parts_postprocess=None):
 
-        self.key_parts = ['_keyset'] + list(key_parts)
-        self.value_parts = value_parts
-        self.column_mappings = column_mappings
+        self.key_parts = ['_keyset'] + list(key_parts or [])
+        self.value_parts = value_parts or []
+        self.column_mappings = column_mappings or []
         self.table = table
+        self.parts_postprocess = parts_postprocess or []
 
     def as_dict(self):
         return {
             'key_parts': self.key_parts,
             'value_parts': self.value_parts,
             'column_mappings': self.column_mappings,
-            'table': self.table}
+            'table': self.table,
+            'parts_postprocess': self.parts_postprocess}
 
 
 class InfernoRule(object):
@@ -98,6 +101,7 @@ class InfernoRule(object):
                  value_parts=None,
                  column_mappings=None,
                  table=None,
+                 parts_postprocess=None,
 
                  # input
                  day_range=0,
@@ -110,7 +114,6 @@ class InfernoRule(object):
                  rule_init_function=None,
                  rule_cleanup=None,
                  parts_preprocess=None,
-                 parts_postprocess=None,
                  field_transforms=None,
                  required_files=None,
                  required_modules=None,
@@ -179,38 +182,42 @@ class InfernoRule(object):
         if keysets:
             for keyset_name, keyset_obj in keysets.items():
                 keyset_dict[keyset_name] = keyset_obj.as_dict()
-        elif key_parts and value_parts:
+        else:
             keyset_dict['_default'] = Keyset(
                 key_parts,
                 value_parts,
                 column_mappings,
-                table).as_dict()
+                table,
+                parts_postprocess).as_dict()
         self.params.keysets = keyset_dict
 
-        # preprocess
-        if parts_preprocess:
-            self.params.parts_preprocess = map(
-                lambda func: func.__name__, parts_preprocess)
-            for func in parts_preprocess:
-                self.params.__setattr__(func.__name__, func)
-        else:
-            self.params.parts_preprocess = []
+        self.params.parts_preprocess = parts_preprocess or []
+        self.params.field_transforms = field_transforms or dict()
 
-        # postprocess
-        if parts_postprocess:
-            self.params.parts_postprocess = map(
-                lambda func: func.__name__, parts_postprocess)
-            for func in parts_postprocess:
-                self.params.__setattr__(func.__name__, func)
-        else:
-            self.params.parts_postprocess = []
-
-        # transforms
-        if field_transforms:
-            self.params.field_transforms = {}
-            for key, func in field_transforms.items():
-                self.params.field_transforms[key] = func.__name__
-                self.params.__setattr__(func.__name__, func)
+#        # preprocess
+#        if parts_preprocess:
+#            self.params.parts_preprocess = map(
+#                lambda func: func.__name__, parts_preprocess)
+#            for func in parts_preprocess:
+#                self.params.__setattr__(func.__name__, func)
+#        else:
+#            self.params.parts_preprocess = []
+#
+#        # postprocess
+#        if parts_postprocess:
+#            self.params.parts_postprocess = map(
+#                lambda func: func.__name__, parts_postprocess)
+#            for func in parts_postprocess:
+#                self.params.__setattr__(func.__name__, func)
+#        else:
+#            self.params.parts_postprocess = []
+#
+#        # transforms
+#        if field_transforms:
+#            self.params.field_transforms = {}
+#            for key, func in field_transforms.items():
+#                self.params.field_transforms[key] = func.__name__
+#                self.params.__setattr__(func.__name__, func)
 
         # other
         self.rule_init_function = rule_init_function
@@ -242,6 +249,5 @@ class InfernoRule(object):
             map_function=fstr(self.map_function),
             reduce_function=fstr(self.reduce_function),
             keysets=self.params.keysets,
-            parts_preprocess=self.params.parts_preprocess,
-            parts_postprocess=self.params.parts_postprocess
+            parts_preprocess=fname(self.params.parts_preprocess),
         )

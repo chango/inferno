@@ -54,13 +54,11 @@ class DiscoBallHandlerTestCase(tornado.testing.AsyncHTTPTestCase):
         self._assert_json_response(expected, code, response)
 
     def _assert_json_response(self, expected, code, response):
-        try:
-            content_type = 'text/javascript; charset=UTF-8'
-            eq_(response.headers['Content-Type'], content_type)
-            eq_(json.loads(response.body), expected)
-            eq_(response.code, code)
-        except Exception as e:
-            raise e
+        content_type = 'text/javascript; charset=UTF-8'
+        eq_(response.headers['Content-Type'], content_type)
+        got = json.loads(response.body)
+        eq_(got, expected)
+        eq_(response.code, code)
 
 
 class TestMainHandler(DiscoBallHandlerTestCase):
@@ -103,19 +101,20 @@ class TestRuleHandler(DiscoBallHandlerTestCase):
             'map_function': 'inferno.lib.map.keyset_map',
             'reduce_function': 'inferno.lib.reduce.keyset_reduce',
             'parts_preprocess': [],
-            'parts_postprocess': [],
             'keysets': {
                 'keyset_1': {
                     'key_parts': ['_keyset', 'key_1'],
                     'table': None,
                     'value_parts': ['value_1'],
-                    'column_mappings': None
+                    'column_mappings': [],
+                    'parts_postprocess': []
                 },
                 'keyset_2': {
                     'key_parts': ['_keyset', 'key_2'],
                     'value_parts': ['value_2'],
                     'table': None,
-                    'column_mappings': None
+                    'column_mappings': [],
+                    'parts_postprocess': []
                 },
             },
         }
@@ -244,3 +243,9 @@ class FakeInfernoDaemon(InfernoDaemon):
         job.job.name = FAKE_JOB_ID
         self.history[FAKE_JOB_ID] = job.job_msg
         return job.job_msg
+
+
+
+        {u'run': True, u'map_function': u'inferno.lib.map.keyset_map', u'parts_preprocess': [],
+         u'keysets': {u'keyset_2': {u'parts_postprocess': [], u'table': None, u'value_parts': [u'value_2'], u'key_parts': [u'_keyset', u'key_2'], u'column_mappings': []}, u'keyset_1': {u'parts_postprocess': [], u'table': None, u'value_parts': [u'value_1'], u'key_parts': [u'_keyset', u'key_1'], u'column_mappings': []}}, u'reduce_function': u'inferno.lib.reduce.keyset_reduce', u'archive': False, u'map_input_stream': [u'disco.worker.classic.func.task_input_stream', u'disco.worker.classic.func.disco_input_stream', u'inferno.lib.reader.csv_reader', u'inferno.lib.reader.keyset_multiplier'], u'name': u'automatic_rule_1'} != \
+        {'keysets': {'keyset_2': {'column_mappings': [], 'table': None, 'value_parts': ['value_2'], 'parts_postprocess': [], 'key_parts': ['_keyset', 'key_2']}, 'keyset_1': {'column_mappings': [], 'table': None, 'value_parts': ['value_1'], 'parts_postprocess': [], 'key_parts': ['_keyset', 'key_1']}}, 'parts_postprocess': [], 'run': True, 'name': 'automatic_rule_1', 'reduce_function': 'inferno.lib.reduce.keyset_reduce', 'parts_preprocess': [], 'archive': False, 'map_input_stream': ['disco.worker.classic.func.task_input_stream', 'disco.worker.classic.func.disco_input_stream', 'inferno.lib.reader.csv_reader', 'inferno.lib.reader.keyset_multiplier'], 'map_function': 'inferno.lib.map.keyset_map'}

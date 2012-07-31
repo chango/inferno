@@ -21,21 +21,21 @@ class TestKeysetMap(object):
             key_parts=['country', 'city'],
             value_parts=['population', 'size'])
 
-    def test_no_key_parts(self):
-        rule = InfernoRule(
-            key_parts=[],
-            value_parts=['population', 'size'])
-        eq_(rule.params.keysets, {})
-        expected = []
-        self._assert_map(self.data, rule, expected)
+#    def test_no_key_parts(self):
+#        rule = InfernoRule(
+#            key_parts=[],
+#            value_parts=['population', 'size'])
+#        eq_(rule.params.keysets, {})
+#        expected = []
+#        self._assert_map(self.data, rule, expected)
 
-    def test_no_value_parts(self):
-        rule = InfernoRule(
-            key_parts=['country', 'city'],
-            value_parts=[])
-        eq_(rule.params.keysets, {})
-        expected = []
-        self._assert_map(self.data, rule, expected)
+#    def test_no_value_parts(self):
+#        rule = InfernoRule(
+#            key_parts=['country', 'city'],
+#            value_parts=[])
+#        eq_(rule.params.keysets, {})
+#        expected = []
+#        self._assert_map(self.data, rule, expected)
 
     def test_keys_and_parts(self):
         expected = [('[null,"canada","toronto"]', [100, 1000])]

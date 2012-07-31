@@ -10,17 +10,17 @@ def keyset_result(iter, params, **kwargs):
                 return mappings[name]
         return name
 
-    def _post_process(parts_list, params):
-        if hasattr(params, 'parts_postprocess'):
-            # each post-processor may generate multiple 'parts',
-            # these need to be fed into subsequent post-processors
-            for name in params.parts_postprocess:
-                func = getattr(params, name)
-                new_list = []
-                for parts in parts_list:
-                    new_list.extend([x for x in func(parts, params)])
-                parts_list = new_list
-        return parts_list
+#    def _post_process(parts_list, params):
+#        if hasattr(params, 'parts_postprocess'):
+#            # each post-processor may generate multiple 'parts',
+#            # these need to be fed into subsequent post-processors
+#            for name in params.parts_postprocess:
+#                func = getattr(params, name)
+#                new_list = []
+#                for parts in parts_list:
+#                    new_list.extend([x for x in func(parts, params)])
+#                parts_list = new_list
+#        return parts_list
 
     mapped = []
     last_keyset_name = None
@@ -33,11 +33,9 @@ def keyset_result(iter, params, **kwargs):
             mapped = [_column_map(keyset, column) for column in columns]
             writer.writerow(mapped)
             last_keyset_name = keyset_name
-        parts = dict(zip(mapped, keys[1:] + values))
-        for parts in _post_process([parts], params):
-            data = [parts.get(column) for column in mapped]
-            row = [unicode(x).encode('utf-8') for x in data]
-            writer.writerow(row)
+        data = keys[1:] + values
+        row = [unicode(x).encode('utf-8') for x in data]
+        writer.writerow(row)
 
 
 def reduce_result(iter, **kwargs):

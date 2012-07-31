@@ -23,8 +23,8 @@ def keyset_map(parts_, params_):
             if hasattr(self.params, 'parts_preprocess'):
                 # each preprocessor may generate multiple 'parts',
                 # these need to be fed into subsequent preprocessors
-                for name in self.params.parts_preprocess:
-                    func = getattr(self.params, name)
+                for func in self.params.parts_preprocess:
+                    #func = getattr(self.params, name)
                     new_list = []
                     for parts in parts_list:
                         new_list.extend([x for x in func(parts, self.params)])
@@ -33,8 +33,8 @@ def keyset_map(parts_, params_):
 
         def _transform(self, parts):
             if hasattr(self.params, 'field_transforms'):
-                for field, name in self.params.field_transforms.items():
-                    func = getattr(self.params, name)
+                for field, func in self.params.field_transforms.items():
+                    #func = getattr(self.params, name)
                     if field in parts:
                         parts[field] = func(parts[field])
 

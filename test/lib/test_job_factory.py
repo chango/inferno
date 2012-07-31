@@ -40,11 +40,18 @@ class TestJobFactory(object):
             'pid_dir': '/var/run/inferno',
             'spawn_delay': 5,
             'max_workers': 8,
-            'log_config': '/etc/inferno/log.ini'}
+            'log_config': '/etc/inferno/log.ini',
+        }
         expected_params = {
             # extra rule kwargs, plus keysets
             'some_extra_param': 'some_extra_value',
-            'keysets': {},
+            'keysets': {
+                '_default': {
+                    'column_mappings': [],
+                    'table': None,
+                    'value_parts': [],
+                    'parts_postprocess': [],
+                    'key_parts': ['_keyset']}},
             # the passed in overrides
             'day_range': 3,
             'day_offset': 5,
@@ -60,7 +67,7 @@ class TestJobFactory(object):
             'max_workers': 8,
             'log_config': '/etc/inferno/log.ini',
             'parts_preprocess': [],
-            'parts_postprocess': []}
+        }
         job = JobFactory.create_job(rule, settings)
 
         # check disco/ddfs
