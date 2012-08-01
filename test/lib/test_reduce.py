@@ -80,9 +80,47 @@ class TestKeysetReduce(object):
             (['keyset', 'key1', 'key2'], [1, 3])]
         self._assert_reduce(data, expected)
 
-    def _assert_reduce(self, data, expected):
+    def test_parts_postprocess(self):
+        def filt(key, value, params):
+            if value[1] > 1:
+                yield key, value
+
+        def expand(key, value, params):
+            new_value = list(value)
+            new_value.append(value[0] + value[1])
+            yield key, new_value
+
+        def grow(key, value, params):
+            yield key, value
+            yield key, value
+
+        data = [
+            ('["keyset", "key1", "key2"]', [1, 1]),
+            ('["keyset", "key1", "key2"]', [1, 3]),
+            ('["keyset", "key3", "key4"]', [1, 1]),
+            ('["keyset", "key3", "key5"]', [1, 3]),
+            ('["keyset2", "key3", "key5"]', [1, 3]),
+        ]
+        expected = [
+            (['keyset', 'key1', 'key2'], [2, 4, 6]),
+            (['keyset', 'key1', 'key2'], [2, 4, 6]),
+            (['keyset', 'key3', 'key5'], [1, 3, 4]),
+            (['keyset', 'key3', 'key5'], [1, 3, 4]),
+            (['keyset2', 'key3', 'key5'], [1, 3]),
+        ]
+        keysets = {
+            'keyset': {
+                'parts_postprocess': [filt, expand, grow]
+            }
+        }
+        self._assert_reduce(data, expected, keysets=keysets)
+
+    def _assert_reduce(self, data, expected, **kwargs):
         # turn disco_debug on for more code coverage
-        params = Params(disco_debug=True)
+        if kwargs is None:
+            kwargs = dict()
+        kwargs['disco_debug'] = True
+        params = Params(**kwargs)
         actual = keyset_reduce(data, params)
         ok_(isinstance(actual, types.GeneratorType))
         eq_(list(actual), expected)

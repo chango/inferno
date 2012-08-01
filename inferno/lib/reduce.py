@@ -14,16 +14,40 @@ def keyset_reduce(iter_, params_):
                 try:
                     key = ujson.loads(key)
                     sum_ = self._sum_group(key, value)
-                    if (hasattr(self.params, 'serial_out') and
-                            self.params.serial_out):
-                        serial = ','.join([self._safe_str(y) for y in key[1:]])
-                        result = serial, ujson.dumps(sum_)
-                    else:
-                        result = key, sum_
-                    self._debug('result: %s', result)
-                    yield result
-                except Exception:
-                    self._error('input: %s,%s', key, value)
+
+                    # post-process results
+                    for xkey, xval in self._post_process(key, sum_):
+
+                        if (hasattr(self.params, 'serial_out') and
+                                self.params.serial_out):
+                            serial = ','.join([self._safe_str(y) for y in xkey[1:]])
+                            result = serial, ujson.dumps(xval)
+                        else:
+                            result = xkey, xval
+                        self._debug('result: %s', result)
+                        yield result
+                except Exception as e:
+                    self._error('error:%s\ninput: %s,%s', e, key, value)
+
+        def _post_process(self, key, val):
+            # each post-processor may generate multiple 'parts',
+            # these need to be fed into subsequent post-processors
+            it = iter(list([(key, val)]))
+
+            keysets = getattr(self.params, 'keysets', None)
+            if keysets:
+                keyset = keysets.get(key[0], None)
+                if keyset and keyset['parts_postprocess']:
+                    for func in keyset['parts_postprocess']:
+                        it = self._apply_process(it, func)
+
+            for k, v in it:
+                yield k, v
+
+        def _apply_process(self, it, func):
+            for key, val in it:
+                for rkey, rval in func(key, val, self.params):
+                    yield rkey, rval
 
         def _sum_group(self, key, value):
             summed_values = []
