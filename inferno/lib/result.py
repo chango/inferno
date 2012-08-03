@@ -10,19 +10,6 @@ def keyset_result(iter, params, **kwargs):
                 return mappings[name]
         return name
 
-#    def _post_process(parts_list, params):
-#        if hasattr(params, 'parts_postprocess'):
-#            # each post-processor may generate multiple 'parts',
-#            # these need to be fed into subsequent post-processors
-#            for name in params.parts_postprocess:
-#                func = getattr(params, name)
-#                new_list = []
-#                for parts in parts_list:
-#                    new_list.extend([x for x in func(parts, params)])
-#                parts_list = new_list
-#        return parts_list
-
-    mapped = []
     last_keyset_name = None
     writer = csv.writer(sys.stdout)
     for keys, values in iter:

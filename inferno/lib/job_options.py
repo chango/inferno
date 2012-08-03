@@ -22,26 +22,28 @@ class JobOptions(object):
         else:
             tags = self.rule.source_tags
 
-        if self.settings.get('day_start') is not None:
-            start = self.settings.get('day_start')
-        else:
-            start = self.rule.day_start
+            # note that all day range options are disabled if we pass tags in
+            # on the command line
+            if self.settings.get('day_start') is not None:
+                start = self.settings.get('day_start')
+            else:
+                start = self.rule.day_start
 
-        if self.settings.get('day_offset') is not None:
-            start += timedelta(days=-self.settings.get('day_offset'))
-        else:
-            start += timedelta(days=-self.rule.day_offset)
+            if self.settings.get('day_offset') is not None:
+                start += timedelta(days=-self.settings.get('day_offset'))
+            else:
+                start += timedelta(days=-self.rule.day_offset)
 
-        if self.settings.get('day_range') is not None:
-            count = self.settings.get('day_range')
-        else:
-            count = self.rule.day_range
+            if self.settings.get('day_range') is not None:
+                count = self.settings.get('day_range')
+            else:
+                count = self.rule.day_range
 
-        if count and tags:
-            tags = [self._name(tag, day, start)
-                for tag in tags for day in range(count)]
+            if count and tags:
+                tags = [self._name(tag, day, start)
+                    for tag in tags for day in range(count)]
 
-        return [] if tags is None else tags
+        return tags or []
 
     @property
     def urls(self):

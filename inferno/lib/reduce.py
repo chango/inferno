@@ -10,6 +10,10 @@ def keyset_reduce(iter_, params_):
             self.params = params
 
         def __call__(self, iter):
+            init_func = getattr(self.params, 'reduce_init_function', None)
+            if init_func:
+                init_func(iter, self.params)
+
             for key, value in disco.util.kvgroup(iter):
                 try:
                     key = ujson.loads(key)
@@ -17,7 +21,6 @@ def keyset_reduce(iter_, params_):
 
                     # post-process results
                     for xkey, xval in self._post_process(key, sum_):
-
                         if (hasattr(self.params, 'serial_out') and
                                 self.params.serial_out):
                             serial = ','.join([self._safe_str(y) for y in xkey[1:]])
