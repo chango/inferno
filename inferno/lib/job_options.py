@@ -48,10 +48,11 @@ class JobOptions(object):
 
     @property
     def urls(self):
-        urls_or_func = self.settings.get('source_urls')
+        import operator
+
+        urls_or_func = self.settings.get('source_urls') or getattr(self.rule, 'source_urls', None)
         rval = urls_or_func
-        if urls_or_func and (isinstance(urls_or_func, types.FunctionType) or
-                             isinstance(urls_or_func, functools.partial)):
+        if operator.isCallable(urls_or_func):
             rval = urls_or_func(self)
         return rval or []
 
