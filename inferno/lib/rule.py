@@ -2,6 +2,7 @@ import sys
 
 from datetime import date
 import types
+import functools
 
 from disco.core import Params
 from disco.core import result_iterator
@@ -204,14 +205,12 @@ class InfernoRule(object):
         self.source_urls = self._get_source_urls(source_urls)
 
 
-    def _get_source_urls(self, urls):
+    def _get_source_urls(self, urls_or_func):
         # if the first element of the source_urls is a function, then execute it for the urls
-        rval = urls
-        if urls and len(urls) and isinstance(urls[0], types.FunctionType):
-            if len(urls) > 1:
-                rval = urls[0](self, *urls[1:])
-            else:
-                rval = urls[0](self)
+        rval = urls_or_func
+        if urls_or_func and isinstance(urls_or_func, types.FunctionType) or \
+                            isinstance(urls_or_func, functools.partial):
+            rval = urls_or_func(self)
         return rval
 
     def __str__(self):

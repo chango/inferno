@@ -117,11 +117,20 @@ class TestInfernoRule(object):
         eq_(str(rule), '<InfernoRule: some_rule_name>')
 
     def test_source_urls(self):
-        def func_rules(rule, arg_str, arg_int):
+        from functools import partial
+
+        def partial_rules(rule, arg_str, arg_int):
             return [str(rule.name == 'sourcy'), str(arg_str == 'arg1'), str(arg_int == 15)]
 
-        rule = InfernoRule(name='sourcy', source_urls=(func_rules, 'arg1', 15))
+        def func_rules(rule):
+            return ['aurl']
+
+        rule = InfernoRule(name='sourcy', source_urls=partial(partial_rules, arg_str='arg1', arg_int=15))
         for val in rule.source_urls:
             ok_(val)
+
+        rule = InfernoRule(name='sourcy1', source_urls=func_rules)
+        eq_(rule.source_urls, ['aurl'])
+
         rule = InfernoRule(name='sourcy2', source_urls=('url1', 'url2'))
         eq_(rule.source_urls, ('url1', 'url2'))
