@@ -1,4 +1,5 @@
 from nose.tools import eq_
+from nose.tools import ok_
 
 from disco.core import result_iterator
 
@@ -114,3 +115,13 @@ class TestInfernoRule(object):
     def test_str(self):
         rule = InfernoRule(name='some_rule_name')
         eq_(str(rule), '<InfernoRule: some_rule_name>')
+
+    def test_source_urls(self):
+        def func_rules(rule, arg_str, arg_int):
+            return [str(rule.name == 'sourcy'), str(arg_str == 'arg1'), str(arg_int == 15)]
+
+        rule = InfernoRule(name='sourcy', source_urls=(func_rules, 'arg1', 15))
+        for val in rule.source_urls:
+            ok_(val)
+        rule = InfernoRule(name='sourcy2', source_urls=('url1', 'url2'))
+        eq_(rule.source_urls, ('url1', 'url2'))

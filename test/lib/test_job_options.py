@@ -33,15 +33,7 @@ class TestJobOptions(object):
                 'tag2:2012-12-01',
                 'tag2:2012-11-30',
                 'tag2:2012-11-29']
-        self.tags_from_settings = [
-                'tag3:2011-11-30',
-                'tag3:2011-11-29',
-                'tag3:2011-11-28',
-                'tag3:2011-11-27',
-                'tag4:2011-11-30',
-                'tag4:2011-11-29',
-                'tag4:2011-11-28',
-                'tag4:2011-11-27']
+        self.tags_from_settings = ['tag3', 'tag4']
 
     def test_empty_rule_and_empty_settings(self):
         job_options = JobOptions(InfernoRule(), InfernoSettings())
@@ -92,3 +84,4 @@ class TestJobOptions(object):
         actual = JobOptions(rule, settings).tags
         expected = ['tag:foo', 'tag:bar']
         eq_(actual, expected)
+

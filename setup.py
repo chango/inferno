@@ -44,4 +44,4 @@ setup(
     entry_points="""
     [console_scripts]
     inferno=inferno.bin.run:main
-    """)
+    """, requires=['disco'])

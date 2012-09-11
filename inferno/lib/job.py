@@ -80,15 +80,9 @@ class InfernoJob(object):
 
     def start(self):
         # process the map-results option (ie. skip map phase and grab map results from job id/ddfs
-        map_job_id = self.settings.get('map_results')
         self.archiver = self._determine_job_blobs()
         job_blobs = self.archiver.job_blobs
         map_function = self.rule.map_function
-        if map_job_id:
-            map_function = None
-            self.settings['debug'] = True # we can't reliably archive, so let's debug
-            map_results = self.disco.mapresults(map_job_id)
-
         self.start_time = time.time()
         if self.settings.get('just_query'):
             self.query()

@@ -23,6 +23,8 @@ class TestOptions(object):
             'server': None,
             'settings_file': None,
             'source_tags': None,
+            'source_urls': None,
+            'just_query': False,
             'result_tag': None,
             'day_start': None,
             'day_range': None,
