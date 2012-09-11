@@ -201,17 +201,8 @@ class InfernoRule(object):
         self.required_modules = required_modules or []
         self.required_files = required_files or []
 
-        # the source_urls should be processed last
-        self.source_urls = self._get_source_urls(source_urls)
+        self.source_urls = source_urls
 
-
-    def _get_source_urls(self, urls_or_func):
-        # if the first element of the source_urls is a function, then execute it for the urls
-        rval = urls_or_func
-        if urls_or_func and isinstance(urls_or_func, types.FunctionType) or \
-                            isinstance(urls_or_func, functools.partial):
-            rval = urls_or_func(self)
-        return rval
 
     def __str__(self):
         return '<InfernoRule: %s>' % self.name

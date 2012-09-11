@@ -1,5 +1,6 @@
 from datetime import timedelta
-
+import functools
+import types
 
 class JobOptions(object):
 
@@ -47,11 +48,12 @@ class JobOptions(object):
 
     @property
     def urls(self):
-        if self.settings.get('source_urls') is not None:
-            urls = self.settings.get('source_urls')
-        else:
-            urls = self.rule.source_urls
-        return urls if urls else []
+        urls_or_func = self.settings.get('source_urls')
+        rval = urls_or_func
+        if urls_or_func and (isinstance(urls_or_func, types.FunctionType) or
+                             isinstance(urls_or_func, functools.partial)):
+            rval = urls_or_func(self)
+        return rval or []
 
 
     def _name(self, tag, delta, start):
