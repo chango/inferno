@@ -1,6 +1,7 @@
 import sys
 
 from datetime import date
+import types
 
 from disco.core import Params
 from disco.core import result_iterator
@@ -175,7 +176,6 @@ class InfernoRule(object):
         self.day_offset = day_offset
         self.day_start = day_start
         self.source_tags = source_tags
-        self.source_urls = source_urls
 
         # keysets
         keyset_dict = {}
@@ -194,36 +194,25 @@ class InfernoRule(object):
         self.params.parts_preprocess = parts_preprocess or []
         self.params.field_transforms = field_transforms or dict()
 
-#        # preprocess
-#        if parts_preprocess:
-#            self.params.parts_preprocess = map(
-#                lambda func: func.__name__, parts_preprocess)
-#            for func in parts_preprocess:
-#                self.params.__setattr__(func.__name__, func)
-#        else:
-#            self.params.parts_preprocess = []
-#
-#        # postprocess
-#        if parts_postprocess:
-#            self.params.parts_postprocess = map(
-#                lambda func: func.__name__, parts_postprocess)
-#            for func in parts_postprocess:
-#                self.params.__setattr__(func.__name__, func)
-#        else:
-#            self.params.parts_postprocess = []
-#
-#        # transforms
-#        if field_transforms:
-#            self.params.field_transforms = {}
-#            for key, func in field_transforms.items():
-#                self.params.field_transforms[key] = func.__name__
-#                self.params.__setattr__(func.__name__, func)
-
         # other
         self.rule_init_function = rule_init_function
         self.rule_cleanup = rule_cleanup
         self.required_modules = required_modules or []
         self.required_files = required_files or []
+
+        # the source_urls should be processed last
+        self.source_urls = self._get_source_urls(source_urls)
+
+
+    def _get_source_urls(self, urls):
+        # if the first element of the source_urls is a function, then execute it for the urls
+        rval = urls
+        if urls and len(urls) and isinstance(urls[0], types.FunctionType):
+            if len(urls) > 1:
+                rval = urls[0](self, *urls[1:])
+            else:
+                rval = urls[0](self)
+        return rval
 
     def __str__(self):
         return '<InfernoRule: %s>' % self.name
