@@ -16,11 +16,11 @@ def json_reader(stream, size=None, url=None, params=None):
         if line.find('{') != -1:
             try:
                 parts = ujson.loads(line)
+                assert isinstance(parts, dict)
             except:
                 # just skip bad lines
                 import disco.util
                 disco.util.msg('json line error: %r' % line)
-                pass
             else:
                 yield parts
 
