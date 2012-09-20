@@ -1,9 +1,13 @@
 def keyset_multiplier(stream, size, url, params):
     for in_dict in stream:
         for keyset_name in params.keysets.keys():
-            dprime = dict(in_dict)
-            dprime['_keyset'] = keyset_name
-            yield dprime
+            try:
+                dprime = dict(in_dict)
+            except Exception as e:
+                print "KEYSET Parts Error: %s" % in_dict
+            else:
+                dprime['_keyset'] = keyset_name
+                yield dprime
 
 
 def json_reader(stream, size=None, url=None, params=None):
