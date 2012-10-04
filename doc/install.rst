@@ -10,7 +10,7 @@ cluster on your development machine).
 
 This only takes a few minutes on a Linux machine, and basically just 
 involves installing Erlang and Disco. See 
-`Installing Disco <http://discoproject.org/doc/start/install.htm>`_ 
+`Installing Disco <http://discoproject.org/doc/disco/start/install.html>`_ 
 for complete instructions.
 
 Bonus Points: A great talk about 

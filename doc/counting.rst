@@ -47,7 +47,7 @@ DDFS
 ----
 
 The first step is to place the data file in 
-`Disco's Distributed Filesystem <http://discoproject.org/doc/howto/ddfs.html>`_ (DDFS). 
+`Disco's Distributed Filesystem <http://discoproject.org/doc/disco/howto/ddfs.html>`_ (DDFS). 
 Once placed in DDFS, a file is referred to by Disco as a **blob**. 
 
 DDFS is a tag-based filesystem. Instead of organizing files into directories, 
@@ -194,8 +194,8 @@ input to the next.
 
     Other common result processor use cases include: populating a cache, 
     persisting to a database, writing back to 
-    `DDFS <http://discoproject.org/doc/howto/ddfs.html>`_ or 
-    `DiscoDB <http://discoproject.org/doc/contrib/discodb/discodb.html>`_, etc.
+    `DDFS <http://discoproject.org/doc/disco/howto/ddfs.html>`_ or 
+    `DiscoDB <http://discoproject.org/doc/disco/howto/discodb.html>`_, etc.
 
     Example data transition during the **output** step:
 

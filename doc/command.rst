@@ -5,11 +5,11 @@ Inferno Command Line Interface
 
     diana@ubuntu:~$ inferno --help
     usage: inferno [-h] [-v] [-s SERVER] [-e SETTINGS_FILE] [-i IMMEDIATE_RULE]
-               [-y RULES_DIRECTORY] [-q] [-f] [-x] [-D] [-d] [-p]
-               [-t SOURCE_TAGS] [-r RESULT_TAG] [-S DAY_START] [-R DAY_RANGE]
-               [-O DAY_OFFSET] [-P PARAMETERS] [-l PARAMETER_FILE]
-               [-M MAP_RESULTS] [--data-file DATA_FILE]
-               [--example_rules EXAMPLE_RULES]
+                   [-y RULES_DIRECTORY] [-q] [-f] [-x] [-D] [-d] [-p]
+                   [-t SOURCE_TAGS] [-u SOURCE_URLS] [-r RESULT_TAG]
+                   [-S DAY_START] [-R DAY_RANGE] [-O DAY_OFFSET] [-P PARAMETERS]
+                   [-l PARAMETER_FILE] [--data-file DATA_FILE]
+                   [--example_rules EXAMPLE_RULES]
 
     Inferno: a python map/reduce library powered by disco.
 
@@ -35,6 +35,8 @@ Inferno Command Line Interface
       -p, --profile         output disco profiling data
       -t SOURCE_TAGS, --source-tags SOURCE_TAGS
                             override the ddfs source tags
+      -u SOURCE_URLS, --source-urls SOURCE_URLS
+                            override the source urls
       -r RESULT_TAG, --result-tag RESULT_TAG
                             override the ddfs result tag
       -S DAY_START, --day-start DAY_START
@@ -47,11 +49,7 @@ Inferno Command Line Interface
                             additional rule parameters (in yaml)
       -l PARAMETER_FILE, --parameter-file PARAMETER_FILE
                             additional rule parameters (in a yaml file)
-      -M MAP_RESULTS, --map-results MAP_RESULTS
-                            skip map phase - use the supplied job id to get map
-                            results to send to reduce for this rule
       --data-file DATA_FILE
                             arbitrary data file made available to job
       --example_rules EXAMPLE_RULES
                             create example rules
-
