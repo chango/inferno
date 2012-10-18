@@ -11,7 +11,9 @@ def keyset_map(parts_, params_):
             try:
                 self._debug('input: %s', parts)
                 for parts in self._preprocess([parts]):
+                    self._debug('postprocess: %s', parts)
                     self._transform(parts)
+                    self._debug('posttransform: %s', parts)
                     result = self._result(parts)
                     if result is not None:
                         self._debug('result: %s', result)
