@@ -15,7 +15,7 @@ def json_reader(stream, size=None, url=None, params=None):
     for line in stream:
         if line.find('{') != -1:
             try:
-                parts = ujson.loads(line)
+                parts = ujson.loads(line.rstrip())
                 assert isinstance(parts, dict)
             except:
                 # just skip bad lines
