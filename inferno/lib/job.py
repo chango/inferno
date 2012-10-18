@@ -34,11 +34,11 @@ JOB_ERROR = 'job.error'
 class InfernoJob(object):
 
     def __init__(self, rule, settings, parent=None):
-        self.disco, self.ddfs = get_disco_handle(settings.get('server'))
         self.job_options = JobOptions(rule, settings)
         self.rule = rule
         self.settings = settings
         rule_params = dict(rule.params.__dict__)
+        self.disco, self.ddfs = get_disco_handle(rule_params.get('server', settings.get('server')))
         rule_params.update(settings)
         self.params = Params(**rule_params)
 
