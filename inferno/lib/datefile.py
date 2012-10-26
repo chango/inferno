@@ -21,6 +21,10 @@ class Datefile(object):
 
     def is_older_than(self, delta_spec=None):
         now = datetime.utcnow()
+        if 'oclock' in delta_spec:
+            today = now.date()
+            target = datetime(day=today.day, month=today.month, year=today.year, hour=delta_spec['oclock'])
+            return today > self.timestamp.date() and now > target
         return self.timedelta(delta_spec) < now
 
     def timedelta(self, delta_spec=None):

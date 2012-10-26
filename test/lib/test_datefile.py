@@ -2,6 +2,7 @@ from nose.tools import ok_
 import os
 from inferno.lib.datefile import Datefile
 from datetime import datetime
+from datetime import timedelta
 import time
 
 TEST_FILE = 'xxxx___test_datefile___'
@@ -40,6 +41,29 @@ class TestDatefile(object):
         time.sleep(3)
         ok_(datefile.is_older_than({'seconds': 2}))
         ok_(not datefile.is_older_than({'minutes': 5}))
+
+    def test_oclock_ran_yesterday(self):
+        self.delete()
+        now = datetime.utcnow()
+        if now.hour == 23:
+            now -= timedelta(hours=1)
+        before = now - timedelta(hours=26)
+        datefile = Datefile('/tmp', TEST_FILE, timestamp=before)
+        ok_(datefile.is_older_than({'oclock': now.hour}))
+        ok_(not datefile.is_older_than({'oclock': now.hour + 1}))
+
+
+    def test_oclock_ran_today(self):
+        self.delete()
+        now = datetime.utcnow()
+        if now.hour == 23:
+            now -= timedelta(hours=1)
+        if now.hour < 2:
+            now += timedelta(hours=1)
+        before = now - timedelta(hours=1)
+        datefile = Datefile('/tmp', TEST_FILE, timestamp=before)
+        ok_(not datefile.is_older_than({'oclock': now.hour}))
+
 
     def test_touch(self):
         datefile = Datefile('/tmp', TEST_FILE)
