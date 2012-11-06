@@ -243,7 +243,7 @@ def _setup_logging(settings):
             logging.config.fileConfig(
                 log_config, disable_existing_loggers=False)
         except Exception as e:
-            log.error('Error setting up logging [%s]: %s' % (log_config, e))
+            log.error('Error setting up logging: %s' %  e)
             _log_stdout(log)
 
     log.info('Starting inferno-%s', __version__)

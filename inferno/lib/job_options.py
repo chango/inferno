@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, date
 import functools
 import types
 
@@ -25,19 +25,24 @@ class JobOptions(object):
 
             # note that all day range options are disabled if we pass tags in
             # on the command line
+            count = None
             if self.settings.get('day_start') is not None:
                 start = self.settings.get('day_start')
-            else:
+                count = 1
+            elif self.rule.day_start is not None:
                 start = self.rule.day_start
+            else:
+                start = date.today()
 
             if self.settings.get('day_offset') is not None:
                 start += timedelta(days=-self.settings.get('day_offset'))
+                count = 1
             else:
                 start += timedelta(days=-self.rule.day_offset)
 
             if self.settings.get('day_range') is not None:
                 count = self.settings.get('day_range')
-            else:
+            elif count is None:
                 count = self.rule.day_range
 
             if count and tags:

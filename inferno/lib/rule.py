@@ -108,7 +108,7 @@ class InfernoRule(object):
                  # input
                  day_range=0,
                  day_offset=0,
-                 day_start=date.today(),
+                 day_start=None,
                  source_tags=None,
                  source_urls=None,
 

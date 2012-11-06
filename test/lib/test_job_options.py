@@ -68,7 +68,9 @@ class TestJobOptions(object):
         rule = InfernoRule(source_tags=['tag5'], day_range=2)
         settings = InfernoSettings(day_start=date(2011, 12, 01))
         actual = JobOptions(rule, settings).tags
-        expected = ['tag5:2011-12-01', 'tag5:2011-11-30']
+        # even though day_range=2, we only expect 1 day, as the settings will override
+        # the rule
+        expected = ['tag5:2011-12-01']
         eq_(actual, expected)
 
     def test_explict_tags(self):
