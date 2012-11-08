@@ -1,7 +1,6 @@
 def keyset_reduce(iter_, params_):
 
     import ujson
-
     import disco.util
 
     class KeysetReduce(object):

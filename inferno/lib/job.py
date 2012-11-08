@@ -101,6 +101,7 @@ class InfernoJob(object):
                   map_init=self.rule.map_init_function,
                   save=self.rule.save or self.rule.result_tag is not None,
                   scheduler=self.rule.scheduler,
+                  combiner=self.rule.combiner_function,
                   reduce_output_stream=self.rule.reduce_output_stream,
                   sort=self.rule.sort,
                   profile=self.settings.get('profile'),

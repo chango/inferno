@@ -82,6 +82,9 @@ class InfernoRule(object):
                  map_output_stream=(
                      map_output_stream, disco_output_stream),
 
+                 #combine
+                 combiner_function=None,
+
                  # reduce
                  reduce_function=keyset_reduce,
                  reduce_output_stream=(
@@ -153,6 +156,7 @@ class InfernoRule(object):
         self.map_function = map_function
         self.map_input_stream = map_input_stream
         self.map_output_stream = map_output_stream
+        self.combiner_function = combiner_function
 
         # reduce
         self.reduce_function = reduce_function
