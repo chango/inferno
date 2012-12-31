@@ -98,6 +98,7 @@ class InfernoRule(object):
                  result_tag=None,
                  save=False,
                  sort=True,
+                 sort_buffer_size='10%',
                  sorted_results=True,
 
                  # keysets
@@ -167,6 +168,7 @@ class InfernoRule(object):
         self.result_tag = result_tag
         self.save = save
         self.sort = sort
+        self.sort_buffer_size = sort_buffer_size
         if result_iterator_override:
             self.result_iterator = result_iterator_override
         elif self.sort and sorted_results:

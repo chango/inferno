@@ -104,6 +104,7 @@ class InfernoJob(object):
                   combiner=self.rule.combiner_function,
                   reduce_output_stream=self.rule.reduce_output_stream,
                   sort=self.rule.sort,
+                  sort_buffer_size=self.rule.sort_buffer_size,
                   profile=self.settings.get('profile'),
                   partition=self.rule.partition_function,
                   required_files=self.rule.required_files,
