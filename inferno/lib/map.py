@@ -1,86 +1,91 @@
 def keyset_map(parts_, params_):
 
     import ujson
+    import disco.util
 
-    class KeysetMap(object):
+    def _safe_str(value):
+        try:
+            return str(value)
+        except UnicodeEncodeError:
+            return unicode(value).encode('utf-8')
 
-        def __init__(self, params):
-            self.params = params
+    def _disco_message(message):
+        disco.util.msg(message)
 
-        def __call__(self, parts):
-            try:
-                self._debug('input: %s', parts)
-                for parts in self._preprocess([parts]):
-                    self._debug('postprocess: %s', parts)
-                    self._transform(parts)
-                    self._debug('posttransform: %s', parts)
-                    result = self._result(parts)
-                    if result is not None:
-                        self._debug('result: %s', result)
-                        yield result
-            except Exception:
-                self._error('input: %s', parts_)
+    def _inferno_debug(params, message, *args):
+        if getattr(params, 'disco_debug', False):
+            _disco_message(message % args)
 
-        def _preprocess(self, parts_list):
-            if hasattr(self.params, 'parts_preprocess'):
-                # each preprocessor may generate multiple 'parts',
-                # these need to be fed into subsequent preprocessors
-                for func in self.params.parts_preprocess:
-                    #func = getattr(self.params, name)
-                    new_list = []
-                    for parts in parts_list:
-                        new_list.extend([x for x in func(parts, self.params)])
-                    parts_list = new_list
-            return parts_list
+    def _inferno_error(message, *args):
+        import traceback
+        trace = traceback.format_exc(15)
+        _disco_message('%s %s' % (message, trace))
 
-        def _transform(self, parts):
-            if hasattr(self.params, 'field_transforms'):
-                for field, func in self.params.field_transforms.items():
-                    #func = getattr(self.params, name)
-                    if field in parts:
-                        parts[field] = func(parts[field])
+    # parts_preprocess for the whole rule
+    def _preprocess(params, parts_list):
+        if hasattr(params, 'parts_preprocess'):
+            # each preprocessor may generate multiple 'parts',
+            # these need to be fed into subsequent preprocessors
+            for func in params.parts_preprocess:
+                new_list = []
+                for parts in parts_list:
+                    new_list.extend([x for x in func(parts, params)])
+                parts_list = new_list
+        return parts_list
 
-        def _result(self, parts):
-            keyset = parts.get('_keyset', '_default')
-            if keyset in self.params.keysets:
-                key_parts = self.params.keysets[keyset]['key_parts']
-                value_parts = self.params.keysets[keyset]['value_parts']
-                key = tuple(self._make_key(parts, key_parts))
+    def _transform(params, parts):
+        if hasattr(params, 'field_transforms'):
+            for field, func in params.field_transforms.items():
+                if field in parts:
+                    parts[field] = func(parts[field])
+
+    def _make_key(parts, keys):
+        result = []
+        for key in keys:
+            if key in parts and parts[key] is not None:
+                result.append(_safe_str(parts[key]))
+            else:
+                result.append(None)
+        return result
+
+    # parts_preprocess for a specific keyset
+    def _keyset_preprocess(keyset, params, parts_list):
+        if keyset.get('parts_preprocess', False):
+            for func in keyset['parts_preprocess']:
+                new_list = []
+                for parts in parts_list:
+                    new_list.extend([x for x in func(parts, params)])
+                parts_list = new_list
+        return parts_list
+
+    def _result(params, parts):
+        keyset = parts.get('_keyset', '_default')
+        if keyset in params.keysets:
+            # Keyset specific preprocessor
+            # Note that following is an one-element loop to make Disco happy, otherwise,
+            # it ends up with a Disco runtime error.
+            for parts in _keyset_preprocess(params.keysets[keyset], params,
+                                            [parts]):
+                key_parts = params.keysets[keyset]['key_parts']
+                value_parts = params.keysets[keyset]['value_parts']
+                key = tuple(_make_key(parts, key_parts))
                 if None not in key[1:]:
                     value = [parts.get(a, 0) for a in value_parts]
                     try:
                         return ujson.dumps(key), value
                     except Exception:
-                        self._error(': %s', parts_)
+                        _inferno_error(': %s', parts)
 
-        def _make_key(self, parts, keys):
-            result = []
-            for key in keys:
-                if key in parts and parts[key] is not None:
-                    result.append(self._safe_str(parts[key]))
-                else:
-                    result.append(None)
-            return result
-
-        def _safe_str(self, value):
-            try:
-                return str(value)
-            except UnicodeEncodeError:
-                return unicode(value).encode('utf-8')
-
-        def _debug(self, message, *args):
-            if getattr(self.params, 'disco_debug', False):
-                self._disco_message(message % args)
-
-        def _error(self, message, *args):
-            import traceback
-            trace = traceback.format_exc(15)
-            self._disco_message('%s %s' % (message, trace))
-
-        def _disco_message(self, message):
-            import disco.util
-            disco.util.msg(message)
-
-    go = KeysetMap(params_)
-    return go(parts_)
-
+    # keyset_map function begins
+    try:
+        _inferno_debug(params_, 'input: %s', parts_)
+        for parts in _preprocess(params_, [parts_]):
+            _inferno_debug(params_, 'postprocess: %s', parts)
+            _transform(params_, parts)
+            _inferno_debug(params_, 'posttransform: %s', parts)
+            result = _result(params_, parts)
+            if result is not None:
+                _inferno_debug(params_, 'result: %s', result)
+                yield result
+    except Exception:
+        _inferno_error('input: %s', parts_)

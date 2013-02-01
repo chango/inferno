@@ -39,12 +39,14 @@ class Keyset(object):
                  value_parts=None,
                  column_mappings=None,
                  table=None,
+                 parts_preprocess=None,
                  parts_postprocess=None):
 
         self.key_parts = ['_keyset'] + list(key_parts or [])
         self.value_parts = value_parts or []
         self.column_mappings = column_mappings or []
         self.table = table
+        self.parts_preprocess = parts_preprocess or []
         self.parts_postprocess = parts_postprocess or []
 
     def as_dict(self):
@@ -53,6 +55,7 @@ class Keyset(object):
             'value_parts': self.value_parts,
             'column_mappings': self.column_mappings,
             'table': self.table,
+            'parts_preprocess': self.parts_preprocess,
             'parts_postprocess': self.parts_postprocess}
 
 
@@ -107,6 +110,7 @@ class InfernoRule(object):
                  value_parts=None,
                  column_mappings=None,
                  table=None,
+                 keyset_parts_preprocess=None,
                  parts_postprocess=None,
 
                  # input
@@ -195,6 +199,7 @@ class InfernoRule(object):
                 value_parts,
                 column_mappings,
                 table,
+                keyset_parts_preprocess,
                 parts_postprocess).as_dict()
         self.params.keysets = keyset_dict
 

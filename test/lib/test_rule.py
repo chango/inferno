@@ -27,6 +27,7 @@ class TestInfernoRule(object):
                 'table': 'some_table',
                 'value_parts': ['count'],
                 'key_parts': ['_keyset', 'id'],
+                'parts_preprocess': [],
                 'parts_postprocess': []}}
         eq_(rule.params.keysets, keysets)
 
@@ -49,6 +50,7 @@ class TestInfernoRule(object):
                 'table': 'some_table1',
                 'value_parts': ['count1'],
                 'key_parts': ['_keyset', 'id1'],
+                'parts_preprocess': [],
                 'parts_postprocess': [],
             },
             'keyset2': {
@@ -56,6 +58,7 @@ class TestInfernoRule(object):
                 'table': 'some_table2',
                 'value_parts': ['count2'],
                 'key_parts': ['_keyset', 'id2'],
+                'parts_preprocess': [],
                 'parts_postprocess': [],
             },
         }
@@ -69,6 +72,20 @@ class TestInfernoRule(object):
         rule = InfernoRule(parts_preprocess=[foo])
         eq_(rule.params.parts_preprocess, [foo])
         actual = rule.params.parts_preprocess[0]({'hello': 'world'}, None)
+        eq_(list(actual), [{'bar':1, 'hello':'world'}])
+
+    def test_keyset_parts_preprocess(self):
+        def foo(parts, params):
+            parts['bar'] = 1
+            yield parts
+
+        rule = InfernoRule(
+                    keysets={
+                        'keyset1': Keyset(parts_preprocess=[foo]),
+                    })
+        funcs = rule.params.keysets['keyset1']['parts_preprocess']
+        eq_(funcs, [foo])
+        actual = funcs[0]({'hello': 'world'}, None)
         eq_(list(actual), [{'bar':1, 'hello':'world'}])
 
     def test_field_transforms(self):
