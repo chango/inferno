@@ -24,9 +24,7 @@ from inferno.lib.result import keyset_result
 gzip_csv_stream = gzip_stream + (csv_reader,)
 gzip_json_stream = gzip_stream + (json_reader,)
 chunk_json_stream = chain_stream + (json_reader,)
-chunk_json_keyset_stream = chain_stream + (json_reader, keyset_multiplier)
 chunk_csv_stream = chain_stream + (csv_reader,)
-chunk_csv_keyset_stream = chain_stream + (csv_reader, keyset_multiplier)
 
 def crc_partition(key, nr_partitions, params):
     import binascii

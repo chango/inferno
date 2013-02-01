@@ -48,8 +48,8 @@ def keyset_map(parts_, params_):
                 result.append(None)
         return result
 
-    # parts_preprocess for a specific keyset
     def _keyset_preprocess(keyset, params, parts_list):
+        ''' parts_preprocess for a specific keyset '''
         if keyset.get('parts_preprocess', False):
             for func in keyset['parts_preprocess']:
                 new_list = []
@@ -57,6 +57,16 @@ def keyset_map(parts_, params_):
                     new_list.extend([x for x in func(parts, params)])
                 parts_list = new_list
         return parts_list
+
+    def _keyset_multiplier(params_, parts_):
+        for keyset_name in params_.keysets.keys():
+            try:
+                dprime = dict(parts_)
+            except Exception:
+                print "KEYSET Parts Error: %s" % parts_
+            else:
+                dprime['_keyset'] = keyset_name
+                yield dprime
 
     def _result(params, parts):
         keyset = parts.get('_keyset', '_default')
@@ -83,9 +93,11 @@ def keyset_map(parts_, params_):
             _inferno_debug(params_, 'postprocess: %s', parts)
             _transform(params_, parts)
             _inferno_debug(params_, 'posttransform: %s', parts)
-            result = _result(params_, parts)
-            if result is not None:
-                _inferno_debug(params_, 'result: %s', result)
-                yield result
+            # use keyset multiplier to generate keyset specific parts
+            for keyset_parts in _keyset_multiplier(params_, parts):
+                result = _result(params_, keyset_parts)
+                if result is not None:
+                    _inferno_debug(params_, 'result: %s', result)
+                    yield result
     except Exception:
         _inferno_error('input: %s', parts_)

@@ -1,23 +1,35 @@
 from inferno.lib.rule import chunk_csv_keyset_stream
 from inferno.lib.rule import chunk_json_keyset_stream
+from inferno.lib.rule import chunk_json_stream
 from inferno.lib.rule import InfernoRule
 from inferno.lib.rule import Keyset
 
 
+# an example rule parts_preprocess that works for all keysets
 def count(parts, params):
     parts['count'] = 1
     yield parts
 
 
+# an example keyset parts_preprocess that works only for a specific keyset
+def count_again(parts, params):
+    parts['count'] = parts['count'] + 1
+    yield parts
+
 RULES = [
     InfernoRule(
         name='last_names_json',
         source_tags=['example:chunk:users'],
-        map_input_stream=chunk_json_keyset_stream,
+        map_input_stream=chunk_json_stream,
         parts_preprocess=[count],
         partitions=2,
-        key_parts=['last'],
-        value_parts=['count'],
+        keysets={
+            'last_name_keyset':Keyset(
+                key_parts=['last'],
+                value_parts=['count'],
+                parts_preprocess=[count_again]
+             )
+        }
     ),
     InfernoRule(
         name='last_names_csv',

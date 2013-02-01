@@ -1,9 +1,8 @@
 import re
 
-from inferno.lib.rule import chunk_csv_keyset_stream
 from inferno.lib.rule import InfernoRule
 from inferno.lib.rule import Keyset
-
+from inferno.lib.rule import chunk_csv_stream
 
 # an example field_transform
 def alphanumeric(val):
@@ -39,7 +38,7 @@ RULES = [
     InfernoRule(
         name='presidential_2012',
         source_tags=['gov:chunk:presidential_campaign_finance'],
-        map_input_stream=chunk_csv_keyset_stream,
+        map_input_stream=chunk_csv_stream,
         partitions=1,
         field_transforms={
             'cand_nm':alphanumeric,
