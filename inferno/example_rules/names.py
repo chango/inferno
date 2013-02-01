@@ -1,5 +1,4 @@
-from inferno.lib.rule import chunk_csv_keyset_stream
-from inferno.lib.rule import chunk_json_keyset_stream
+from inferno.lib.rule import chunk_csv_stream
 from inferno.lib.rule import chunk_json_stream
 from inferno.lib.rule import InfernoRule
 from inferno.lib.rule import Keyset
@@ -34,7 +33,7 @@ RULES = [
     InfernoRule(
         name='last_names_csv',
         source_tags=['example:chunk:users'],
-        map_input_stream=chunk_csv_keyset_stream,
+        map_input_stream=chunk_csv_stream,
         csv_fields=('first', 'last'),
         csv_dialect='excel',
         parts_preprocess=[count],
@@ -45,7 +44,7 @@ RULES = [
     InfernoRule(
         name='last_names_result',
         source_tags=['example:chunk:users'],
-        map_input_stream=chunk_json_keyset_stream,
+        map_input_stream=chunk_json_stream,
         parts_preprocess=[count],
         partitions=2,
         key_parts=['last'],
@@ -55,7 +54,7 @@ RULES = [
     InfernoRule(
         name='first_and_last_names',
         source_tags=['example:chunk:users'],
-        map_input_stream=chunk_json_keyset_stream,
+        map_input_stream=chunk_json_stream,
         parts_preprocess=[count],
         partitions=2,
         keysets={
