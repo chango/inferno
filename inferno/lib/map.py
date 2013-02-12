@@ -82,7 +82,7 @@ def keyset_map(parts_, params_):
                 if None not in key[1:]:
                     value = [parts.get(a, 0) for a in value_parts]
                     try:
-                        return ujson.dumps(key), value
+                        yield ujson.dumps(key), value
                     except Exception:
                         _inferno_error(': %s', parts)
 
@@ -95,9 +95,10 @@ def keyset_map(parts_, params_):
             _inferno_debug(params_, 'posttransform: %s', parts)
             # use keyset multiplier to generate keyset specific parts
             for keyset_parts in _keyset_multiplier(params_, parts):
-                result = _result(params_, keyset_parts)
-                if result is not None:
-                    _inferno_debug(params_, 'result: %s', result)
-                    yield result
+                results = _result(params_, keyset_parts)
+                if results is not None:
+                    for result in results:
+                        _inferno_debug(params_, 'result: %s', result)
+                        yield result
     except Exception:
         _inferno_error('input: %s', parts_)
