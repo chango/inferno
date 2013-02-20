@@ -76,6 +76,9 @@ class InfernoRule(object):
                  archive=False,
                  archive_tag_prefix='processed',
 
+                 # nuke
+                 nuke=False,
+
                  # map
                  map_init_function=lambda x, y: x,
                  map_function=keyset_map,
@@ -153,6 +156,9 @@ class InfernoRule(object):
         # archive
         self.archive = archive
         self.archive_tag_prefix = archive_tag_prefix
+
+        # nuke
+        self.nuke = nuke
 
         # map
         self.map_init_function = map_init_function
@@ -233,6 +239,7 @@ class InfernoRule(object):
             name=self.name,
             run=self.run,
             archive=self.archive,
+            nuke=self.nuke,
             map_input_stream=fname(self.map_input_stream),
             map_function=fstr(self.map_function),
             reduce_function=fstr(self.reduce_function),

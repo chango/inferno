@@ -18,6 +18,7 @@ from inferno.lib.result import reduce_result
 log = logging.getLogger(__name__)
 
 JOB_ARCHIVE = 'job.archive'
+JOB_NUKE = 'job.nuke'
 JOB_CLEANUP = 'job.cleanup'
 JOB_BLOBS = 'job.blobs'
 JOB_DONE = 'job.done'
@@ -150,6 +151,7 @@ class InfernoJob(object):
         else:
             if not self.settings.get('debug'):
                 self._archive_tags(self.archiver)
+                self._nuke_tags(self.archiver)
             if self.rule.rule_cleanup:
                 self._notify_parent(JOB_CLEANUP)
                 self.rule.rule_cleanup(self, )
@@ -165,9 +167,10 @@ class InfernoJob(object):
             ddfs=self.ddfs,
             archive_prefix=self.rule.archive_tag_prefix,
             archive_mode=self.rule.archive,
+            nuke_mode=self.rule.nuke,
             max_blobs=self.rule.max_blobs,
             tags=tags,
-            urls=urls)
+            urls=urls,)
         return archiver
 
     def _get_job_results(self, jobout):
@@ -207,6 +210,11 @@ class InfernoJob(object):
         if archiver.archive_mode:
             self._notify_parent(JOB_ARCHIVE)
             archiver.archive()
+
+    def _nuke_tags(self, archiver):
+        if archiver.nuke_mode:
+            self._notify_parent(JOB_NUKE)
+            archiver.nuke()
 
     def _update_state(self, stage):
         try:

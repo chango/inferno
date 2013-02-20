@@ -9,11 +9,19 @@ log = logging.getLogger(__name__)
 
 class Archiver(object):
 
-    def __init__(self, ddfs, tags, urls=None, archive_prefix='processed', archive_mode=False, max_blobs=sys.maxint):
+    def __init__(self,
+                 ddfs,
+                 tags,
+                 urls=None,
+                 archive_prefix='processed',
+                 archive_mode=False,
+                 nuke_mode=False,
+                 max_blobs=sys.maxint):
         self.tags = tags
         self.ddfs = ddfs
         self.max_blobs = max_blobs
         self.archive_mode = archive_mode
+        self.nuke_mode = nuke_mode
         self.archive_prefix = archive_prefix
         self.tag_map = self._build_tag_map(tags)
         self.urls = urls
@@ -38,6 +46,13 @@ class Archiver(object):
                 self._archive_tags()
             except Exception as e:
                 log.error('Archiving error: %s', e, exc_info=sys.exc_info())
+
+    def nuke(self):
+        try:
+            self.ddfs.delete(self.tags)
+            log.info('Deleted %s .', self.tags)
+        except Exception as e:
+                log.error('Deleting error: %s', e, exc_info=sys.exc_info())
 
     def _archive_tags(self):
         for tag, blobs in self.tag_map.iteritems():
