@@ -166,9 +166,6 @@ class InfernoDaemon(object):
 
             # cycle through all the automatic rules
             for rule in auto_rules:
-                # sleep for a bit between rules
-                time.sleep(self.settings['spawn_delay'])
-
                 if self.stopped:
                     break
 

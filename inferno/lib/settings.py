@@ -1,5 +1,4 @@
 import os
-
 import yaml
 
 
@@ -15,7 +14,6 @@ def guess_settings():
 defaults = {
     'log_config': '/etc/inferno/log.ini',
     'settings_file': guess_settings(),
-    'spawn_delay': 5,
     'max_workers': 8,
     'pid_dir': '/var/run/inferno',
     'server': 'localhost',

@@ -31,7 +31,9 @@ class DaemonPid(object):
 
     def should_run(self, job):
         last_run = Datefile(self._pid_dir, "%s.last_run" % job.rule_name)
-        if last_run.is_older_than(job.rule.time_delta):
+
+        if not self._get_pid_path(job) and \
+            last_run.is_older_than(job.rule.time_delta):
             return True
         else:
             log.debug('Skipping job: %s (last: %s)',
