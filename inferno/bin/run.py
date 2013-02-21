@@ -281,6 +281,7 @@ def main(argv=sys.argv):
 
     if options['immediate_rule']:
         # run inferno in 'immediate' mode
+        settings['no_purge'] = True
         setproctitle('inferno - immediate.%s' % options['immediate_rule'])
         JobFactory.execute_immediate_rule(settings)
     else:
