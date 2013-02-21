@@ -31,8 +31,7 @@ class DaemonPid(object):
 
     def should_run(self, job):
         last_run = Datefile(self._pid_dir, "%s.last_run" % job.rule_name)
-
-        if not self._get_pid_path(job) and \
+        if not os.path.exists(self._get_pid_path(job)) and \
             last_run.is_older_than(job.rule.time_delta):
             return True
         else:

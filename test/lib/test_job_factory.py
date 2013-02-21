@@ -38,7 +38,6 @@ class TestJobFactory(object):
             'rules_directory': '/apps/project/project/rules',
             'extra_python_paths': [],
             'pid_dir': '/var/run/inferno',
-            'spawn_delay': 5,
             'max_workers': 8,
             'log_config': '/etc/inferno/log.ini',
         }
@@ -51,6 +50,7 @@ class TestJobFactory(object):
                     'table': None,
                     'value_parts': [],
                     'parts_postprocess': [],
+                    'parts_preprocess':[],
                     'key_parts': ['_keyset']}},
             # the passed in overrides
             'day_range': 3,
@@ -63,10 +63,8 @@ class TestJobFactory(object):
             'rules_directory': '/apps/project/project/rules',
             'extra_python_paths': [],
             'pid_dir': '/var/run/inferno',
-            'spawn_delay': 5,
             'max_workers': 8,
             'log_config': '/etc/inferno/log.ini',
-            'parts_preprocess': [],
         }
         job = JobFactory.create_job(rule, settings)
 

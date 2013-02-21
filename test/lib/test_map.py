@@ -21,24 +21,8 @@ class TestKeysetMap(object):
             key_parts=['country', 'city'],
             value_parts=['population', 'size'])
 
-#    def test_no_key_parts(self):
-#        rule = InfernoRule(
-#            key_parts=[],
-#            value_parts=['population', 'size'])
-#        eq_(rule.params.keysets, {})
-#        expected = []
-#        self._assert_map(self.data, rule, expected)
-
-#    def test_no_value_parts(self):
-#        rule = InfernoRule(
-#            key_parts=['country', 'city'],
-#            value_parts=[])
-#        eq_(rule.params.keysets, {})
-#        expected = []
-#        self._assert_map(self.data, rule, expected)
-
     def test_keys_and_parts(self):
-        expected = [('[null,"canada","toronto"]', [100, 1000])]
+        expected = [('["_default","canada","toronto"]', [100, 1000])]
         self._assert_map(self.data, self.rule, expected)
 
     def test_missing_key_part_should_not_yield_result(self):
@@ -48,7 +32,7 @@ class TestKeysetMap(object):
 
     def test_missing_value_part_should_yield_result(self):
         del self.data['size']
-        expected = [('[null,"canada","toronto"]', [100, 0])]
+        expected = [('["_default","canada","toronto"]', [100, 0])]
         self._assert_map(self.data, self.rule, expected)
 
     def test_null_key_part_should_not_yield_result(self):
@@ -58,17 +42,17 @@ class TestKeysetMap(object):
 
     def test_null_value_part_should_yield_result(self):
         self.data['size'] = None
-        expected = [('[null,"canada","toronto"]', [100, None])]
+        expected = [('["_default","canada","toronto"]', [100, None])]
         self._assert_map(self.data, self.rule, expected)
 
     def test_empty_key_part_should_yield_result(self):
         self.data['city'] = ''
-        expected = [('[null,"canada",""]', [100, 1000])]
+        expected = [('["_default","canada",""]', [100, 1000])]
         self._assert_map(self.data, self.rule, expected)
 
     def test_empty_value_part_should_yield_result(self):
         self.data['size'] = ''
-        expected = [('[null,"canada","toronto"]', [100, ''])]
+        expected = [('["_default","canada","toronto"]', [100, ''])]
         self._assert_map(self.data, self.rule, expected)
 
     def test_map_serialization(self):
@@ -77,7 +61,7 @@ class TestKeysetMap(object):
         rule = InfernoRule(
             key_parts=['date'],
             value_parts=['date'])
-        expected = [('[null,"2012-12-01"]', [datetime.date(2012, 12, 1)])]
+        expected = [('["_default","2012-12-01"]', [datetime.date(2012, 12, 1)])]
         self._assert_map(self.data, rule, expected)
 
     def test_field_transforms(self):
@@ -88,7 +72,7 @@ class TestKeysetMap(object):
             key_parts=['country', 'city'],
             value_parts=['population', 'size'],
             field_transforms={'city': upper, 'country': upper})
-        expected = [('[null,"CANADA","TORONTO"]', [100, 1000])]
+        expected = [('["_default","CANADA","TORONTO"]', [100, 1000])]
         self._assert_map(self.data, rule, expected)
 
     def test_parts_preprocess_that_yields_multiple_parts(self):
@@ -103,8 +87,8 @@ class TestKeysetMap(object):
             value_parts=['language'],
             parts_preprocess=[lookup_language])
         expected = [
-            ('[null,"canada"]', ['french']),
-            ('[null,"canada"]', ['english'])]
+            ('["_default","canada"]', ['french']),
+            ('["_default","canada"]', ['english'])]
         self._assert_map(self.data, rule, expected)
 
     def test_field_transforms_happen_after_parts_preprocess(self):
@@ -123,8 +107,8 @@ class TestKeysetMap(object):
             parts_preprocess=[lookup_language],
             field_transforms={'language': upper})
         expected = [
-            ('[null,"canada"]', ['FRENCH']),
-            ('[null,"canada"]', ['ENGLISH'])]
+            ('["_default","canada"]', ['FRENCH']),
+            ('["_default","canada"]', ['ENGLISH'])]
         self._assert_map(self.data, rule, expected)
 
     def _assert_map(self, parts, rule, expected):

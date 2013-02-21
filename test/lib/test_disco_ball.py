@@ -92,12 +92,12 @@ class TestRuleHandler(DiscoBallHandlerTestCase):
         expected = {
             'name': 'automatic_rule_1',
             'run': True,
+            'nuke': False,
             'archive': False,
             'map_input_stream': [
                 'disco.worker.classic.func.task_input_stream',
                 'disco.worker.classic.func.disco_input_stream',
-                'inferno.lib.reader.csv_reader',
-                'inferno.lib.reader.keyset_multiplier'],
+                'inferno.lib.reader.csv_reader'],
             'map_function': 'inferno.lib.map.keyset_map',
             'reduce_function': 'inferno.lib.reduce.keyset_reduce',
             'parts_preprocess': [],
@@ -107,14 +107,16 @@ class TestRuleHandler(DiscoBallHandlerTestCase):
                     'table': None,
                     'value_parts': ['value_1'],
                     'column_mappings': [],
-                    'parts_postprocess': []
+                    'parts_postprocess': [],
+                    'parts_preprocess': [],
                 },
                 'keyset_2': {
                     'key_parts': ['_keyset', 'key_2'],
                     'value_parts': ['value_2'],
                     'table': None,
                     'column_mappings': [],
-                    'parts_postprocess': []
+                    'parts_postprocess': [],
+                    'parts_preprocess': [],
                 },
             },
         }
@@ -246,6 +248,56 @@ class FakeInfernoDaemon(InfernoDaemon):
 
 
 
-        {u'run': True, u'map_function': u'inferno.lib.map.keyset_map', u'parts_preprocess': [],
-         u'keysets': {u'keyset_2': {u'parts_postprocess': [], u'table': None, u'value_parts': [u'value_2'], u'key_parts': [u'_keyset', u'key_2'], u'column_mappings': []}, u'keyset_1': {u'parts_postprocess': [], u'table': None, u'value_parts': [u'value_1'], u'key_parts': [u'_keyset', u'key_1'], u'column_mappings': []}}, u'reduce_function': u'inferno.lib.reduce.keyset_reduce', u'archive': False, u'map_input_stream': [u'disco.worker.classic.func.task_input_stream', u'disco.worker.classic.func.disco_input_stream', u'inferno.lib.reader.csv_reader', u'inferno.lib.reader.keyset_multiplier'], u'name': u'automatic_rule_1'} != \
-        {'keysets': {'keyset_2': {'column_mappings': [], 'table': None, 'value_parts': ['value_2'], 'parts_postprocess': [], 'key_parts': ['_keyset', 'key_2']}, 'keyset_1': {'column_mappings': [], 'table': None, 'value_parts': ['value_1'], 'parts_postprocess': [], 'key_parts': ['_keyset', 'key_1']}}, 'parts_postprocess': [], 'run': True, 'name': 'automatic_rule_1', 'reduce_function': 'inferno.lib.reduce.keyset_reduce', 'parts_preprocess': [], 'archive': False, 'map_input_stream': ['disco.worker.classic.func.task_input_stream', 'disco.worker.classic.func.disco_input_stream', 'inferno.lib.reader.csv_reader', 'inferno.lib.reader.keyset_multiplier'], 'map_function': 'inferno.lib.map.keyset_map'}
+        # {u'run': True,
+        #  u'archive': False,
+        #  u'map_function': u'inferno.lib.map.keyset_map',
+        #  u'parts_preprocess': [],
+        #  u'keysets':
+        #      {u'keyset_2':
+        #           {u'parts_postprocess': [],
+        #            u'table': None,
+        #            u'value_parts': [u'value_2'],
+        #            u'key_parts': [u'_keyset', u'key_2'],
+        #            u'column_mappings': []
+        #           },
+        #       u'keyset_1':
+        #           {u'parts_postprocess': [],
+        #            u'table': None,
+        #            u'value_parts': [u'value_1'],
+        #            u'key_parts': [u'_keyset', u'key_1'],
+        #            u'column_mappings': []
+        #           }
+        #      },
+        #  u'reduce_function': u'inferno.lib.reduce.keyset_reduce',
+        #  u'map_input_stream': [u'disco.worker.classic.func.task_input_stream',
+        #                        u'disco.worker.classic.func.disco_input_stream',
+        #                        u'inferno.lib.reader.csv_reader',
+        #                        u'inferno.lib.reader.keyset_multiplier'],
+        #  u'name': u'automatic_rule_1'} != \
+        # {'run': True,
+        #  'archive': False,
+        #  'keysets':
+        #      {'keyset_2':
+        #           {'column_mappings': [],
+        #            'table': None,
+        #            'value_parts': ['value_2'],
+        #            'parts_postprocess': [],
+        #            'key_parts': ['_keyset', 'key_2']
+        #           },
+        #       'keyset_1':
+        #           {'column_mappings': [],
+        #            'table': None,
+        #            'value_parts': ['value_1'],
+        #            'parts_postprocess': [],
+        #            'key_parts': ['_keyset', 'key_1']
+        #           }
+        #      },
+        #  'parts_postprocess': [],
+        #  'name': 'automatic_rule_1',
+        #  'reduce_function': 'inferno.lib.reduce.keyset_reduce',
+        #  'parts_preprocess': [],
+        #  'map_input_stream': ['disco.worker.classic.func.task_input_stream',
+        #                       'disco.worker.classic.func.disco_input_stream',
+        #                       'inferno.lib.reader.csv_reader',
+        #                       'inferno.lib.reader.keyset_multiplier'],
+        #  'map_function': 'inferno.lib.map.keyset_map'}

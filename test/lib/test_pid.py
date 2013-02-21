@@ -57,22 +57,30 @@ class TestDaemonPid(object):
 
     def test_should_run(self):
         # without last run file
+
         eq_(self.pid.should_run(self.job), True)
 
         print 'hee --> %s %s' % (self.pid._pid_dir,self.job.rule_name)
 
+        self._make_temp_pid_file()
         # with last run file that's new
         d = Datefile(self.pid._pid_dir, "%s.last_run" % self.job.rule_name,
                  timestamp=datetime.utcnow())
         print 'yo --> %s' % d.timestamp
-
-
         eq_(self.pid.should_run(self.job), False)
 
         # with last run file that's old
         Datefile(self.pid._pid_dir, "%s.last_run" % self.job.rule_name,
             timestamp=Datefile.EPOCH)
+        eq_(self.pid.should_run(self.job), False)
+
+        os.remove('%s/%s.pid' % (self.pid._pid_dir, self.job.rule_name))
+
+        # right date, with no pid
+        Datefile(self.pid._pid_dir, "%s.last_run" % self.job.rule_name,
+                 timestamp=Datefile.EPOCH)
         eq_(self.pid.should_run(self.job), True)
+
 
     def _make_temp_pid_dir(self):
         temp_dir = tempfile.gettempdir()
@@ -80,3 +88,7 @@ class TestDaemonPid(object):
         pid_dir = self.settings['pid_dir']
         if os.path.exists(pid_dir):
             shutil.rmtree(pid_dir)
+
+    def _make_temp_pid_file(self):
+        f = open('%s/%s.pid' % (self.pid._pid_dir, self.job.rule_name), 'w')
+
