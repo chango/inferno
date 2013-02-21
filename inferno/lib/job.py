@@ -151,7 +151,6 @@ class InfernoJob(object):
         else:
             if not self.settings.get('debug'):
                 self._archive_tags(self.archiver)
-                self._nuke_tags(self.archiver)
             if self.rule.rule_cleanup:
                 self._notify_parent(JOB_CLEANUP)
                 self.rule.rule_cleanup(self, )
@@ -210,9 +209,7 @@ class InfernoJob(object):
         if archiver.archive_mode:
             self._notify_parent(JOB_ARCHIVE)
             archiver.archive()
-
-    def _nuke_tags(self, archiver):
-        if archiver.nuke_mode:
+        elif archiver.nuke_mode:
             self._notify_parent(JOB_NUKE)
             archiver.nuke()
 
@@ -233,9 +230,8 @@ class InfernoJob(object):
                 url = '%s/_status/%s' % (self.parent, self.full_job_id)
                 urllib2.urlopen(url, data=msg) #, timeout=5)
             except Exception as e:
-                import traceback
-                trace = traceback.format_exc(15)
-                log.error("Error communicating with parent: %s stage= %s\n%s" % (e, stage, trace))
+                log.error("Error communicating with parent: %s stage= %s "+\
+                          "job_id = %s" % (e.message, stage, self.full_job_id))
 
     def _enough_blobs(self, blob_count):
         if not blob_count or (blob_count < self.rule.min_blobs and

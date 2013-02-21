@@ -1,9 +1,5 @@
 import sys
 
-from datetime import date
-import types
-import functools
-
 from disco.core import Params
 from disco.core import result_iterator
 from disco.func import chain_stream
@@ -16,7 +12,6 @@ from inferno.lib.disco_ext import sorted_iterator
 from inferno.lib.map import keyset_map
 from inferno.lib.reader import csv_reader
 from inferno.lib.reader import json_reader
-from inferno.lib.reader import keyset_multiplier
 from inferno.lib.reduce import keyset_reduce
 from inferno.lib.result import keyset_result
 
