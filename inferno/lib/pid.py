@@ -37,9 +37,12 @@ def create_last_run(pid_dir, rule):
 
 def create_pid(pid_dir, rule, pid):
     path = get_pid_path(pid_dir, rule)
-    with open(path, 'w') as f:
-        f.write(pid)
-    return True
+    try:
+        with open(path, 'w') as f:
+            f.write(pid)
+        return True
+    except Exception as ex:
+        raise ex
 
 def remove_pid(pid_dir, rule):
     path = get_pid_path(pid_dir, rule)

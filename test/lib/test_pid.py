@@ -12,7 +12,7 @@ from nose.tools import ok_
 from inferno.lib.datefile import Datefile
 
 from inferno.lib.job import InfernoJob
-from inferno.lib.pid import DaemonPid
+from inferno.lib import pid
 from inferno.lib.rule import InfernoRule
 from inferno.lib.settings import InfernoSettings
 
@@ -23,32 +23,33 @@ class TestDaemonPid(object):
         self.settings = InfernoSettings()
         self._make_temp_pid_dir()
         self.job = InfernoJob(InfernoRule(name='some_rule_name'), {}, Params())
-        self.pid = DaemonPid(self.settings)
+        self.pid_dir = pid.pid_dir(self.settings)
 
     def test_create_pid(self):
         # create the pid file
-        eq_(self.pid.create_pid(self.job), True)
-        # can't create it again
-        eq_(self.pid.create_pid(self.job), False)
+        eq_(pid.create_pid(self.pid_dir, self.job.rule, str(os.getpid())),
+            True)
 
-    @raises(OSError)
+    @raises(IOError)
     def test_create_pid_exception(self):
         unknown_path = os.path.join('some', 'unknown', 'path')
-        self.pid._settings['pid_dir'] = unknown_path
-        self.pid.create_pid(self.job)
+        pid_dir = self.settings['pid_dir'] = unknown_path
+        pid.create_pid(pid_dir, self.job.rule, str(os.getpid()))
 
     def test_remove_pid(self):
         # create the pid file
-        eq_(self.pid.create_pid(self.job), True)
+        eq_(pid.create_pid(self.pid_dir, self.job.rule, str(os.getpid())),
+            True)
         # remove the pid file
-        self.pid.remove_pid(self.job)
+        pid.remove_pid(self.pid_dir, self.job.rule)
         # can't remove it again
-        assert_raises(OSError, self.pid.remove_pid, self.job)
+        assert_raises(OSError, pid.remove_pid, self.pid_dir, self.job.rule)
 
     def test_processes(self):
-        eq_(self.pid.processes, [])
-        eq_(self.pid.create_pid(self.job), True)
-        actual = self.pid.processes
+        eq_(pid.processes(self.pid_dir), [])
+        eq_(pid.create_pid(self.pid_dir, self.job.rule, str(os.getpid())),
+            True)
+        actual = pid.processes(self.pid_dir)
         eq_(len(actual), 1)
         eq_(set(actual[0].keys()), set(['pid', 'timestamp', 'name']))
         eq_(actual[0]['name'], 'some_rule_name')
@@ -58,28 +59,28 @@ class TestDaemonPid(object):
     def test_should_run(self):
         # without last run file
 
-        eq_(self.pid.should_run(self.job), True)
+        eq_(pid.should_run(self.pid_dir, self.job.rule), True)
 
-        print 'hee --> %s %s' % (self.pid._pid_dir,self.job.rule_name)
+        print 'hee --> %s %s' % (self.pid_dir,self.job.rule_name)
 
         self._make_temp_pid_file()
         # with last run file that's new
-        d = Datefile(self.pid._pid_dir, "%s.last_run" % self.job.rule_name,
+        d = Datefile(self.pid_dir, "%s.last_run" % self.job.rule_name,
                  timestamp=datetime.utcnow())
         print 'yo --> %s' % d.timestamp
-        eq_(self.pid.should_run(self.job), False)
+        eq_(pid.should_run(self.pid_dir, self.job.rule), False)
 
         # with last run file that's old
-        Datefile(self.pid._pid_dir, "%s.last_run" % self.job.rule_name,
+        Datefile(self.pid_dir, "%s.last_run" % self.job.rule_name,
             timestamp=Datefile.EPOCH)
-        eq_(self.pid.should_run(self.job), False)
+        eq_(pid.should_run(self.pid_dir, self.job.rule), False)
 
-        os.remove('%s/%s.pid' % (self.pid._pid_dir, self.job.rule_name))
+        os.remove('%s/%s.pid' % (self.pid_dir, self.job.rule_name))
 
         # right date, with no pid
-        Datefile(self.pid._pid_dir, "%s.last_run" % self.job.rule_name,
+        Datefile(self.pid_dir, "%s.last_run" % self.job.rule_name,
                  timestamp=Datefile.EPOCH)
-        eq_(self.pid.should_run(self.job), True)
+        eq_(pid.should_run(self.pid_dir, self.job.rule), True)
 
 
     def _make_temp_pid_dir(self):
@@ -90,5 +91,5 @@ class TestDaemonPid(object):
             shutil.rmtree(pid_dir)
 
     def _make_temp_pid_file(self):
-        f = open('%s/%s.pid' % (self.pid._pid_dir, self.job.rule_name), 'w')
+        f = open('%s/%s.pid' % (self.pid_dir, self.job.rule_name), 'w')
 
