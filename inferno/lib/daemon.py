@@ -117,6 +117,9 @@ class InfernoDaemon(object):
                  params=None, wait_for_id=False):
         try:
             print 'trying job %s' % rule.name
+
+            # check if pid file exists
+
             job_settings = self.settings.copy()
             if params:
                 job_settings.update(params)
@@ -175,4 +178,5 @@ class InfernoDaemon(object):
 
                 self.run_rule(rule, automatic_cycle=True)
 
+            time.sleep(1)
         self.die()
