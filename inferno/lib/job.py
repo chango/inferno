@@ -230,8 +230,7 @@ class InfernoJob(object):
                 url = '%s/_status/%s' % (self.parent, self.full_job_id)
                 urllib2.urlopen(url, data=msg) #, timeout=5)
             except Exception as e:
-                log.error("Error communicating with parent: %s stage= %s "+\
-                          "job_id = %s" % (e.message, stage, self.full_job_id))
+                log.error("Error communicating with parent: %s stage= %s job_id = %s" % (e.message, stage, self.full_job_id))
 
     def _enough_blobs(self, blob_count):
         if not blob_count or (blob_count < self.rule.min_blobs and
