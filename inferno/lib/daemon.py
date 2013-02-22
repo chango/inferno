@@ -17,7 +17,7 @@ from inferno.lib.job_factory import JobFactory
 from inferno.lib.lookup_rules import get_rule_dict
 from inferno.lib.lookup_rules import get_rules
 from inferno.lib.lookup_rules import get_rules_by_name
-from inferno.lib.pid import DaemonPid
+from inferno.lib import pid
 
 
 log = logging.getLogger(__name__)
@@ -37,9 +37,7 @@ def run_rule_async(rule_name, automatic_cycle, settings, queue):
     signal.signal(signal.SIGHUP, signal.SIG_IGN)
     signal.signal(signal.SIGINT, signal.SIG_IGN)
     signal.signal(signal.SIGTERM, signal.SIG_IGN)
-
     response_sent = False
-    pid_created = False
     parent = 'http://127.0.0.1:%d' % settings.get('inferno_http_port', 6970)
     rules = get_rules_by_name(
         rule_name, settings['rules_directory'], immediate=not automatic_cycle)
@@ -48,15 +46,13 @@ def run_rule_async(rule_name, automatic_cycle, settings, queue):
     else:
         log.error('No rule exists with rule_name: %s' % rule_name)
         raise Exception('No rule exists with rule_name: %s' % rule_name)
+    pid_dir = pid.pid_dir(settings)
+    # updates pid inside rule_name.pid
+    pid.create_pid(pid_dir, rule, str(os.getpid()))
     job = JobFactory.create_job(rule, settings, parent)
-    pid = DaemonPid(settings)
 
     try:
-        if automatic_cycle and pid.should_run(job):
-            pid_created = pid.create_pid(job)
-            pid.create_last_run(job)
-
-        if not automatic_cycle or pid_created:
+        if not automatic_cycle:
             if job.start():
                 queue.put({'job': job.job_msg})
                 response_sent = True
@@ -73,8 +69,7 @@ def run_rule_async(rule_name, automatic_cycle, settings, queue):
         log.error('Error running job %s: %s',
                   job.rule_name, e, exc_info=sys.exc_info())
     finally:
-        if pid_created:
-            pid.remove_pid(job)
+        pid.remove_pid(pid_dir, rule)
         os._exit(0)
 
 
@@ -117,9 +112,6 @@ class InfernoDaemon(object):
                  params=None, wait_for_id=False):
         try:
             print 'trying job %s' % rule.name
-
-            # check if pid file exists
-
             job_settings = self.settings.copy()
             if params:
                 job_settings.update(params)
@@ -166,17 +158,19 @@ class InfernoDaemon(object):
 
         # keep cycling through the automatic rules
         while not self.stopped:
-
             # cycle through all the automatic rules
             for rule in auto_rules:
+                pid_dir = pid.pid_dir(self.settings)
                 if self.stopped:
                     break
-
                 # skip this rule
-                if not rule.run or self.paused:
+                # check if pid file exists
+                if not rule.run or self.paused or not pid.should_run(
+                        pid_dir, rule):
                     continue
 
+                pid.create_pid(pid_dir, rule, 'N/A')
+                pid.create_last_run(pid_dir, rule)
                 self.run_rule(rule, automatic_cycle=True)
-
             time.sleep(1)
         self.die()
