@@ -21,6 +21,7 @@ def processes(pid_dir):
             })
     return result
 
+
 def should_run(pid_dir, rule):
     last_run = Datefile(pid_dir, "%s.last_run" % rule.name)
     if not os.path.exists(get_pid_path(pid_dir, rule)) and \
@@ -31,9 +32,11 @@ def should_run(pid_dir, rule):
             rule.name, last_run)
     return False
 
+
 def create_last_run(pid_dir, rule):
     Datefile(pid_dir, "%s.last_run" % rule.name,
              timestamp=datetime.utcnow())
+
 
 def create_pid(pid_dir, rule, pid):
     path = get_pid_path(pid_dir, rule)
@@ -44,12 +47,15 @@ def create_pid(pid_dir, rule, pid):
     except Exception as ex:
         raise ex
 
+
 def remove_pid(pid_dir, rule):
     path = get_pid_path(pid_dir, rule)
     os.unlink(path)
 
+
 def get_pid_path(pid_dir, rule):
     return os.path.join(pid_dir, '%s.pid' % rule.name)
+
 
 def pid_dir(settings):
     path = settings['pid_dir']
