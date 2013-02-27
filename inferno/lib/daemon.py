@@ -104,8 +104,7 @@ class InfernoDaemon(object):
                 if rule.name == rule_name:
                     return rule
 
-    def run_rule(self, rule, automatic_cycle=False,
-                 params=None, wait_for_id=False):
+    def run_rule(self, rule, params=None, wait_for_id=False):
         try:
             log.info('trying job %s' % rule.name)
             job_settings = self.settings.copy()
@@ -113,7 +112,7 @@ class InfernoDaemon(object):
                 job_settings.update(params)
             name = rule.qualified_name
             queue = Queue()
-            args = (name, automatic_cycle, job_settings, queue)
+            args = (name, job_settings, queue)
             Process(target=run_rule_async, args=args).start()
             if wait_for_id:
                 msg = queue.get(True)
