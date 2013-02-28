@@ -65,7 +65,7 @@ class InfernoRule(object):
                  partitions=200,
                  partition_function=crc_partition,
                  scheduler=None,
-                 time_delta={'minutes': 5},
+                 time_delta=None,
 
                  # archive
                  archive=False,
@@ -145,6 +145,8 @@ class InfernoRule(object):
         self.partition_function = partition_function
         self.scheduler = scheduler
         self.time_delta = time_delta
+        if self.time_delta is None:
+            self.time_delta = {'minutes': 5}
 
         # archive
         self.archive = archive
