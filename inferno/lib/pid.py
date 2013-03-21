@@ -8,6 +8,7 @@ from inferno.lib.datefile import Datefile
 
 log = logging.getLogger(__name__)
 
+
 def processes(pid_dir):
     files = glob.glob(os.path.join(pid_dir, '*.pid'))
     result = []
@@ -25,11 +26,11 @@ def processes(pid_dir):
 def should_run(pid_dir, rule):
     last_run = Datefile(pid_dir, "%s.last_run" % rule.name)
     if not os.path.exists(get_pid_path(pid_dir, rule)) and \
-        last_run.is_older_than(rule.time_delta):
+            last_run.is_older_than(rule.time_delta):
         return True
     else:
         log.debug('Skipping job: %s (last: %s)',
-            rule.name, last_run)
+                  rule.name, last_run)
     return False
 
 

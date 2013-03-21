@@ -32,9 +32,9 @@ JOB_TAG = 'job.tag'
 JOB_WAIT = 'job.wait'
 JOB_ERROR = 'job.error'
 
-class InfernoJob(object):
 
-    def __init__(self, rule, settings, parent=None):
+class InfernoJob(object):
+    def __init__(self, rule, settings):
         self.job_options = JobOptions(rule, settings)
         self.rule = rule
         self.settings = settings
@@ -49,17 +49,16 @@ class InfernoJob(object):
             mod = __import__(worker_mod, {}, {}, worker_mod)
             worker = getattr(mod, worker_class)()
             self.job = Job(name=rule.name,
-                master=self.disco.master,
-                worker=worker)
+                           master=self.disco.master,
+                           worker=worker)
         except Exception as e:
             log.warn("Error instantiating worker: %s %s - loading default worker"
-                        % (settings.get('worker'), e))
+                     % (settings.get('worker'), e))
             self.job = Job(name=rule.name,
-                master=self.disco.master)
+                           master=self.disco.master)
         self.full_job_id = None
-        self.parent = parent
         self.jobinfo = None
-        self._update_state(JOB_START)
+        self._notify(JOB_START)
 
     @property
     def job_name(self):
@@ -92,24 +91,24 @@ class InfernoJob(object):
             if self.rule.rule_init_function:
                 self.rule.rule_init_function(self.params)
             self.job.run(name=self.rule.name,
-                  input=job_blobs,
-                  map=map_function,
-                  reduce=self.rule.reduce_function,
-                  params=self.params,
-                  partitions=self.rule.partitions,
-                  map_input_stream=self.rule.map_input_stream,
-                  map_output_stream=self.rule.map_output_stream,
-                  map_init=self.rule.map_init_function,
-                  save=self.rule.save or self.rule.result_tag is not None,
-                  scheduler=self.rule.scheduler,
-                  combiner=self.rule.combiner_function,
-                  reduce_output_stream=self.rule.reduce_output_stream,
-                  sort=self.rule.sort,
-                  sort_buffer_size=self.rule.sort_buffer_size,
-                  profile=self.settings.get('profile'),
-                  partition=self.rule.partition_function,
-                  required_files=self.rule.required_files,
-                  required_modules=self.rule.required_modules)
+                         input=job_blobs,
+                         map=map_function,
+                         reduce=self.rule.reduce_function,
+                         params=self.params,
+                         partitions=self.rule.partitions,
+                         map_input_stream=self.rule.map_input_stream,
+                         map_output_stream=self.rule.map_output_stream,
+                         map_init=self.rule.map_init_function,
+                         save=self.rule.save or self.rule.result_tag is not None,
+                         scheduler=self.rule.scheduler,
+                         combiner=self.rule.combiner_function,
+                         reduce_output_stream=self.rule.reduce_output_stream,
+                         sort=self.rule.sort,
+                         sort_buffer_size=self.rule.sort_buffer_size,
+                         profile=self.settings.get('profile'),
+                         partition=self.rule.partition_function,
+                         required_files=self.rule.required_files,
+                         required_modules=self.rule.required_modules)
 
             # actual id is only assigned after starting the job
             self.full_job_id = self.job.name
@@ -117,7 +116,7 @@ class InfernoJob(object):
         return None
 
     def query(self):
-        log.info ("Query information:")
+        log.info("Query information:")
         pprint.pprint({'source query': self.archiver.tags,
                        'tag results': self.archiver.tag_map,
                        'total_blobs': self.archiver.blob_count})
@@ -131,8 +130,8 @@ class InfernoJob(object):
     def wait(self):
         blob_count = self.archiver.blob_count
         log.info('Started job %s processing %i blobs',
-            self.job.name, blob_count)
-        self._notify_parent(JOB_WAIT)
+                 self.job.name, blob_count)
+        self._notify(JOB_WAIT)
         try:
             jobout = self.job.wait()
             log.info('Done waiting for job %s', self.job.name)
@@ -147,18 +146,18 @@ class InfernoJob(object):
         except Exception as e:
             log.error('Job %s failed: %s',
                       self.job.name, e, exc_info=sys.exc_info())
-            self._notify_parent(JOB_ERROR)
+            self._notify(JOB_ERROR)
         else:
             if not self.settings.get('debug'):
                 self._archive_tags(self.archiver)
             if self.rule.rule_cleanup:
-                self._notify_parent(JOB_CLEANUP)
+                self._notify(JOB_CLEANUP)
                 self.rule.rule_cleanup(self, )
-            self._notify_parent(JOB_DONE)
+            self._notify(JOB_DONE)
         log.info('Finished job %s', self.job.name)
 
     def _determine_job_blobs(self):
-        self._update_state(JOB_BLOBS)
+        self._notify(JOB_BLOBS)
         tags = self.job_options.tags
         urls = self.job_options.urls
         log.info('Processing tags: %s', tags)
@@ -169,22 +168,22 @@ class InfernoJob(object):
             nuke_mode=self.rule.nuke,
             max_blobs=self.rule.max_blobs,
             tags=tags,
-            urls=urls,)
+            urls=urls, )
         return archiver
 
     def _get_job_results(self, jobout):
         if self.rule.result_iterator:
-            self._notify_parent(JOB_RESULTS)
+            self._notify(JOB_RESULTS)
             return self.rule.result_iterator(jobout)
 
     def _profile(self, job):
         if self.settings.get('profile'):
-            self._notify_parent(JOB_PROFILE)
+            self._notify(JOB_PROFILE)
             job.profile_stats().sort_stats('cumulative').print_stats()
 
     def _tag_results(self, job_name):
         if self.job_options.result_tag:
-            self._notify_parent(JOB_TAG)
+            self._notify(JOB_TAG)
             result_name = 'disco:job:results:%s' % job_name
             tag_name = '%s:%s' % (self.job_options.result_tag, job_name)
             log.info('Tagging result: %s', tag_name)
@@ -192,51 +191,36 @@ class InfernoJob(object):
                 self.ddfs.tag(tag_name, list(self.ddfs.blobs(result_name)))
             except Exception as e:
                 log.error('Error tagging result %s: %s',
-                    tag_name, e, exc_info=sys.exc_info())
+                          tag_name, e, exc_info=sys.exc_info())
 
     def _process_results(self, results, job_id):
         if self.rule.result_processor:
-            self._notify_parent(JOB_PROCESS)
+            self._notify(JOB_PROCESS)
             self.rule.result_processor(
                 results, params=self.params, job_id=job_id)
 
     def _purge(self, job_name):
         if not self.settings.get('no_purge'):
-            self._notify_parent(JOB_PURGE)
+            self._notify(JOB_PURGE)
             self.disco.purge(job_name)
 
     def _archive_tags(self, archiver):
         if archiver.archive_mode:
-            self._notify_parent(JOB_ARCHIVE)
+            self._notify(JOB_ARCHIVE)
             archiver.archive()
         elif archiver.nuke_mode:
-            self._notify_parent(JOB_NUKE)
+            self._notify(JOB_NUKE)
             archiver.nuke()
 
-    def _update_state(self, stage):
-        try:
-            self.jobinfo = self.job.jobinfo()
-        except:
-            pass
-        self.current_stage = stage
-
-    def _notify_parent(self, stage):
-        self._update_state(stage)
+    def _notify(self, stage):
         # if we are daemon spawn, tell mommy where we are
-        if self.parent and self.full_job_id:
-            try:
-                msg = ujson.dumps(self.job_msg)
-                msg = urllib.urlencode([('msg', msg)])
-                url = '%s/_status/%s' % (self.parent, self.full_job_id)
-                urllib2.urlopen(url, data=msg) #, timeout=5)
-            except Exception as e:
-                log.error("Error communicating with parent: %s stage= %s job_id = %s" % (e.message, stage, self.full_job_id))
+        if self.full_job_id:
+            log.info("Worker: %s stage= %s " % (self.full_job_id, stage))
 
     def _enough_blobs(self, blob_count):
         if not blob_count or (blob_count < self.rule.min_blobs and
-                              not self.settings.get('force')):
-            log.info('Skipping job %s: %d blobs required, have only %d',
-                self.rule.name, self.rule.min_blobs, blob_count)
+                                  not self.settings.get('force')):
+            log.info('Skipping job %s: %d blobs required, have %d', self.rule.name, self.rule.min_blobs, blob_count)
             return False
         return True
 

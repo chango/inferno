@@ -13,20 +13,20 @@ class JobFactory(object):
         return get_rules_by_name(immed_rule, rules_dir, immediate=True)
 
     @staticmethod
-    def execute_immediate_rule(settings, parent=None):
+    def execute_immediate_rule(settings):
         rules = JobFactory.get_immediate_rules(settings)
         for rule in rules:
-            job = JobFactory.create_job(rule, settings, parent)
+            job = JobFactory.create_job(rule, settings)
             if job.start():
                 job.wait()
 
     @staticmethod
-    def execute_immediate(parent=None, settings=None, **kwargs):
+    def execute_immediate(settings=None, **kwargs):
         if not settings:
             settings = kwargs
         else:
             settings.update(kwargs)
-        JobFactory.execute_immediate_rule(settings, parent)
+        JobFactory.execute_immediate_rule(settings)
 
     @staticmethod
     def get_disco_ddfs(settings):
@@ -34,5 +34,5 @@ class JobFactory(object):
         return get_disco_handle(server)
 
     @staticmethod
-    def create_job(rule, settings=DEFAULT_SETTINGS, parent=None):
-        return InfernoJob(rule, settings, parent)
+    def create_job(rule, settings=DEFAULT_SETTINGS):
+        return InfernoJob(rule, settings)
