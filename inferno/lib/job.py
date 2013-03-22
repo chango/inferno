@@ -1,10 +1,6 @@
 import logging
 import sys
 import time
-import ujson
-import urllib2
-import urllib
-import datetime
 import pprint
 
 from disco.core import Params
@@ -67,16 +63,6 @@ class InfernoJob(object):
     @property
     def rule_name(self):
         return self.rule.qualified_name
-
-    @property
-    def job_msg(self):
-        return dict(
-            job_name=self.job_name,
-            rule_name=self.rule_name,
-            settings=self.settings,
-            child_data=self.jobinfo,
-            current_stage=self.current_stage,
-        )
 
     def start(self):
         # process the map-results option (ie. skip map phase and grab map results from job id/ddfs
