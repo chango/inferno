@@ -66,6 +66,7 @@ class InfernoRule(object):
                  partition_function=crc_partition,
                  scheduler=None,
                  time_delta=None,
+                 newest_first=True,
 
                  # archive
                  archive=False,
@@ -147,6 +148,7 @@ class InfernoRule(object):
         self.time_delta = time_delta
         if self.time_delta is None:
             self.time_delta = {'minutes': 5}
+        self.newest_first = newest_first
 
         # archive
         self.archive = archive

@@ -154,7 +154,8 @@ class InfernoJob(object):
             nuke_mode=self.rule.nuke,
             max_blobs=self.rule.max_blobs,
             tags=tags,
-            urls=urls, )
+            urls=urls,
+            newest_first=self.rule.newest_first)
         return archiver
 
     def _get_job_results(self, jobout):

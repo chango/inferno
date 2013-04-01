@@ -16,7 +16,8 @@ class Archiver(object):
                  archive_prefix='processed',
                  archive_mode=False,
                  nuke_mode=False,
-                 max_blobs=sys.maxint):
+                 max_blobs=sys.maxint,
+                 newest_first=True):
         self.tags = tags
         self.ddfs = ddfs
         self.max_blobs = max_blobs
@@ -25,6 +26,7 @@ class Archiver(object):
         self.archive_prefix = archive_prefix
         self.tag_map = self._build_tag_map(tags)
         self.urls = urls
+        self.newest_first = newest_first
 
     @lazy_property
     def blob_count(self):
@@ -74,7 +76,10 @@ class Archiver(object):
                 continue
 
             fresh_blobs = [blobs[x] for x in fresh_blobs]
-            tag_map[tag] = fresh_blobs[:(self.max_blobs - blob_count)]
+            if self.newest_first:
+                tag_map[tag] = fresh_blobs[:(self.max_blobs - blob_count)]
+            else:
+                tag_map[tag] = fresh_blobs[-(self.max_blobs - blob_count):]
             blob_count += len(fresh_blobs)
             if blob_count >= self.max_blobs:
                 break
@@ -89,7 +94,7 @@ class Archiver(object):
                 if (self.archive_mode and
                     not tag.startswith(self.archive_prefix)):
                     archived_blobs.update(self._labelled_blobs(self._get_archive_name(tag)))
-        source_tags = sorted(source_tags, reverse=True)
+        source_tags = sorted(source_tags, reverse=self.newest_first)
         return source_tags, archived_blobs
 
     def _labelled_blobs(self, tag):
