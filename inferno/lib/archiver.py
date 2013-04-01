@@ -24,9 +24,9 @@ class Archiver(object):
         self.archive_mode = archive_mode
         self.nuke_mode = nuke_mode
         self.archive_prefix = archive_prefix
+        self.newest_first = newest_first
         self.tag_map = self._build_tag_map(tags)
         self.urls = urls
-        self.newest_first = newest_first
 
     @lazy_property
     def blob_count(self):
