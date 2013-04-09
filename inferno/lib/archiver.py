@@ -89,16 +89,20 @@ class Archiver(object):
         source_tags = set()
         archived_blobs = dict()
         for prefix in tags:
+            log.debug("blob calc - prefix %s" % prefix)
             for tag in self.ddfs.list(prefix):
+                log.debug("blob calc - tag %s" % tag)
                 source_tags.add(tag)
                 if (self.archive_mode and
-                    not tag.startswith(self.archive_prefix)):
+                        not tag.startswith(self.archive_prefix)):
                     archived_blobs.update(self._labelled_blobs(self._get_archive_name(tag)))
         source_tags = sorted(source_tags, reverse=self.newest_first)
         return source_tags, archived_blobs
 
     def _labelled_blobs(self, tag):
-        blobs = self.ddfs.blobs(tag)
+        log.debug("blob fetch for tag %s" % tag)
+        blobs = [b for b in self.ddfs.blobs(tag)]
+        log.debug("blob calc - %s -> len(blobs) %s" % (tag, len(blobs)))
         return dict(map(lambda blob: (blob[0].rsplit('/', 1)[1], blob), blobs))
 
     def _get_archive_name(self, tag):

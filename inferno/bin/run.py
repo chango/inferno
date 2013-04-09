@@ -4,6 +4,7 @@ import shutil
 import sys
 
 import argparse
+from disco.util import parse_dir
 import yaml
 
 from datetime import date
@@ -13,7 +14,9 @@ from time import strptime
 from setproctitle import setproctitle
 
 from inferno.lib import __version__
+from inferno.lib.disco_ext import get_disco_handle
 from inferno.lib.job_factory import JobFactory
+from inferno.lib.lookup_rules import get_rules_by_name
 from inferno.lib.settings import InfernoSettings
 
 
@@ -169,6 +172,12 @@ def _get_options(argv):
         dest="example_rules",
         help="create example rules")
 
+    parser.add_argument(
+        "--process-results",
+        dest="process_results",
+        default=None,
+        help="given a module.job_id, just run the result processor")
+
     options = parser.parse_args(argv)
 
     if options.source_tags:
@@ -232,7 +241,7 @@ def _get_settings(options):
 def _setup_logging(settings):
     def _log_stdout(log):
         f = '%(asctime)s %(levelname)-5.5s %(process)d [%(name)s] %(message)s'
-        logging.basicConfig(level=logging.INFO, format=f)
+        logging.basicConfig(level=logging.DEBUG, format=f)
 
     log = logging.getLogger(__name__)
     if settings['immediate_rule']:
@@ -279,11 +288,32 @@ def main(argv=sys.argv):
     for path in settings.get('extra_python_paths'):
         sys.path.insert(0, path)
 
-    if options['immediate_rule']:
+    if options['process_results']:
+        rules_dir = options.get('rules_directory')
+        if not rules_dir:
+            rules_dir = settings.get('rules_directory')
+        try:
+            rule_name = options['process_results'].split('@')[0]
+            job_name = options['process_results'].split('.')[1]
+            print '-->', rule_name, rules_dir
+            rule = get_rules_by_name(rule_name, rules_dir, immediate=True)[0]
+            rule_params = dict(rule.params.__dict__)
+            disco, ddfs = get_disco_handle(rule_params.get('server', settings.get('server')))
+            status, results = disco.results(job_name)
+            if status == 'ready':
+                rule.result_processor(rule.result_iterator(results), params=settings, job_id=job_name)
+        except Exception as e:
+            import traceback
+            trace = traceback.format_exc(15)
+            log.error(trace)
+            log.error("Error processing results for job: %s %s" % (options['process_results'], e))
+            raise e
+    elif options['immediate_rule']:
         # run inferno in 'immediate' mode
         settings['no_purge'] = True
         setproctitle('inferno - immediate.%s' % options['immediate_rule'])
         JobFactory.execute_immediate_rule(settings)
+
     else:
         # run inferno in 'daemon' mode
         from inferno.lib.daemon import InfernoDaemon
