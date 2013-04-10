@@ -8,7 +8,7 @@ from disco.func import gzip_stream
 from disco.func import map_output_stream
 from disco.func import reduce_output_stream
 
-from inferno.lib.disco_ext import sorted_iterator
+from inferno.lib.disco_ext import sorted_iterator, json_output_stream
 from inferno.lib.map import keyset_map
 from inferno.lib.reader import csv_reader
 from inferno.lib.reader import json_reader
@@ -20,10 +20,13 @@ gzip_csv_stream = gzip_stream + (csv_reader,)
 gzip_json_stream = gzip_stream + (json_reader,)
 chunk_json_stream = chain_stream + (json_reader,)
 chunk_csv_stream = chain_stream + (csv_reader,)
+json_reduce_output_stream = (reduce_output_stream, json_output_stream)
+
 
 def crc_partition(key, nr_partitions, params):
     import binascii
     return binascii.crc32(key) % nr_partitions
+
 
 class Keyset(object):
 
@@ -79,16 +82,14 @@ class InfernoRule(object):
                  map_init_function=lambda x, y: x,
                  map_function=keyset_map,
                  map_input_stream=chunk_csv_stream,
-                 map_output_stream=(
-                     map_output_stream, disco_output_stream),
+                 map_output_stream=(map_output_stream, disco_output_stream),
 
                  #combine
                  combiner_function=None,
 
                  # reduce
                  reduce_function=keyset_reduce,
-                 reduce_output_stream=(
-                     reduce_output_stream, disco_output_stream),
+                 reduce_output_stream=(reduce_output_stream, disco_output_stream),
 
                  # result
                  # result_iterator_override -->
@@ -96,6 +97,7 @@ class InfernoRule(object):
                  result_iterator_override=None,
                  result_processor=keyset_result,
                  result_tag=None,
+                 result_tag_suffix=True,
                  save=False,
                  sort=True,
                  sort_buffer_size='10%',
@@ -171,6 +173,7 @@ class InfernoRule(object):
         # result
         self.result_processor = result_processor
         self.result_tag = result_tag
+        self.result_tag_suffix = result_tag_suffix
         self.save = save
         self.sort = sort
         self.sort_buffer_size = sort_buffer_size
@@ -214,7 +217,6 @@ class InfernoRule(object):
         self.required_files = required_files or []
 
         self.source_urls = source_urls
-
 
     def __str__(self):
         return '<InfernoRule: %s>' % self.name

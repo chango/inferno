@@ -36,3 +36,26 @@ def sorted_iterator(urls,
             inputs.append(instream)
 
     return SortedIterator(inputs)
+
+
+def json_output_stream(stream, partition, url, params):
+    from disco.fileutils import DiscoOutputStream_v1
+    import ujson
+
+    #print "PZRIXMS: %s" % params.__dict__
+
+    class JsonOutputStream(DiscoOutputStream_v1):
+        def __init__(self, stream, params, **kwargs):
+            super(JsonOutputStream, self).__init__(stream, **kwargs)
+            self.params = params
+
+        def add(self, k, v):
+            # just convert key and value tuples to a dict, then append
+            # note we need to use the _keyset to determine how to build the dicts
+            keyset = self.params.keysets[k[0]]
+            record = dict(zip(keyset['key_parts'], k) + zip(keyset['value_parts'], v))
+            self.append(ujson.dumps(record))
+
+    return JsonOutputStream(stream, params)
+
+

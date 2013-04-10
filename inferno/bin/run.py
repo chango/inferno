@@ -15,6 +15,7 @@ from setproctitle import setproctitle
 
 from inferno.lib import __version__
 from inferno.lib.disco_ext import get_disco_handle
+from inferno.lib.job import InfernoJob
 from inferno.lib.job_factory import JobFactory
 from inferno.lib.lookup_rules import get_rules_by_name
 from inferno.lib.settings import InfernoSettings
@@ -297,11 +298,10 @@ def main(argv=sys.argv):
             job_name = options['process_results'].split('.')[1]
             print '-->', rule_name, rules_dir
             rule = get_rules_by_name(rule_name, rules_dir, immediate=True)[0]
-            rule_params = dict(rule.params.__dict__)
-            disco, ddfs = get_disco_handle(rule_params.get('server', settings.get('server')))
-            status, results = disco.results(job_name)
+            job = InfernoJob(rule, settings)
+            status, results = job.disco.results(job_name)
             if status == 'ready':
-                rule.result_processor(rule.result_iterator(results), params=settings, job_id=job_name)
+                rule.result_processor(rule.result_iterator(results), params=job.params, job_id=job_name)
         except Exception as e:
             import traceback
             trace = traceback.format_exc(15)

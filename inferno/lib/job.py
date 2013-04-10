@@ -172,7 +172,16 @@ class InfernoJob(object):
         if self.job_options.result_tag:
             self._notify(JOB_TAG)
             result_name = 'disco:job:results:%s' % job_name
-            tag_name = '%s:%s' % (self.job_options.result_tag, job_name)
+            suffix = job_name
+            # try to guess a better suffix (ie. the date)
+            # sort the tags the job ran on, take the last part of the last tag
+            # if that looks like a date, use it, otherwise use the job name
+            if self.rule.result_tag_suffix:
+                tags = sorted(self.job_options.tags)
+                date = (tags[-1].split(':'))[-1]
+                if len(date) == 10 and '-' in date:
+                    suffix = date
+            tag_name = '%s:%s' % (self.job_options.result_tag, suffix)
             log.info('Tagging result: %s', tag_name)
             try:
                 self.ddfs.tag(tag_name, list(self.ddfs.blobs(result_name)))
