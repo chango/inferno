@@ -121,12 +121,12 @@ class InfernoJob(object):
         try:
             jobout = self.job.wait()
             log.info('Done waiting for job %s', self.job.name)
-            results = self._get_job_results(jobout)
             self._profile(self.job)
             self._tag_results(self.job.name)
             if not self.settings.get('debug'):
-                self._process_results(results, self.job.name)
+                self._process_results(jobout, self.job.name)
             else:
+                results = self._get_job_results(jobout)
                 reduce_result(results)
             self._purge(self._safe_str(self.job.name))
         except Exception as e:
@@ -189,9 +189,10 @@ class InfernoJob(object):
                 log.error('Error tagging result %s: %s',
                           tag_name, e, exc_info=sys.exc_info())
 
-    def _process_results(self, results, job_id):
+    def _process_results(self, jobout, job_id):
         if self.rule.result_processor:
             self._notify(JOB_PROCESS)
+            results = self._get_job_results(jobout)
             self.rule.result_processor(
                 results, params=self.params, job_id=job_id)
 
