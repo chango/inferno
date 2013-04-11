@@ -6,8 +6,8 @@ class SortedIterator(object):
 
     def enheap(self, i):
         try:
-            key, value = next(i)
-            heappush(self.collection, (key, value, i))
+            item = next(i)
+            heappush(self.collection, (item, i))
         except StopIteration:
             return
 
@@ -23,9 +23,9 @@ class SortedIterator(object):
         if not self.collection:
             raise StopIteration
 
-        key, value, i = heappop(self.collection)
+        item, i = heappop(self.collection)
         self.enheap(i)
-        return key, value
+        return item
 
 
 class AltSortedIterator(object):
