@@ -203,6 +203,8 @@ def _get_options(argv):
         options.source_urls = urls
 
     if options.day_start:
+        if not options.day_offset:
+            options.day_offset = 0
         options.day_start = date.fromtimestamp(mktime(strptime(
             options.day_start, '%Y-%m-%d')))
 
