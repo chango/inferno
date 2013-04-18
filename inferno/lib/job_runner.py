@@ -1,5 +1,3 @@
-import logging
-
 from inferno.lib.disco_ext import get_disco_handle
 from inferno.lib.job import InfernoJob
 from inferno.lib.rule import (extract_subrules, deduplicate_rules,
@@ -7,14 +5,12 @@ from inferno.lib.rule import (extract_subrules, deduplicate_rules,
 from disco.error import JobError
 
 
-log = logging.getLogger(__name__)
-
-
 def _start_job(rule, settings, urls=None):
     """Start a new job for an InfernoRule
+
     Note that the output of this function is a tuple of (InfernoJob, DiscoJob)
-    If this InfernoJob failed to start by some reasons, e.g. not enough blobs,
-    the DiscoJob is None.
+    If this InfernoJob fails to start by some reasons, e.g. not enough blobs,
+    the DiscoJob would be None.
     """
     job = InfernoJob(rule, settings, urls)
     return job, job.start()
@@ -41,7 +37,6 @@ def _run_concurrent_rules(rule_list, settings, urls_blackboard):
         if job:
             jobs.append(job)
         else:
-            log.warn("Not enough blobs for %s" % rule.name)
             raise JobError('Not enough blobs for %s' % rule.name)
 
     job_results = {}
@@ -76,7 +71,6 @@ def _run_sequential_rules(rule_list, settings, urls_blackboard):
         if disco_job:
             job.wait()
         else:
-            log.warn("Not enough blobs for %s" % rule.name)
             raise JobError('Not enough blobs for %s' % rule.name)
 
 
@@ -102,7 +96,7 @@ def execute_rule(rule_, settings):
 
     all_rules = deduplicate_rules(flatten_rules(rule_))
     # initialize the url blackboard, on which each entry is a
-    # rule_name : outputurls pair. Default value is []
+    # rule_name : outputurls pair. Default value of outputurls is []
     urls_blackboard = {}
     for rule in all_rules:
         urls_blackboard[rule.name] = []
@@ -124,7 +118,7 @@ def execute_rule(rule_, settings):
         for key, value in ret.iteritems():
             urls_blackboard[key] = value
         pending_rules = [rule for rule in pending_rules
-                                    if rule not in runable_rules]
+                                        if rule not in runable_rules]
         if not pending_rules:
             break
 
