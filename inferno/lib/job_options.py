@@ -1,6 +1,8 @@
 from datetime import timedelta, date
 import functools
 import types
+from inferno.lib.rule import InfernoRule
+
 
 class JobOptions(object):
 
@@ -17,11 +19,13 @@ class JobOptions(object):
 
     @property
     def tags(self):
+        def _filter_rules(tags):
+            return [tag for tag in tags if not isinstance(tag, InfernoRule)]
 
         if self.settings.get('source_tags') is not None:
-            tags = self.settings.get('source_tags')
+            tags = _filter_rules(self.settings.get('source_tags'))
         else:
-            tags = self.rule.source_tags
+            tags = _filter_rules(self.rule.source_tags)
 
             # note that all day range options are disabled if we pass tags in
             # on the command line

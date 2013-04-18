@@ -245,3 +245,30 @@ class InfernoRule(object):
             keysets=self.params.keysets,
             parts_preprocess=fname(self.params.parts_preprocess),
         )
+
+
+def extract_subrules(rule):
+    for item in rule.source_tags:
+        if isinstance(rule, InfernoRule):
+            yield item
+
+
+def flatten_rules(rule):
+    rules = []
+    if not isinstance(rule, InfernoRule):
+        return rules
+    else:
+        for item in rule.source_tags:
+            rules += flatten_rules(item)
+        # append the top-level rule to the end of list
+        rules.append(rule)
+
+    return rules
+
+
+def deduplicate_rules(rules):
+    dedup_rules = []
+    for rule in rules:
+        if not rule in dedup_rules:
+            dedup_rules.append(rule)
+    return dedup_rules

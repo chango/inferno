@@ -34,13 +34,12 @@ class Archiver(object):
 
     @lazy_property
     def job_blobs(self):
-        if self.urls:
-            return self.urls
-        else:
-            job_blobs = []
-            for blobs in self.tag_map.itervalues():
-                job_blobs += blobs
-            return job_blobs
+        # job_blobs consist of blobs of tags and urls
+        job_blobs = []
+        for blobs in self.tag_map.itervalues():
+            job_blobs += blobs
+        job_blobs += self.urls
+        return job_blobs
 
     def archive(self):
         if self.tag_map:

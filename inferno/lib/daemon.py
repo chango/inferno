@@ -11,7 +11,7 @@ from threading import RLock
 
 from setproctitle import setproctitle
 
-from inferno.lib.job_factory import JobFactory
+from inferno.lib.job_runner import execute_rule
 from inferno.lib.lookup_rules import get_rule_dict
 from inferno.lib.lookup_rules import get_rules
 from inferno.lib.lookup_rules import get_rules_by_name
@@ -48,11 +48,7 @@ def run_rule_async(rule_name, settings):
     log.info("Running %s" % rule.name)
     try:
         pid.create_pid(pid_dir, rule, str(os.getpid()))
-        job = JobFactory.create_job(rule, settings)
-        if job.start():
-            job.wait()
-        else:
-            log.warn("Not enough blobs for %s" % rule_name)
+        execute_rule(rule, settings)
     except Exception as e:
         log.error('Error running job %s: %s',
                   rule_name, e, exc_info=sys.exc_info())

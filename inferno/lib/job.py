@@ -30,7 +30,7 @@ JOB_ERROR = 'job.error'
 
 
 class InfernoJob(object):
-    def __init__(self, rule, settings):
+    def __init__(self, rule, settings, urls = None):
         self.job_options = JobOptions(rule, settings)
         self.rule = rule
         self.settings = settings
@@ -38,6 +38,7 @@ class InfernoJob(object):
         self.disco, self.ddfs = get_disco_handle(rule_params.get('server', settings.get('server')))
         rule_params.update(settings)
         self.params = Params(**rule_params)
+        self.urls = urls
 
         try:
             # attempt to allow for overriden worker class from settings file
@@ -68,7 +69,6 @@ class InfernoJob(object):
         # process the map-results option (ie. skip map phase and grab map results from job id/ddfs
         self.archiver = self._determine_job_blobs()
         job_blobs = self.archiver.job_blobs
-        map_function = self.rule.map_function
         self.start_time = time.time()
         if self.settings.get('just_query'):
             self.query()
@@ -78,7 +78,7 @@ class InfernoJob(object):
                 self.rule.rule_init_function(self.params)
             self.job.run(name=self.rule.name,
                          input=job_blobs,
-                         map=map_function,
+                         map=self.rule.map_function,
                          reduce=self.rule.reduce_function,
                          params=self.params,
                          partitions=self.rule.partitions,
@@ -145,7 +145,7 @@ class InfernoJob(object):
     def _determine_job_blobs(self):
         self._notify(JOB_BLOBS)
         tags = self.job_options.tags
-        urls = self.job_options.urls
+        urls = self.job_options.urls + self.urls if self.urls else self.job_options.urls
         log.info('Processing tags: %s', tags)
         archiver = Archiver(
             ddfs=self.ddfs,
@@ -215,9 +215,21 @@ class InfernoJob(object):
             log.info("Worker: %s stage= %s " % (self.full_job_id, stage))
 
     def _enough_blobs(self, blob_count):
+        # Note that argument blot_count is the total number of tag blobs and urls.
+        # To take urls into account, if no tag specified but urls are available,
+        # let it run
+        if len(self.job_options.tags) == 0:
+            if blob_count:
+                return True
+            else:
+                log.info('Skipping job %s: %d blobs required, have %d',
+                         self.rule.name, self.rule.min_blobs, blob_count)
+                return False
+
         if not blob_count or (blob_count < self.rule.min_blobs and
                                   not self.settings.get('force')):
-            log.info('Skipping job %s: %d blobs required, have %d', self.rule.name, self.rule.min_blobs, blob_count)
+            log.info('Skipping job %s: %d blobs required, have %d',
+                     self.rule.name, self.rule.min_blobs, blob_count)
             return False
         return True
 
