@@ -17,8 +17,8 @@ def _start_job(rule, settings, urls=None):
 
 
 def _run_concurrent_rules(rule_list, settings, urls_blackboard):
-    """Run a list of rules concurrently, it assumes all the rules are runable(
-    ie. all outputurls of its sub_rule are available).
+    """Execute a list of rules concurrently, it assumes all the rules are
+    runable(ie. all output urls of its sub_rule are available)
 
     Output:
         job_results. A dictionary of (rule_name : outputurls) pairs
@@ -63,6 +63,12 @@ def _run_concurrent_rules(rule_list, settings, urls_blackboard):
 
 
 def _run_sequential_rules(rule_list, settings, urls_blackboard):
+    """Execute a list of rules sequentially
+
+    Note that the urls_blackboard could not be updated during the execution,
+    since the wait method of InfernoJob does NOT return any urls. If the rule
+    needs the results of previous rule, use _run_concurrent_rules instead.
+    """
     for rule in rule_list:
         urls = []
         for sub_rule in extract_subrules(rule):
