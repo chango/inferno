@@ -190,7 +190,7 @@ class InfernoRule(object):
         self.day_range = day_range
         self.day_offset = day_offset
         self.day_start = day_start
-        self.source_tags = source_tags
+        self.source_tags = source_tags or []
 
         # keysets
         keyset_dict = {}
@@ -249,7 +249,7 @@ class InfernoRule(object):
 
 def extract_subrules(rule):
     for item in rule.source_tags:
-        if isinstance(rule, InfernoRule):
+        if isinstance(item, InfernoRule):
             yield item
 
 

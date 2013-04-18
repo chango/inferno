@@ -317,8 +317,11 @@ def main(argv=sys.argv):
         immed_rule = settings.get('immediate_rule')
         rules_dir = settings.get('rules_directory')
         rules = get_rules_by_name(immed_rule, rules_dir, immediate=True)
-        for rule in rules:
-            execute_rule(rule, settings)
+        try:
+            for rule in rules:
+                execute_rule(rule, settings)
+        except Exception as e:
+            print e
 
     else:
         # run inferno in 'daemon' mode
