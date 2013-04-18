@@ -179,6 +179,12 @@ def _get_options(argv):
         default=None,
         help="given a module.job_id, just run the result processor")
 
+    parser.add_argument(
+        "--process-map",
+        dest="process_map",
+        default=None,
+        help="resume a job using the mapresults of supplied module.job_id")
+
     options = parser.parse_args(argv)
 
     if options.source_tags:
@@ -298,7 +304,6 @@ def main(argv=sys.argv):
         try:
             rule_name = options['process_results'].split('@')[0]
             job_name = options['process_results'].split('.')[1]
-            print '-->', rule_name, rules_dir
             rule = get_rules_by_name(rule_name, rules_dir, immediate=True)[0]
             job = InfernoJob(rule, settings)
             status, results = job.disco.results(job_name)
@@ -310,12 +315,32 @@ def main(argv=sys.argv):
             log.error(trace)
             log.error("Error processing results for job: %s %s" % (options['process_results'], e))
             raise e
+    elif options['process_map']:
+        rules_dir = options.get('rules_directory')
+        if not rules_dir:
+            rules_dir = settings.get('rules_directory')
+        try:
+            rule_name = options['process_map'].split('@')[0]
+            job_name = options['process_map'].split('.')[1]
+            rule = get_rules_by_name(rule_name, rules_dir, immediate=True)[0]
+            rule.map_function = None
+            rule.source_tags = []
+            disco, ddfs = get_disco_handle(settings.get('server'))
+            rule.source_urls = disco.mapresults(job_name)
+            job = InfernoJob(rule, settings)
+            if job.start():
+                job.wait()
+        except Exception as e:
+            import traceback
+            trace = traceback.format_exc(15)
+            log.error(trace)
+            log.error("Error processing map results for job: %s %s" % (options['process_map'], e))
+            raise e
     elif options['immediate_rule']:
         # run inferno in 'immediate' mode
         settings['no_purge'] = True
         setproctitle('inferno - immediate.%s' % options['immediate_rule'])
         JobFactory.execute_immediate_rule(settings)
-
     else:
         # run inferno in 'daemon' mode
         from inferno.lib.daemon import InfernoDaemon

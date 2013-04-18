@@ -68,7 +68,6 @@ class InfernoJob(object):
         # process the map-results option (ie. skip map phase and grab map results from job id/ddfs
         self.archiver = self._determine_job_blobs()
         job_blobs = self.archiver.job_blobs
-        map_function = self.rule.map_function
         self.start_time = time.time()
         if self.settings.get('just_query'):
             self.query()
@@ -76,26 +75,7 @@ class InfernoJob(object):
         if self._enough_blobs(self.archiver.blob_count):
             if self.rule.rule_init_function:
                 self.rule.rule_init_function(self.params)
-            self.job.run(name=self.rule.name,
-                         input=job_blobs,
-                         map=map_function,
-                         reduce=self.rule.reduce_function,
-                         params=self.params,
-                         partitions=self.rule.partitions,
-                         map_input_stream=self.rule.map_input_stream,
-                         map_output_stream=self.rule.map_output_stream,
-                         map_init=self.rule.map_init_function,
-                         save=self.rule.save or self.rule.result_tag is not None,
-                         scheduler=self.rule.scheduler,
-                         combiner=self.rule.combiner_function,
-                         reduce_output_stream=self.rule.reduce_output_stream,
-                         sort=self.rule.sort,
-                         sort_buffer_size=self.rule.sort_buffer_size,
-                         profile=self.settings.get('profile'),
-                         partition=self.rule.partition_function,
-                         required_files=self.rule.required_files,
-                         required_modules=self.rule.required_modules)
-
+            self._run(job_blobs)
             # actual id is only assigned after starting the job
             self.full_job_id = self.job.name
             return self.job
@@ -106,6 +86,28 @@ class InfernoJob(object):
         pprint.pprint({'source query': self.archiver.tags,
                        'tag results': self.archiver.tag_map,
                        'total_blobs': self.archiver.blob_count})
+
+    def _run(self, sources):
+        return self.job.run(name=self.rule.name,
+                            input=sources,
+                            map=self.rule.map_function,
+                            reduce=self.rule.reduce_function,
+                            params=self.params,
+                            partitions=self.rule.partitions,
+                            map_input_stream=self.rule.map_input_stream,
+                            map_output_stream=self.rule.map_output_stream,
+                            map_init=self.rule.map_init_function,
+                            save=self.rule.save or self.rule.result_tag is not None,
+                            scheduler=self.rule.scheduler,
+                            combiner=self.rule.combiner_function,
+                            reduce_output_stream=self.rule.reduce_output_stream,
+                            sort=self.rule.sort,
+                            sort_buffer_size=self.rule.sort_buffer_size,
+                            profile=self.settings.get('profile'),
+                            partition=self.rule.partition_function,
+                            required_files=self.rule.required_files,
+                            required_modules=self.rule.required_modules)
+
 
     def _safe_str(self, value):
         try:
