@@ -28,14 +28,17 @@ def _run_concurrent_rules(rule_list, settings, urls_blackboard):
     def _get_rule_name(disco_job_name):
         return disco_job_name.rsplit('@')[0]
 
+    # need to save both inferno_jobs and disco_jobs
     jobs = []
+    inferno_jobs = []
     for rule in rule_list:
         urls = []
         for sub_rule in extract_subrules(rule):
             urls += urls_blackboard[sub_rule.name]
-        _, job = _start_job(rule, settings, urls)
+        inferno_job, job = _start_job(rule, settings, urls)
         if job:
             jobs.append(job)
+            inferno_jobs.append(inferno_job)
         else:
             raise JobError('Not enough blobs for %s' % rule.name)
 
@@ -56,10 +59,10 @@ def _run_concurrent_rules(rule_list, settings, urls_blackboard):
     if stop:
         for jobname, _ in jobs:
             server.kill(jobname)
-            raise JobError('One of the concurrent job failed.')
+            raise JobError('One of the concurrent jobs failed.')
             # TODO purge automatically?
 
-    return job_results
+    return inferno_jobs, job_results
 
 
 def _run_sequential_rules(rule_list, settings, urls_blackboard):
@@ -114,21 +117,24 @@ def execute_rule(rule_, settings):
     # execute all sub-rules concurrently, collect urls for the top-level rule
     pending_rules = all_rules[:-1]
     done = True
-    while 1:
+    inferno_jobs = []  # collect all sub-jobs in order to purge them in the end
+    while pending_rules:
         runable_rules = _get_runable_rules(pending_rules, urls_blackboard)
         try:
-            ret = _run_concurrent_rules(runable_rules, settings, urls_blackboard)
+            jobs, ret = _run_concurrent_rules(runable_rules, settings, urls_blackboard)
         except JobError:
             done = False
             break
+        inferno_jobs += jobs
         for key, value in ret.iteritems():
             urls_blackboard[key] = value
         pending_rules = [rule for rule in pending_rules
                                         if rule not in runable_rules]
-        if not pending_rules:
-            break
 
     if done:
-        return _run_sequential_rules(all_rules[-1:], settings, urls_blackboard)
+        _run_sequential_rules(all_rules[-1:], settings, urls_blackboard)
+        # InfernoJob will take care about whether purge the sub-jobs or not
+        for job in inferno_jobs:
+            job._purge(job.job.name)
     else:
         raise JobError('Failed to execute the rule %s' % rule.name)
