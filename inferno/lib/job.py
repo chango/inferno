@@ -30,7 +30,7 @@ JOB_ERROR = 'job.error'
 
 
 class InfernoJob(object):
-    def __init__(self, rule, settings):
+    def __init__(self, rule, settings, urls = None):
         self.job_options = JobOptions(rule, settings)
         self.rule = rule
         self.settings = settings
@@ -38,6 +38,7 @@ class InfernoJob(object):
         self.disco, self.ddfs = get_disco_handle(rule_params.get('server', settings.get('server')))
         rule_params.update(settings)
         self.params = Params(**rule_params)
+        self.urls = urls
 
         try:
             # attempt to allow for overriden worker class from settings file
@@ -75,7 +76,25 @@ class InfernoJob(object):
         if self._enough_blobs(self.archiver.blob_count):
             if self.rule.rule_init_function:
                 self.rule.rule_init_function(self.params)
-            self._run(job_blobs)
+            self.job.run(name=self.rule.name,
+                         input=job_blobs,
+                         map=self.rule.map_function,
+                         reduce=self.rule.reduce_function,
+                         params=self.params,
+                         partitions=self.rule.partitions,
+                         map_input_stream=self.rule.map_input_stream,
+                         map_output_stream=self.rule.map_output_stream,
+                         map_init=self.rule.map_init_function,
+                         save=self.rule.save or self.rule.result_tag is not None,
+                         scheduler=self.rule.scheduler,
+                         combiner=self.rule.combiner_function,
+                         reduce_output_stream=self.rule.reduce_output_stream,
+                         sort=self.rule.sort,
+                         sort_buffer_size=self.rule.sort_buffer_size,
+                         profile=self.settings.get('profile'),
+                         partition=self.rule.partition_function,
+                         required_files=self.rule.required_files,
+                         required_modules=self.rule.required_modules)
             # actual id is only assigned after starting the job
             self.full_job_id = self.job.name
             return self.job
@@ -86,28 +105,6 @@ class InfernoJob(object):
         pprint.pprint({'source query': self.archiver.tags,
                        'tag results': self.archiver.tag_map,
                        'total_blobs': self.archiver.blob_count})
-
-    def _run(self, sources):
-        return self.job.run(name=self.rule.name,
-                            input=sources,
-                            map=self.rule.map_function,
-                            reduce=self.rule.reduce_function,
-                            params=self.params,
-                            partitions=self.rule.partitions,
-                            map_input_stream=self.rule.map_input_stream,
-                            map_output_stream=self.rule.map_output_stream,
-                            map_init=self.rule.map_init_function,
-                            save=self.rule.save or self.rule.result_tag is not None,
-                            scheduler=self.rule.scheduler,
-                            combiner=self.rule.combiner_function,
-                            reduce_output_stream=self.rule.reduce_output_stream,
-                            sort=self.rule.sort,
-                            sort_buffer_size=self.rule.sort_buffer_size,
-                            profile=self.settings.get('profile'),
-                            partition=self.rule.partition_function,
-                            required_files=self.rule.required_files,
-                            required_modules=self.rule.required_modules)
-
 
     def _safe_str(self, value):
         try:
@@ -147,7 +144,7 @@ class InfernoJob(object):
     def _determine_job_blobs(self):
         self._notify(JOB_BLOBS)
         tags = self.job_options.tags
-        urls = self.job_options.urls
+        urls = self.job_options.urls + self.urls if self.urls else self.job_options.urls
         log.info('Processing tags: %s', tags)
         archiver = Archiver(
             ddfs=self.ddfs,
@@ -217,9 +214,21 @@ class InfernoJob(object):
             log.info("Worker: %s stage= %s " % (self.full_job_id, stage))
 
     def _enough_blobs(self, blob_count):
+        # Note that argument blot_count is the total number of tag blobs and urls.
+        # To take urls into account, if no tag specified but urls are available,
+        # let it run
+        if len(self.job_options.tags) == 0:
+            if blob_count:
+                return True
+            else:
+                log.info('Skipping job %s: %d blobs required, have %d',
+                         self.rule.name, self.rule.min_blobs, blob_count)
+                return False
+
         if not blob_count or (blob_count < self.rule.min_blobs and
                                   not self.settings.get('force')):
-            log.info('Skipping job %s: %d blobs required, have %d', self.rule.name, self.rule.min_blobs, blob_count)
+            log.info('Skipping job %s: %d blobs required, have %d',
+                     self.rule.name, self.rule.min_blobs, blob_count)
             return False
         return True
 

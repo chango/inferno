@@ -16,7 +16,7 @@ from setproctitle import setproctitle
 from inferno.lib import __version__
 from inferno.lib.disco_ext import get_disco_handle
 from inferno.lib.job import InfernoJob
-from inferno.lib.job_factory import JobFactory
+from inferno.lib.job_runner import execute_rule
 from inferno.lib.lookup_rules import get_rules_by_name
 from inferno.lib.settings import InfernoSettings
 
@@ -340,7 +340,14 @@ def main(argv=sys.argv):
         # run inferno in 'immediate' mode
         settings['no_purge'] = True
         setproctitle('inferno - immediate.%s' % options['immediate_rule'])
-        JobFactory.execute_immediate_rule(settings)
+        immed_rule = settings.get('immediate_rule')
+        rules_dir = settings.get('rules_directory')
+        rules = get_rules_by_name(immed_rule, rules_dir, immediate=True)
+        try:
+            for rule in rules:
+                execute_rule(rule, settings)
+        except Exception as e:
+            print e
     else:
         # run inferno in 'daemon' mode
         from inferno.lib.daemon import InfernoDaemon
