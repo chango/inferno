@@ -133,7 +133,7 @@ def execute_rule(rule_, settings):
 
     if done:
         _run_sequential_rules(all_rules[-1:], settings, urls_blackboard)
-        # InfernoJob will take care about whether purge the sub-jobs or not
+        # InfernoJob will take care about whether to purge the sub-jobs or not
         for job in inferno_jobs:
             job._purge(job.job.name)
     else:
