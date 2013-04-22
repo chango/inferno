@@ -59,8 +59,8 @@ def _run_concurrent_rules(rule_list, settings, urls_blackboard):
     if stop:
         for jobname, _ in jobs:
             server.kill(jobname)
-            raise JobError('One of the concurrent jobs failed.')
-            # TODO purge automatically?
+        raise JobError('One of the concurrent jobs failed.')
+        # TODO purge automatically?
 
     return inferno_jobs, job_results
 
