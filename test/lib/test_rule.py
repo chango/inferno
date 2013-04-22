@@ -123,7 +123,7 @@ class TestInfernoRule(object):
 
         # none tag
         rule = InfernoRule(source_tags=None)
-        eq_(rule.source_tags, None)
+        eq_(rule.source_tags, [])
 
     def test_kwargs(self):
         rule = InfernoRule(some_extra_param='some_extra_value')
