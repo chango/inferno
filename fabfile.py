@@ -90,7 +90,7 @@ def set_version():
     local('hg commit -m "VERSION: %s"' % (version))
     local('hg push')
     tag_name = 'release-%s-%s' % (PROJECT_NAME, version)
-    local('hg tag -m "TAG [%s]: %s" %s' % (tag_name, message, tag_name))
+    local('hg tag -m "TAG [%s]: %s" %s' % (tag_name, tag_name))
     local('hg push')
     return tag_name
 
