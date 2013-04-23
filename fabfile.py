@@ -80,11 +80,12 @@ def get_new_version(release_type='patch'):
     return new_version
 
 def set_version():
-    print "Please enter the new version no.:"
+    print "Please enter the new version no. (has to be in this format n.n.n):"
     version = sys.stdin.readline().strip()
     if not version:
         print "Aborted. No version"
         exit(1)
+    print 'please eneter a message here for tagging the new release'
     message = sys.stdin.readline().strip()
     if not message:
         print "Aborted. No message"
