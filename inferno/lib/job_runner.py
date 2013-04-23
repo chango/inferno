@@ -2,7 +2,6 @@ from inferno.lib.disco_ext import get_disco_handle
 from inferno.lib.job import InfernoJob
 from inferno.lib.rule import (extract_subrules, deduplicate_rules,
                               flatten_rules)
-from disco.error import JobError
 
 
 def _start_job(rule, settings, urls=None):
@@ -23,7 +22,7 @@ def _run_concurrent_rules(rule_list, settings, urls_blackboard):
     Output:
         job_results. A dictionary of (rule_name : outputurls) pairs
     Exceptions:
-        JobError, if it fails to start a job or one of the jobs dies
+        Exception, if it fails to start a job or one of the jobs dies
     """
     def _get_rule_name(disco_job_name):
         return disco_job_name.rsplit('@')[0]
