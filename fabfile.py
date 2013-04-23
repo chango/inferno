@@ -86,11 +86,11 @@ def set_version():
         print "Aborted. No version"
         exit(1)
     with open(VERSION_PATH, 'w') as lib_info:
-        lib_info.write("__version__ = %r\n" % (version))
-    local('hg commit -m "VERSION: %s"' % (version))
+        lib_info.write("__version__ = %r\n" % version)
+    local('hg commit -m "VERSION: %s"' % version)
     local('hg push')
     tag_name = 'release-%s-%s' % (PROJECT_NAME, version)
-    local('hg tag -m "TAG [%s]: %s" %s' % (tag_name, tag_name))
+    local('hg tag -m "TAG [%s]: %s"' % (tag_name, tag_name))
     local('hg push')
     return tag_name
 
