@@ -1,11 +1,12 @@
+"""
+Based on code from Python Recipes
+http://code.activestate.com/recipes/499379-groupbysorted/
+Licensed under the PSF License (http://docs.python.org/2/license.html)"""
+
 import collections
 
 
 class peekable(object):
-    """
-    THIS CODE IS FROM THE PYTHON COOKBOOK.
-    """
-
     def __init__(self, iterable):
         self._iterable = iter(iterable)
         self._cache = collections.deque()
