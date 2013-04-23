@@ -78,3 +78,19 @@ def get_new_version(release_type='patch'):
     new_version = '.'.join(map(str, [major, minor, patch]))
     print 'new version: %r' % new_version
     return new_version
+
+def set_version():
+    print "Please enter the new version no.:"
+    version = sys.stdin.readline().strip()
+    if not version:
+        print "Aborted. No version"
+        exit(1)
+    with open(VERSION_PATH, 'w') as lib_info:
+        lib_info.write("__version__ = %r\n" % (version))
+    local('hg commit -m "VERSION: %s"' % (version))
+    local('hg push')
+    tag_name = 'release-%s-%s' % (PROJECT_NAME, version)
+    local('hg tag -m "TAG [%s]: %s" %s' % (tag_name, message, tag_name))
+    local('hg push')
+    return tag_name
+
