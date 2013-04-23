@@ -50,7 +50,7 @@ def run_rule_async(rule_name, settings):
         pid.create_pid(pid_dir, rule, str(os.getpid()))
         execute_rule(rule, settings)
     except Exception as e:
-        log.error('Error running job %s: %s',
+        log.error('Job failed: %s: %s',
                   rule_name, e, exc_info=sys.exc_info())
     finally:
         pid.remove_pid(pid_dir, rule)

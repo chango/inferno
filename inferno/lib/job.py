@@ -145,7 +145,10 @@ class InfernoJob(object):
         self._notify(JOB_BLOBS)
         tags = self.job_options.tags
         urls = self.job_options.urls + self.urls if self.urls else self.job_options.urls
-        log.info('Processing tags: %s', tags)
+        if tags or urls:
+            log.info('Processing input: %s', tags + urls)
+        else:
+            log.info('No input available for %s.' % self.rule.name)
         archiver = Archiver(
             ddfs=self.ddfs,
             archive_prefix=self.rule.archive_tag_prefix,
@@ -221,13 +224,13 @@ class InfernoJob(object):
             if blob_count:
                 return True
             else:
-                log.info('Skipping job %s: %d blobs required, have %d',
+                log.info('Skipping job %s: %d blobs required, has %d',
                          self.rule.name, self.rule.min_blobs, blob_count)
                 return False
 
         if not blob_count or (blob_count < self.rule.min_blobs and
                                   not self.settings.get('force')):
-            log.info('Skipping job %s: %d blobs required, have %d',
+            log.info('Skipping job %s: %d blobs required, has %d',
                      self.rule.name, self.rule.min_blobs, blob_count)
             return False
         return True

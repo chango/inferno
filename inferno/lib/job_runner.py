@@ -40,7 +40,7 @@ def _run_concurrent_rules(rule_list, settings, urls_blackboard):
             jobs.append(job)
             inferno_jobs.append(inferno_job)
         else:
-            raise JobError('Not enough blobs for %s' % rule.name)
+            raise Exception('Not enough blobs for %s' % rule.name)
 
     job_results = {}
     stop = False
@@ -59,7 +59,7 @@ def _run_concurrent_rules(rule_list, settings, urls_blackboard):
     if stop:
         for jobname, _ in jobs:
             server.kill(jobname)
-            raise JobError('One of the concurrent jobs failed.')
+            raise Exception('One of the concurrent jobs failed.')
             # TODO purge automatically?
 
     return inferno_jobs, job_results
@@ -80,7 +80,7 @@ def _run_sequential_rules(rule_list, settings, urls_blackboard):
         if disco_job:
             job.wait()
         else:
-            raise JobError('Not enough blobs for %s' % rule.name)
+            raise Exception('Not enough blobs for %s' % rule.name)
 
 
 def execute_rule(rule_, settings):
@@ -122,7 +122,7 @@ def execute_rule(rule_, settings):
         runable_rules = _get_runable_rules(pending_rules, urls_blackboard)
         try:
             jobs, ret = _run_concurrent_rules(runable_rules, settings, urls_blackboard)
-        except JobError:
+        except Exception as sub_rule_exception:
             done = False
             break
         inferno_jobs += jobs
@@ -137,4 +137,4 @@ def execute_rule(rule_, settings):
         for job in inferno_jobs:
             job._purge(job.job.name)
     else:
-        raise JobError('Failed to execute the rule %s' % rule.name)
+        raise sub_rule_exception
