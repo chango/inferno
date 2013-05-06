@@ -1,6 +1,7 @@
 from inferno.lib.disco_ext import get_disco_handle
 from inferno.lib.job import InfernoJob
 from inferno.lib.rule import extract_subrules, deduplicate_rules, flatten_rules
+from disco.error import CommError
 
 
 def _start_job(rule, settings, urls=None):
@@ -44,7 +45,11 @@ def _run_concurrent_rules(rule_list, settings, urls_blackboard):
     stop = False
     server, _ = get_disco_handle(settings.get('server'))
     while jobs:
-        inactive, active = server.results(jobs, 5000)
+        try:
+            inactive, active = server.results(jobs, 5000)
+        except CommError:
+            # to deal with the long time jobs(e.g waiting for shuffling)
+            continue
         for jobname, (status, results) in inactive:
             if status == "ready":
                 job_results[_get_rule_name(jobname)] = results
