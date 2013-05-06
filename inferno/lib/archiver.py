@@ -93,12 +93,16 @@ class Archiver(object):
                     for tag, blobs in tags.iteritems():
                         self._job_blobs += [blob for blob in blobs]
             else:
+                prefix_added = set()
                 for prefix in self.tags:
                     for tag in self.tag_list(prefix):
                         for blobs in self.ddfs.blobs(tag):
                             self._job_blobs.append(blobs)
                             if len(self._job_blobs) == self.max_blobs:
+                                prefix_added.add(prefix)
                                 break
+                        if prefix in prefix_added:
+                            break
                 self._blob_count = len(self._job_blobs)
                 self._tag_map = self.tags
             self._job_blobs += self.urls
