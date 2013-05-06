@@ -155,7 +155,9 @@ class InfernoJob(object):
             max_blobs=self.rule.max_blobs,
             tags=tags,
             urls=urls,
-            newest_first=self.rule.newest_first)
+            newest_first=self.rule.newest_first,
+            days=self.rule.incoming_days,
+        )
         return archiver
 
     def _get_job_results(self, jobout):
