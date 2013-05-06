@@ -29,8 +29,6 @@ class Archiver(object):
         self._job_blobs = list()
         self._blob_count = 0
 
-    def tag_list(self, prefix):
-        return sorted(self.ddfs.list(prefix), reverse=self.newest_first)
 
     @property
     def processed_blobs(self):
@@ -90,9 +88,17 @@ class Archiver(object):
     @property
     def job_blobs(self):
         if not self._job_blobs:
-            for prefix, tags in self.outgoing_blobs.iteritems():
-                for tag, blobs in tags.iteritems():
-                    self._job_blobs += [blob for blob in blobs]
+            if self.archive_mode:
+                for prefix, tags in self.outgoing_blobs.iteritems():
+                    for tag, blobs in tags.iteritems():
+                        self._job_blobs += [blob for blob in blobs]
+            else:
+                for prefix in self.tags:
+                    for tag in self.tag_list(prefix):
+                        self._job_blobs += [blobs for blobs in self.ddfs.blobs(tag)]
+                self._blob_count = len(self._job_blobs)
+                self._tag_map = self.tags
+            self._job_blobs += self.urls
         return self._job_blobs
 
 
@@ -102,6 +108,10 @@ class Archiver(object):
             for prefix, tags in self.outgoing_blobs.iteritems():
                 self._tag_map.append(tags.keys())
         return self._tag_map
+
+
+    def tag_list(self, prefix):
+        return sorted(self.ddfs.list(prefix), reverse=self.newest_first)
 
 
     def archive(self):
