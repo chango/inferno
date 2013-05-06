@@ -29,7 +29,7 @@ def should_run(pid_dir, rule):
             last_run.is_older_than(rule.time_delta):
         return True
     else:
-        log.debug('Skipping job: %s (last: %s)',
+        log.info('Skipping job: %s (last: %s)',
                   rule.name, last_run)
     return False
 

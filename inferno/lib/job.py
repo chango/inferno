@@ -14,7 +14,6 @@ from inferno.lib.result import reduce_result
 log = logging.getLogger(__name__)
 
 JOB_ARCHIVE = 'job.archive'
-JOB_NUKE = 'job.nuke'
 JOB_CLEANUP = 'job.cleanup'
 JOB_BLOBS = 'job.blobs'
 JOB_DONE = 'job.done'
@@ -153,7 +152,6 @@ class InfernoJob(object):
             ddfs=self.ddfs,
             archive_prefix=self.rule.archive_tag_prefix,
             archive_mode=self.rule.archive,
-            nuke_mode=self.rule.nuke,
             max_blobs=self.rule.max_blobs,
             tags=tags,
             urls=urls,
@@ -207,9 +205,6 @@ class InfernoJob(object):
         if archiver.archive_mode:
             self._notify(JOB_ARCHIVE)
             archiver.archive()
-        elif archiver.nuke_mode:
-            self._notify(JOB_NUKE)
-            archiver.nuke()
 
     def _notify(self, stage):
         # if we are daemon spawn, tell mommy where we are
