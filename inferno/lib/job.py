@@ -103,6 +103,7 @@ class InfernoJob(object):
         log.info("Query information:")
         pprint.pprint({'source query': self.archiver.tags,
                        'tag results': self.archiver.tag_map,
+                       'job blobs': self.archiver.job_blobs,
                        'total_blobs': self.archiver.blob_count})
 
     def _safe_str(self, value):
