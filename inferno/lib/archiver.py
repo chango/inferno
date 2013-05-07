@@ -24,6 +24,8 @@ class Archiver(object):
             self.max_blobs = 500
         elif max_blobs:
             self.max_blobs = max_blobs
+        else:
+            self.max_blobs = sys.maxint
 
         self.archive_prefix = archive_prefix
         self.newest_first = newest_first
@@ -115,6 +117,7 @@ class Archiver(object):
                 self._blob_count = len(self._job_blobs)
                 self._tag_map = self.tags
             self._job_blobs += self.urls
+            self._blob_count += len(self.urls)
         return self._job_blobs
 
 
