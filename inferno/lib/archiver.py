@@ -116,8 +116,9 @@ class Archiver(object):
                             break
                 self._blob_count = len(self._job_blobs)
                 self._tag_map = self.tags
-            self._job_blobs += self.urls
-            self._blob_count += len(self.urls)
+            if self.urls:
+                self._job_blobs += self.urls
+                self._blob_count += len(self.urls)
         return self._job_blobs
 
 
