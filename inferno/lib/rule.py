@@ -64,8 +64,7 @@ class InfernoRule(object):
 
                  # throttle
                  min_blobs=1,
-                 max_blobs=None,
-                 incoming_days=30,
+                 max_blobs=sys.maxint,
                  partitions=200,
                  partition_function=crc_partition,
                  scheduler=None,
@@ -145,7 +144,6 @@ class InfernoRule(object):
         # throttle
         self.min_blobs = min_blobs
         self.max_blobs = max_blobs
-        self.incoming_days = incoming_days
         self.partitions = partitions
         self.partition_function = partition_function
         self.scheduler = scheduler
