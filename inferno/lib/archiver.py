@@ -11,13 +11,20 @@ class Archiver(object):
                  urls=None,
                  archive_prefix='processed',
                  archive_mode=False,
-                 max_blobs=500,
+                 max_blobs=None,
                  newest_first=True,
                  days=0):
         self.tags = tags
         self.ddfs = ddfs
-        self.max_blobs = max_blobs
         self.archive_mode = archive_mode
+
+        if not archive_mode and not max_blobs:
+            self.max_blobs = sys.maxint
+        elif archive_mode and not max_blobs:
+            self.max_blobs = 500
+        elif max_blobs:
+            self.max_blobs = max_blobs
+
         self.archive_prefix = archive_prefix
         self.newest_first = newest_first
         self.urls = urls

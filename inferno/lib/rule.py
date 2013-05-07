@@ -64,7 +64,7 @@ class InfernoRule(object):
 
                  # throttle
                  min_blobs=1,
-                 max_blobs=500,
+                 max_blobs=None,
                  incoming_days=30,
                  partitions=200,
                  partition_function=crc_partition,
