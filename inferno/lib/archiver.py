@@ -1,5 +1,6 @@
 import logging
 import sys
+from disco.ddfs import DDFS
 
 from inferno.lib.lazy_property import lazy_property
 
@@ -28,7 +29,6 @@ class Archiver(object):
         self.tag_map = self._build_tag_map(tags)
         self.urls = urls
 
-    @lazy_property
     def blob_count(self):
         return len(self.job_blobs)
 
@@ -67,42 +67,38 @@ class Archiver(object):
     def _build_tag_map(self, tags):
         tag_map = {}
         blob_count = 0
+
         source_tags, archived_blobs = self._source_and_archived_sets(tags)
         for tag in source_tags:
-            blobs = self._labelled_blobs(tag)
-            fresh_blobs = set(blobs.keys()) - set(archived_blobs.keys())
-            if not fresh_blobs:
-                continue
+            for blob in self.ddfs.blobs(tag):
+                #normalized_blob = tuple(sorted(blob))
+                blob_name = DDFS.blob_name(blob[0])
+                if blob_name not in archived_blobs:
+                    incoming_blobs = tag_map.setdefault(tag, [])
+                    incoming_blobs.append(blob)
+                    blob_count += 1
 
-            fresh_blobs = [blobs[x] for x in fresh_blobs]
-            if self.newest_first:
-                tag_map[tag] = fresh_blobs[:(self.max_blobs - blob_count)]
-            else:
-                tag_map[tag] = fresh_blobs[-(self.max_blobs - blob_count):]
-            blob_count += len(fresh_blobs)
-            if blob_count >= self.max_blobs:
-                break
+                if blob_count >= self.max_blobs:
+                    return tag_map
         return tag_map
 
     def _source_and_archived_sets(self, tags):
         source_tags = set()
-        archived_blobs = dict()
+        archived_blobs = set()
         for prefix in tags:
-            #log.debug("blob calc - prefix %s" % prefix)
             for tag in self.ddfs.list(prefix):
-                #log.debug("blob calc - tag %s" % tag)
                 source_tags.add(tag)
-                if (self.archive_mode and
-                        not tag.startswith(self.archive_prefix)):
-                    archived_blobs.update(self._labelled_blobs(self._get_archive_name(tag)))
+                archive_tag = self._get_archive_name(tag)
+                if self.archive_mode and not tag.startswith(self.archive_prefix):
+                    archived_blobs.update(self._normalized_blobs(archive_tag))
         source_tags = sorted(source_tags, reverse=self.newest_first)
         return source_tags, archived_blobs
 
-    def _labelled_blobs(self, tag):
-        #log.debug("blob fetch for tag %s" % tag)
-        blobs = [b for b in self.ddfs.blobs(tag)]
-        #log.debug("blob calc - %s -> len(blobs) %s" % (tag, len(blobs)))
-        return dict(map(lambda blob: (blob[0].rsplit('/', 1)[1], blob), blobs))
+    def _normalized_blobs(self, tag):
+        rval = set()
+        for blob in self.ddfs.blobs(tag):
+            rval.add(DDFS.blob_name(blob[0]))
+        return rval
 
     def _get_archive_name(self, tag):
         tag_parts = tag.split(':')

@@ -73,7 +73,7 @@ class InfernoJob(object):
         if self.settings.get('just_query'):
             self.query()
             return None
-        if self._enough_blobs(self.archiver.blob_count):
+        if self._enough_blobs(len(job_blobs)):
             if self.rule.rule_init_function:
                 self.rule.rule_init_function(self.params)
             self.job.run(name=self.rule.name,
@@ -217,7 +217,7 @@ class InfernoJob(object):
             log.info("Worker: %s stage= %s " % (self.full_job_id, stage))
 
     def _enough_blobs(self, blob_count):
-        # Note that argument blot_count is the total number of tag blobs and urls.
+        # Note that argument blob_count is the total number of tag blobs and urls.
         # To take urls into account, if no tag specified but urls are available,
         # let it run
         if len(self.job_options.tags) == 0:
@@ -228,8 +228,7 @@ class InfernoJob(object):
                          self.rule.name, self.rule.min_blobs, blob_count)
                 return False
 
-        if not blob_count or (blob_count < self.rule.min_blobs and
-                                  not self.settings.get('force')):
+        if not blob_count or (blob_count < self.rule.min_blobs and not self.settings.get('force')):
             log.info('Skipping job %s: %d blobs required, has %d',
                      self.rule.name, self.rule.min_blobs, blob_count)
             return False

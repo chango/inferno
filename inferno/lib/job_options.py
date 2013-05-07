@@ -1,6 +1,4 @@
 from datetime import timedelta, date
-import functools
-import types
 from inferno.lib.rule import InfernoRule
 
 
@@ -50,8 +48,7 @@ class JobOptions(object):
                 count = self.rule.day_range
 
             if count and tags:
-                tags = [self._name(tag, day, start)
-                    for tag in tags for day in range(count)]
+                tags = [self._name(tag, day, start) for tag in tags for day in range(count)]
 
         return tags or []
 
