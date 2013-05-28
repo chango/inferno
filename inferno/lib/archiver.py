@@ -27,7 +27,7 @@ class Archiver(object):
         self.archive_prefix = archive_prefix
         self.newest_first = newest_first
         self.tag_map = self._build_tag_map(tags)
-        self.urls = urls
+        self.urls = urls if urls is not None else []
 
     @property
     def blob_count(self):
@@ -73,7 +73,7 @@ class Archiver(object):
         for tag in source_tags:
             for blob in self.ddfs.blobs(tag):
                 #normalized_blob = tuple(sorted(blob))
-                blob_name = DDFS.blob_name(blob[0])
+                blob_name = self.get_blob_name(blob[0])
                 if blob_name not in archived_blobs:
                     incoming_blobs = tag_map.setdefault(tag, [])
                     incoming_blobs.append(blob)
@@ -95,10 +95,13 @@ class Archiver(object):
         source_tags = sorted(source_tags, reverse=self.newest_first)
         return source_tags, archived_blobs
 
+    def get_blob_name(self, blob):
+        return blob.rsplit('/', 1)[1]
+
     def _normalized_blobs(self, tag):
         rval = set()
         for blob in self.ddfs.blobs(tag):
-            rval.add(DDFS.blob_name(blob[0]))
+            rval.add(self.get_blob_name(blob[0]))
         return rval
 
     def _get_archive_name(self, tag):
