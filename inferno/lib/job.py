@@ -29,7 +29,7 @@ JOB_ERROR = 'job.error'
 
 
 class InfernoJob(object):
-    def __init__(self, rule, settings, urls = None):
+    def __init__(self, rule, settings, urls=None):
         self.job_options = JobOptions(rule, settings)
         self.rule = rule
         self.settings = settings
@@ -40,10 +40,13 @@ class InfernoJob(object):
         self.urls = urls
 
         try:
-            # attempt to allow for overriden worker class from settings file
-            worker_mod, dot, worker_class = settings.get('worker').rpartition('.')
-            mod = __import__(worker_mod, {}, {}, worker_mod)
-            worker = getattr(mod, worker_class)()
+            # attempt to allow for overriden worker class from settings file or rule
+            if rule.worker:
+                worker = rule.worker
+            else:
+                worker_mod, dot, worker_class = settings.get('worker').rpartition('.')
+                mod = __import__(worker_mod, {}, {}, worker_mod)
+                worker = getattr(mod, worker_class)()
             self.job = Job(name=rule.name,
                            master=self.disco.master,
                            worker=worker)

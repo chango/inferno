@@ -298,6 +298,7 @@ def main(argv=sys.argv):
         sys.path.insert(0, path)
 
     if options['process_results']:
+        settings['no_purge'] = True
         rules_dir = options.get('rules_directory')
         if not rules_dir:
             rules_dir = settings.get('rules_directory')
@@ -316,6 +317,7 @@ def main(argv=sys.argv):
             log.error("Error processing results for job: %s %s" % (options['process_results'], e))
             raise e
     elif options['process_map']:
+        settings['no_purge'] = True
         rules_dir = options.get('rules_directory')
         if not rules_dir:
             rules_dir = settings.get('rules_directory')
@@ -347,7 +349,7 @@ def main(argv=sys.argv):
             for rule in rules:
                 execute_rule(rule, settings)
         except Exception as e:
-            log.info('Job failed: %s' % e.message)
+            log.info('Job failed: %s' % str(e))
     else:
         # run inferno in 'daemon' mode
         from inferno.lib.daemon import InfernoDaemon
