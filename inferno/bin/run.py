@@ -349,7 +349,7 @@ def main(argv=sys.argv):
             for rule in rules:
                 execute_rule(rule, settings)
         except Exception as e:
-            log.info('Job failed: %s' % str(e))
+            log.error('Job failed: %s' % e.message)
     else:
         # run inferno in 'daemon' mode
         from inferno.lib.daemon import InfernoDaemon
