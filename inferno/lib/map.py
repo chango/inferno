@@ -75,6 +75,7 @@ def keyset_map(parts_, params_):
             # Note that following is an one-element loop to make Disco happy, otherwise,
             # it ends up with a Disco runtime error.
             for parts in _keyset_preprocess(params.keysets[keyset], params, [parts]):
+                parts['_keyset'] = keyset
                 key_parts = params.keysets[keyset]['key_parts']
                 value_parts = params.keysets[keyset]['value_parts']
                 key = tuple(_make_key(parts, key_parts))
