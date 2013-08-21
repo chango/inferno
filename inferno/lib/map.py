@@ -48,12 +48,11 @@ def keyset_map(parts_, params_):
                 result.append(None)
         return result
 
-    def _keyset_preprocess(keyset, params, parts_list):
+    def _keyset_preprocess(keyset_name, keyset, params, parts_list):
         ''' parts_preprocess for a specific keyset '''
         if keyset.get('parts_preprocess', False):
             for func in keyset['parts_preprocess']:
-                _inferno_debug(params_, 'Keyset: %s', keyset)
-                new_list = []
+                new_list = [keyset_name]
                 for parts in parts_list:
                     new_list.extend([x for x in func(parts, params)])
                 parts_list = new_list
@@ -75,7 +74,7 @@ def keyset_map(parts_, params_):
             # Keyset specific preprocessor
             # Note that following is an one-element loop to make Disco happy, otherwise,
             # it ends up with a Disco runtime error.
-            for parts in _keyset_preprocess(params.keysets[keyset], params, [parts]):
+            for parts in _keyset_preprocess(keyset, params.keysets[keyset], params, [parts]):
                 key_parts = params.keysets[keyset]['key_parts']
                 value_parts = params.keysets[keyset]['value_parts']
                 key = tuple(_make_key(parts, key_parts))
