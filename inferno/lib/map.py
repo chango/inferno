@@ -52,7 +52,8 @@ def keyset_map(parts_, params_):
         ''' parts_preprocess for a specific keyset '''
         if keyset.get('parts_preprocess', False):
             for func in keyset['parts_preprocess']:
-                new_list = [parts_list.get('_keyset')]
+                _inferno_debug(params_, 'Keyset: %s', keyset)
+                new_list = []
                 for parts in parts_list:
                     new_list.extend([x for x in func(parts, params)])
                 parts_list = new_list
