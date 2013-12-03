@@ -127,6 +127,10 @@ class InfernoRule(object):
                  field_transforms=None,
                  required_files=None,
                  required_modules=None,
+
+                 # notifications --> notify_addresses must be list of addresses
+                 notify_on_fail=False,
+                 notify_addresses=[],
                  **kwargs):
 
         self.qualified_name = name
