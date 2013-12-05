@@ -135,7 +135,7 @@ class InfernoJob(object):
             log.error('Job %s failed: %s',
                       self.job.name, e, exc_info=sys.exc_info())
             self._notify(JOB_ERROR)
-            if self.job.notify_on_fail:
+            if self.rule.notify_on_fail:
                 try:
                     from inferno.lib.notifications import send_mail
                     send_mail(job_id=self.job.name, job_fail=e,
