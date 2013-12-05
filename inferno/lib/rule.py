@@ -221,7 +221,8 @@ class InfernoRule(object):
         self.rule_cleanup = rule_cleanup
         self.required_modules = required_modules or []
         self.required_files = required_files or []
-
+        self.notify_on_fail = notify_on_fail
+        self.notify_addresses = notify_addresses
         self.source_urls = source_urls
 
     def __str__(self):
