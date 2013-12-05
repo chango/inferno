@@ -1,7 +1,8 @@
 """
 Based on code from Python Recipes
 http://code.activestate.com/recipes/499379-groupbysorted/
-Licensed under the PSF License (http://docs.python.org/2/license.html)"""
+Licensed under the PSF License (http://docs.python.org/2/license.html)
+"""
 
 import collections
 

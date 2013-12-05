@@ -1,4 +1,3 @@
-
 # The generator_chain is used to support the part_preprocess and parts_postprocess.  The function is a
 # generator that takes an iteraotr over a list of arbitrary values, a list list of function generators,
 # and a kwargs for additional data to be passed to the generator functions.

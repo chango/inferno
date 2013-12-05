@@ -132,4 +132,7 @@ def execute_rule(rule_, settings):
         for job in inferno_jobs:
             job._purge(job.job.name)
     except Exception as parent_rule_exception:
+        import traceback
+        trace = traceback.format_exc(15)
+        print trace
         raise parent_rule_exception

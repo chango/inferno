@@ -71,6 +71,7 @@ class InfernoJob(object):
         # process the map-results option (ie. skip map phase and grab map results from job id/ddfs
         self.archiver = self._determine_job_blobs()
         job_blobs = self.archiver.job_blobs
+        #print "BLOOBS: %s" % job_blobs
         self.start_time = time.time()
         if self.settings.get('just_query'):
             self.query()
@@ -157,7 +158,7 @@ class InfernoJob(object):
         tags = self.job_options.tags
         urls = self.job_options.urls + self.urls if self.urls else self.job_options.urls
         if tags or urls:
-            log.info('Processing input: %s', tags + urls)
+            log.info('Processing input: %s...', (tags + urls)[:1000])
         else:
             log.info('No input available for %s.' % self.rule.name)
         archiver = Archiver(
