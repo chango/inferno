@@ -353,6 +353,7 @@ def main(argv=sys.argv):
             trace = traceback.format_exc(15)
             log.error('Job failed: %s' % e.message)
             log.error(trace)
+            exit(1)
 
     else:
         # run inferno in 'daemon' mode

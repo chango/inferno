@@ -134,5 +134,4 @@ def execute_rule(rule_, settings):
     except Exception as parent_rule_exception:
         import traceback
         trace = traceback.format_exc(15)
-        print trace
-        raise parent_rule_exception
+        raise
