@@ -130,7 +130,7 @@ class InfernoRule(object):
 
                  # notifications --> notify_addresses must be list of addresses
                  notify_on_fail=False,
-                 notify_addresses=[],
+                 notify_addresses=None,
                  **kwargs):
 
         self.qualified_name = name
@@ -222,7 +222,7 @@ class InfernoRule(object):
         self.required_modules = required_modules or []
         self.required_files = required_files or []
         self.notify_on_fail = notify_on_fail
-        self.notify_addresses = notify_addresses
+        self.notify_addresses = notify_addresses or []
         self.source_urls = source_urls
 
     def __str__(self):
