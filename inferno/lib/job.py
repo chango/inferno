@@ -132,8 +132,7 @@ class InfernoJob(object):
                 reduce_result(results)
             self._purge(self._safe_str(self.job.name))
         except Exception as e:
-            log.error('Job %s failed: %s',
-                      self.job.name, e, exc_info=sys.exc_info())
+            log.error('Job %s failed', self.job.name)
             self._notify(JOB_ERROR)
             if self.rule.notify_on_fail:
                 try:
@@ -144,6 +143,7 @@ class InfernoJob(object):
                             mail_server=self.settings.get('mail_server'))
                 except Exception as e:
                     log.error('Job %s failed notification: %s', self.job.name, e, exc_info=sys.exc_info())
+            raise
         else:
             if not self.settings.get('debug'):
                 self._archive_tags(self.archiver)
@@ -200,8 +200,8 @@ class InfernoJob(object):
             try:
                 self.ddfs.tag(tag_name, list(self.ddfs.blobs(result_name)))
             except Exception as e:
-                log.error('Error tagging result %s: %s',
-                          tag_name, e, exc_info=sys.exc_info())
+                log.error('Error tagging result %s', tag_name)
+                raise
 
     def _process_results(self, jobout, job_id):
         if self.rule.result_processor:

@@ -2,6 +2,7 @@ import copy
 import imp
 import logging
 import os
+import sys
 
 
 log = logging.getLogger(__name__)
@@ -11,8 +12,10 @@ def get_rules_by_name(name, rules_directory, immediate=False):
 
     def _get_rule_module(rules_dir, path, mod_name):
         try:
+            sys.path.insert(0, rules_dir)
             file, path, desc = imp.find_module(mod_name, [rules_dir])
             mod = imp.load_module(mod_name, file, path, desc)
+            sys.path.pop(0)
             return mod
         except Exception as e:
             import traceback
