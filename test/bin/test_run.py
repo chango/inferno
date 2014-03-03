@@ -8,6 +8,13 @@ from inferno.bin.run import _get_options
 from inferno.bin.run import _get_settings
 
 
+def assert_dicts_equal(d1, d2):
+    for item in d1.items():
+        eq_(item[1], d2[item[0]])
+
+    for item in d2.items():
+        eq_(item[1], d1[item[0]])
+
 class TestOptions(object):
 
     def test_defaults(self):
@@ -32,8 +39,11 @@ class TestOptions(object):
             'immediate_rule': None,
             'rules_directory': None,
             'start_paused': False,
-            'example_rules': None}
-        eq_(options, expected)
+            'example_rules': None,
+            'process_map': None,
+            'process_results': None
+            }
+        assert_dicts_equal(options, expected)
 
     def test_force(self):
         self._assert_force('-f')
