@@ -76,10 +76,13 @@ class Archiver(object):
                 blob_name = self.get_blob_name(blob[0])
                 if blob_name not in archived_blobs:
                     incoming_blobs = tag_map.setdefault(tag, [])
+                    if blob_count == self.max_blobs:
+                        return tag_map
                     incoming_blobs.append(blob)
                     blob_count += 1
 
-                if blob_count >= self.max_blobs:
+                assert blob_count <= self.max_blobs
+                if blob_count == self.max_blobs:
                     return tag_map
         return tag_map
 
