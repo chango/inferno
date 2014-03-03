@@ -94,7 +94,7 @@ class TestLookupRules(object):
         self.rules_dir = os.path.join(here, '..', 'fixture', 'fake_rules')
 
     def test_get_rule_modules(self):
-        actual = get_rule_modules(self.rules_dir)
+        actual = sorted(get_rule_modules(self.rules_dir))
         expected = [
             'automatic',
             'manual',
@@ -104,7 +104,7 @@ class TestLookupRules(object):
 
     def test_get_automatic_rules(self):
         rules = get_rules(self.rules_dir)
-        actual = [rule.name for rule in rules]
+        actual = sorted([rule.name for rule in rules])
         expected = [
             'automatic_rule_1',
             'automatic_rule_2',
