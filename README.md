@@ -27,4 +27,4 @@ point to that disco master.
     diana@ubuntu:~$ cat ~/.inferno
     server: disco://localhost
 
-Build Status: [Travis-CI](http://travis-ci.org/pooya/inferno) :: ![Travis-CI](https://secure.travis-ci.org/pooya/inferno.png)
+Build Status: [Travis-CI](http://travis-ci.org/chango/inferno) :: ![Travis-CI](https://secure.travis-ci.org/chango/inferno.png)
