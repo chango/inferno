@@ -139,9 +139,9 @@ class InfernoJob(object):
                 try:
                     from inferno.lib.notifications import send_mail
                     send_mail(job_id=self.job.name, job_fail=e,
-                            mail_to=self.rule.notify_addresses,
-                            mail_from=self.settings.get('mail_from'),
-                            mail_server=self.settings.get('mail_server'))
+                              mail_to=self.rule.notify_addresses,
+                              mail_from=self.settings.get('mail_from'),
+                              mail_server=self.settings.get('mail_server'))
                 except Exception as e:
                     log.error('Job %s failed notification: %s', self.job.name, e, exc_info=sys.exc_info())
             raise
@@ -152,6 +152,16 @@ class InfernoJob(object):
                 self._notify(JOB_CLEANUP)
                 self.rule.rule_cleanup(self, )
             self._notify(JOB_DONE)
+            if self.rule.notify_on_success:
+                try:
+                    from inferno.lib.notifications import send_mail
+                    msg = "Job %s finished successfully." % self.job.name
+                    send_mail(job_id=self.job.name, job_fail=msg,
+                              mail_to=self.rule.notify_addresses,
+                              mail_from=self.settings.get('mail_from'),
+                              mail_server=self.settings.get('mail_server'))
+                except Exception as e:
+                    log.error('Job %s failed notification: %s', self.job.name, e, exc_info=sys.exc_info())
         log.info('Finished job %s', self.job.name)
 
     def _determine_job_blobs(self):
