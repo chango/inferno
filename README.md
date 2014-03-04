@@ -75,3 +75,5 @@ Then we query the data as follows:
     Powell,3
     Simpson,5
     Términos,1
+
+Build Status: [Travis-CI](http://travis-ci.org/chango/inferno) ![Travis-CI](https://secure.travis-ci.org/chango/inferno.png)
