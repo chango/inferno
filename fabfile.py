@@ -39,19 +39,20 @@ def release(tag_name=None):
 def update_code(tag_name):
     with cd(RELEASE_DIR):
         print "Releasing tag %s..." % tag_name
-        run("hg pull")
-        run("hg up -C %s" % tag_name)
+        run("git fetch")
+        run("git fetch --tags")
+        run("git checkout %s" % tag_name)
 
+def tag_and_push(new_version, tag_name):
+    local('git tag -a %s -m "release-%s-%s"' % (tag_name, PROJECT_NAME, new_version))
+    local('git push --tags')
 
 def bump_version(release_type='patch', message='bumping version'):
     new_version = get_new_version(release_type)
     with open(VERSION_PATH, 'w') as lib_info:
         lib_info.write("__version__ = %r\n" % (new_version))
-    local('hg commit -m "VERSION: %s"' % (new_version))
-    local('hg push')
     tag_name = 'release-%s-%s' % (PROJECT_NAME, new_version)
-    local('hg tag -m "TAG [%s]: %s" %s' % (tag_name, message, tag_name))
-    local('hg push')
+    tag_and_push(new_version, tag_name)
     return tag_name
 
 
@@ -92,10 +93,6 @@ def set_version():
         exit(1)
     with open(VERSION_PATH, 'w') as lib_info:
         lib_info.write("__version__ = %r\n" % version)
-    local('hg commit -m "VERSION: %s"' % version)
-    local('hg push')
-    tag_name = 'release-%s-%s' % (PROJECT_NAME, version)
-    local('hg tag -m "TAG [%s]: %s" %s' % (tag_name, message, tag_name))
-    local('hg push')
+    tag_and_push(new_version, tag_name)
     return tag_name
 
