@@ -90,6 +90,8 @@ def keyset_map(parts_, params_):
     try:
         _inferno_debug(params_, 'input: %s', parts_)
         for parts in _preprocess(params_, [parts_]):
+            if parts is None:
+                continue
             _inferno_debug(params_, 'postprocess: %s', parts)
             _transform(params_, parts)
             _inferno_debug(params_, 'posttransform: %s', parts)
