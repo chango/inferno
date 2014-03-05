@@ -4,7 +4,6 @@ import shutil
 import sys
 
 import argparse
-from disco.util import parse_dir
 import yaml
 
 from datetime import date
@@ -261,7 +260,7 @@ def _setup_logging(settings):
             logging.config.fileConfig(
                 log_config, disable_existing_loggers=False)
         except Exception as e:
-            log.error('Error setting up logging: %s' %  e)
+            log.error('Error setting up logging: %s' % e)
             _log_stdout(log)
 
     log.info('Starting inferno-%s', __version__)
