@@ -10,7 +10,7 @@ def keyset_reduce(iter_, params_):
             return unicode(value).encode('utf-8')
 
     def _disco_message(message):
-        disco.util.msg(message)
+        print message
 
     def _inferno_debug(params, message, *args):
         if getattr(params, 'disco_debug', False):
