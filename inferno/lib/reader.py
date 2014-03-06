@@ -19,8 +19,7 @@ def json_reader(stream, size=None, url=None, params=None):
                 assert isinstance(parts, dict)
             except:
                 # just skip bad lines
-                import disco.util
-                disco.util.msg('json line error: %r' % line)
+                print 'json line error: %r' % line
             else:
                 yield parts
 
@@ -50,5 +49,4 @@ def csv_reader(stream, size=None, url=None, params=None):
             done = True
         except Exception as ee:
             # just skip bad lines
-            import disco.util
-            disco.util.msg('csv line error: %s' % ee)
+            print 'csv line error: %s' % ee
