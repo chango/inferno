@@ -24,7 +24,7 @@ continuously monitor the blobs in DDFS and launch new map/reduce jobs to
 process the incoming blobs as the minimum blobs counts are met.
 
 
-.. image:: step1.png
+.. image:: images/step1.png
    :height: 400px
    :width: 800px
    :align: center
@@ -33,7 +33,7 @@ process the incoming blobs as the minimum blobs counts are met.
 
 ---------
 
-.. image:: step2.png
+.. image:: images/step2.png
    :height: 400px
    :width: 800px
    :align: center
@@ -42,7 +42,7 @@ process the incoming blobs as the minimum blobs counts are met.
 
 ---------
 
-.. image:: step3.png
+.. image:: images/step3.png
    :height: 400px
    :width: 800px
    :align: center
@@ -51,7 +51,7 @@ process the incoming blobs as the minimum blobs counts are met.
 
 ---------
 
-.. image:: step5.png
+.. image:: images/step5.png
    :height: 400px
    :width: 800px
    :align: center
