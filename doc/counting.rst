@@ -55,7 +55,7 @@ you **tag** a collection of blobs with a **tag_name** for lookup later.
 
 In this case, we'll be tagging our data file as **example:chunk:users**.
 
-.. image:: tag_blobs.png
+.. image:: images/tag_blobs.png
    :height: 300px
    :width: 600 px
    :scale: 75 %
@@ -84,7 +84,7 @@ For the purpose of this introductory example, think of an Inferno map/reduce
 job as a series of four steps, where the output of each step is used as the 
 input to the next.
 
-.. image:: simple_map_reduce.png
+.. image:: images/simple_map_reduce.png
    :height: 100px
    :width: 600 px
    :align: center
@@ -126,7 +126,7 @@ input to the next.
 
     Example data transition during the **input** step:
 
-.. image:: input.png
+.. image:: images/input.png
    :height: 600px
    :width: 800 px
    :align: center
@@ -158,7 +158,7 @@ input to the next.
 
    Example data transition during the **map** step:
 
-.. image:: map.png
+.. image:: images/map.png
    :height: 600px
    :width: 800 px
    :align: center
@@ -179,7 +179,7 @@ input to the next.
 
    Example data transition during the **reduce** step:
 
-.. image:: reduce.png
+.. image:: images/reduce.png
    :height: 600px
    :width: 800 px
    :align: center
@@ -199,7 +199,7 @@ input to the next.
 
     Example data transition during the **output** step:
 
-.. image:: output.png
+.. image:: images/output.png
    :height: 600px
    :width: 800 px
    :align: center
