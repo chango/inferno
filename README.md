@@ -100,4 +100,16 @@ blobs and then persists the results to a data warehouse.
     2012-03-27 31739 [rules.core.database] user_stats@534:d6c58:d5dcb: Finished processing 240811902 lines in 5 keysets.
     2012-03-27 31739 [inferno.lib.archiver] Archived 1209 blobs to processed:server01:chunk:user_stats:2012-03-27
 
+Read More
+-------------
+[More about the daemon mode](doc/daemon.rst)
+
+[On Inferno Keysets](doc/keyset.rst)
+
+[Count Last Name Example](doc/counting.rst)
+
+[Campaign Finance Example](doc/election.rst)
+
+[Inferno Settings](doc/settings.rst)
+
 Build Status: [Travis-CI](http://travis-ci.org/chango/inferno) ![Travis-CI](https://secure.travis-ci.org/chango/inferno.png)
