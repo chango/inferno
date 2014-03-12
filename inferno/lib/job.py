@@ -202,12 +202,13 @@ class InfernoJob(object):
             # sort the tags the job ran on, take the last part of the last tag
             # if that looks like a date, use it, otherwise use the job name
             if self.rule.result_tag_suffix:
-                suffix = str(datetime.now().date())
-            else:
-                tags = sorted(self.job_options.tags)
-                date = (tags[-1].split(':'))[-1]
-                if len(date) == 10 and '-' in date:
-                    suffix = date
+                if str(self.rule.result_tag_suffix).lower() == "date":
+                    suffix = str(datetime.now().date())
+                else:
+                    tags = sorted(self.job_options.tags)
+                    date = (tags[-1].split(':'))[-1]
+                    if len(date) == 10 and '-' in date:
+                        suffix = date
             tag_name = '%s:%s' % (self.job_options.result_tag, suffix)
             log.info('Tagging result: %s', tag_name)
             try:
