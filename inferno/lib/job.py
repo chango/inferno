@@ -205,15 +205,16 @@ class InfernoJob(object):
                 if str(self.rule.result_tag_suffix).lower() == "date":
                     suffix = str(datetime.now().date())
                 else:
-                    tags = sorted(self.job_options.tags)
-                    date = (tags[-1].split(':'))[-1]
-                    if len(date) == 10 and '-' in date:
-                        suffix = date
+                    if len(self.job_options.tags):
+                        tags = sorted(self.job_options.tags)
+                        date = (tags[-1].split(':'))[-1]
+                        if len(date) == 10 and '-' in date:
+                            suffix = date
             tag_name = '%s:%s' % (self.job_options.result_tag, suffix)
             log.info('Tagging result: %s', tag_name)
             try:
                 self.ddfs.tag(tag_name, list(self.ddfs.blobs(result_name)))
-            except Exception as e:
+            except Exception:
                 log.error('Error tagging result %s', tag_name)
                 raise
 
