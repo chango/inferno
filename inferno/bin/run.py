@@ -308,6 +308,8 @@ def main(argv=sys.argv):
             job = InfernoJob(rule, settings)
             status, results = job.disco.results(job_name)
             if status == 'ready':
+                if job.rule.rule_init_function:
+                    job.rule.rule_init_function(job.params)
                 rule.result_processor(rule.result_iterator(results), params=job.params, job_id=job_name)
         except Exception as e:
             import traceback
