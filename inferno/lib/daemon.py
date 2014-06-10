@@ -51,6 +51,7 @@ def run_rule_async(rule_name, settings):
         execute_rule(rule, settings)
     except Exception as e:
         log.error('%s: %s', rule_name, e)
+        raise e
     finally:
         pid.remove_pid(pid_dir, rule)
         os._exit(0)
@@ -127,7 +128,13 @@ class InfernoDaemon(object):
                     continue
 
                 pid.create_pid(pid_dir, rule, 'N/A')
+                try:
+                    self.run_rule(rule)
+                except Exception as e:
+                    # if exception occurs, do not update last run time
+                    # allows for scheduled rules to be re-attempted
+                    continue
+
                 pid.create_last_run(pid_dir, rule)
-                self.run_rule(rule)
             time.sleep(1)
         self.die()
