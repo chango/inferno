@@ -14,7 +14,6 @@ def guess_settings():
 defaults = {
     'log_config': '/etc/inferno/log.ini',
     'settings_file': guess_settings(),
-    'max_workers': 8,
     'pid_dir': '/var/run/inferno',
     'server': 'localhost',
     'rules_directory': '/apps/project/project/rules',
