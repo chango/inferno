@@ -3,7 +3,7 @@ import sys
 import time
 import pprint
 
-from disco.core import Params
+from disco.worker.classic.worker import Params
 from disco.job import Job
 
 from inferno.lib.archiver import Archiver

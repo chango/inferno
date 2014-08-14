@@ -1,6 +1,6 @@
 import sys
 
-from disco.core import Params
+from disco.worker.classic.worker import Params
 from disco.core import result_iterator
 from disco.func import chain_stream
 from disco.func import disco_output_stream

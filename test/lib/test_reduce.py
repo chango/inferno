@@ -3,7 +3,7 @@ import types
 from nose.tools import eq_
 from nose.tools import ok_
 
-from disco.core import Params
+from disco.worker.classic.worker import Params
 
 from inferno.lib.reduce import keyset_reduce
 
