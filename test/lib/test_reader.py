@@ -7,7 +7,7 @@ from nose.tools import eq_
 from nose.tools import ok_
 from nose.tools import raises
 
-from disco.core import Params
+from disco.worker.classic.worker import Params
 
 from inferno.lib.reader import csv_reader
 from inferno.lib.reader import json_reader

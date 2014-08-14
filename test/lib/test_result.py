@@ -5,7 +5,7 @@ import sys
 
 from nose.tools import eq_
 
-from disco.core import Params
+from disco.worker.classic.worker import Params
 
 from inferno.lib.result import keyset_result
 
