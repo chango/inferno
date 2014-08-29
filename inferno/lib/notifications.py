@@ -1,6 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 
+
 def send_mail(job_id=None, job_fail=None, mail_to=None, mail_from=None, mail_server=None):
 
     mail_from = "Inferno Daemon <inferno@localhost.localdomain>" if not mail_from else mail_from
@@ -11,7 +12,7 @@ def send_mail(job_id=None, job_fail=None, mail_to=None, mail_from=None, mail_ser
     mail_server = "localhost" if not mail_server else mail_server
     msg_body = str(job_fail)
     msg = MIMEText(msg_body)
-    msg['Subject'] = "Job Failed: %s" % job_id
+    msg['Subject'] = "Job Status: %s" % job_id
     msg['From'] = mail_from
     msg['To'] = ", ".join(mail_to)
     try:
