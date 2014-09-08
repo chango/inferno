@@ -50,11 +50,19 @@ def run_rule_async(rule_name, settings):
         pid.create_pid(pid_dir, rule, str(os.getpid()))
         execute_rule(rule, settings)
     except Exception as e:
-        log.exception('%s: %s', rule_name, e)
-        if not rule.retry:
-            pid.create_last_run(pid_dir, rule)
+        log.error('%s: %s', rule_name, e)
+        if rule.retry:
+            if rule.retry_limit > pid.get_retry_count(pid_dir, rule):
+                log.error('%s: will be retried in %s hour(s)', rule_name, rule.retry_delay)
+                pid.create_next_retry(pid_dir, rule)
+                pid.increment_retry_count(pid_dir, rule)
+            else:
+                log.error('%s: failed max retry limit (%s)', rule_name, rule.retry_limit)
+                pid.create_failed(pid_dir, rule)
     else:
-        pid.create_last_run(pid_dir, rule)
+        if rule.retry:
+            # Failed before, however, ran successfully this time. Clean up fail/retry files
+            pid.clean_up(pid_dir, rule)
     finally:
         pid.remove_pid(pid_dir, rule)
         os._exit(0)
@@ -130,6 +138,7 @@ class InfernoDaemon(object):
                     continue
 
                 pid.create_pid(pid_dir, rule, 'N/A')
+                pid.create_last_run(pid_dir, rule)
                 self.run_rule(rule)
             time.sleep(1)
         self.die()
