@@ -104,12 +104,21 @@ class Archiver(object):
         return source_tags, archived_blobs
 
     def get_blob_name(self, blob):
-        return blob.rsplit('/', 1)[1]
+        try:
+            return blob.rsplit('/', 1)[1]
+        except:
+            return []
 
     def _normalized_blobs(self, tag):
         rval = set()
         for blob in self.ddfs.blobs(tag):
-            rval.add(self.get_blob_name(blob[0]))
+            if len(blob) == 0:
+                log.error("Disco returned an empty list for a blob in tag %s" % tag)
+                continue
+            try:
+                rval.add(self.get_blob_name(blob[0]))
+            except:
+                log.error("Error getting blob name: %s" % blob)
         return rval
 
     def _get_archive_name(self, tag):
