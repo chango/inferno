@@ -71,15 +71,21 @@ class Archiver(object):
 
         source_tags, archived_blobs = self._source_and_archived_sets(tags)
         for tag in source_tags:
+            warned = False
             for blob in self.ddfs.blobs(tag):
                 #normalized_blob = tuple(sorted(blob))
-                blob_name = self.get_blob_name(blob[0])
-                if blob_name not in archived_blobs:
-                    incoming_blobs = tag_map.setdefault(tag, [])
-                    if blob_count == self.max_blobs:
-                        return tag_map
-                    incoming_blobs.append(blob)
-                    blob_count += 1
+                if len(blob):
+                    blob_name = self.get_blob_name(blob[0])
+                    if blob_name not in archived_blobs:
+                        incoming_blobs = tag_map.setdefault(tag, [])
+                        if blob_count == self.max_blobs:
+                            return tag_map
+                        incoming_blobs.append(blob)
+                        blob_count += 1
+                else:
+                    if not warned:
+                        log.warning("Tag %s contains *empty* blobs.  Skipping..." % tag)
+                        warned = True
 
                 assert blob_count <= self.max_blobs
                 if blob_count == self.max_blobs:
