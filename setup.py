@@ -27,7 +27,7 @@ tests_require = install_requires + [
 setup(
     name='inferno',
     version=VERSION,
-    description=('Inferno: a python map/reduce platform powered by disco.'),
+    description='Inferno: a python map/reduce platform powered by disco.',
     keywords='inferno discoproject',
     author='Chango Inc.',
     author_email='dev@chango.com',

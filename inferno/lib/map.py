@@ -1,7 +1,6 @@
 def keyset_map(parts_, params_):
 
     import ujson
-    import disco.util
 
     def _safe_str(value):
         try:
