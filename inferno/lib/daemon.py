@@ -50,8 +50,7 @@ def run_rule_async(rule_name, settings):
         pid.create_pid(pid_dir, rule, str(os.getpid()))
         execute_rule(rule, settings)
     except Exception as e:
-        log.exception(e)
-        log.error('%s: %s', rule_name)
+        log.exception('%s: %s', rule_name, e)
         if not rule.retry:
             pid.create_last_run(pid_dir, rule)
     else:
