@@ -1,6 +1,5 @@
 import logging
 import sys
-from disco.ddfs import DDFS
 
 from inferno.lib.lazy_property import lazy_property
 
