@@ -6,6 +6,7 @@ from datetime import timedelta
 class Datefile(object):
     EPOCH = datetime(1970, 1, 1)
     DAY_OF_WEEK = {'monday': 0, 'tuesday': 1, 'wednesday': 2, 'thursday': 3, 'friday': 4, 'saturday': 5, 'sunday': 6}
+
     def __init__(self, pid_dir, file_name, format='%Y-%m-%d %H:%M:%S', timestamp=None):
         if not os.path.exists(pid_dir):
             os.mkdir(pid_dir)
