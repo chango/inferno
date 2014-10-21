@@ -57,6 +57,43 @@ def remove_pid(pid_dir, rule):
 def get_pid_path(pid_dir, rule):
     return os.path.join(pid_dir, '%s.pid' % rule.name)
 
+def get_checkmark_path(pid_dir, rule):
+    return os.path.join(pid_dir, '%s.checkmark' % rule.name)
+
+def add_checkmark(pid_dir, rule, checkmark):
+    path = get_checkmark_path(pid_dir, rule)
+    with open(path, 'a') as f:
+        f.write(checkmark + "\n")
+
+def checkmark_exists(pid_dir, rule, checkmark):
+    path = get_checkmark_path(pid_dir, rule)
+    try:
+        with open(path, 'r') as f:
+            for line in f:
+                if line.split()[0] == checkmark:
+                    return True
+    except IOError:
+        pass
+    return False
+
+
+def get_checkmark_uid(pid_dir, rule, checkmark):
+    path = get_checkmark_path(pid_dir, rule)
+    with open(path, 'r') as f:
+        for line in f:
+            parts = line.split()
+            if parts[0] == checkmark:
+                if len(parts) == 1:
+                    return None
+                else:
+                    return line.split()[1]
+    assert False
+
+
+def remove_checkmarks(pid_dir, rule):
+    path = get_checkmark_path(pid_dir, rule)
+    os.unlink(path)
+
 
 def pid_dir(settings):
     path = settings['pid_dir']
