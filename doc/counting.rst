@@ -94,37 +94,37 @@ input to the next.
 
 **Input**
 
-    The input step of an Inferno map/reduce job is responsible for parsing and 
-    readying the input data for the map step.
+The input step of an Inferno map/reduce job is responsible for parsing and 
+readying the input data for the map step.
 
-    If you're using Inferno's built in **keyset** map/reduce functionality, 
-    this step mostly amounts to transforming your CSV or JSON input into 
-    python dictionaries.
+If you're using Inferno's built in **keyset** map/reduce functionality, 
+this step mostly amounts to transforming your CSV or JSON input into 
+python dictionaries.
 
-    The default Inferno input reader is **chunk_csv_keyset_stream**, which is
-    intended for CSV data that was placed in DDFS using the ``ddfs chunk`` 
-    command. 
+The default Inferno input reader is **chunk_csv_keyset_stream**, which is
+intended for CSV data that was placed in DDFS using the ``ddfs chunk`` 
+command. 
 
-    If the input data is lines of JSON, you would instead set the 
-    **map_input_stream** to use the **chunk_json_keyset_stream** reader in 
-    your Inferno rule.
+If the input data is lines of JSON, you would instead set the 
+**map_input_stream** to use the **chunk_json_keyset_stream** reader in 
+your Inferno rule.
 
-    The input reader will process all DDFS tags that are prefixed with the 
-    tag names defined in **source_tags** of your Inferno rule.
+The input reader will process all DDFS tags that are prefixed with the 
+tag names defined in **source_tags** of your Inferno rule.
 
-    .. code-block:: python
-       :emphasize-lines: 3,4
+.. code-block:: python
+   :emphasize-lines: 3,4
 
-        InfernoRule(
-            name='last_names_json',
-            source_tags=['example:chunk:users'],
-            map_input_stream=chunk_json_keyset_stream,
-            parts_preprocess=[count],
-            key_parts=['last'],
-            value_parts=['count'],
-        )
+InfernoRule(
+    name='last_names_json',
+    source_tags=['example:chunk:users'],
+    map_input_stream=chunk_json_keyset_stream,
+    parts_preprocess=[count],
+    key_parts=['last'],
+    value_parts=['count'],
+)
 
-    Example data transition during the **input** step:
+Example data transition during the **input** step:
 
 .. image:: images/input.png
    :height: 600px
@@ -135,28 +135,27 @@ input to the next.
 
 **Map**
 
-   The map step of an Inferno map/reduce job is responsible for extracting 
-   the relevant key and value parts from the incoming python dictionaries and 
-   yielding one, none, or many of them for further processing in the reduce 
-   step.
+The map step of an Inferno map/reduce job is responsible for extracting 
+the relevant key and value parts from the incoming python dictionaries and 
+yielding one, none, or many of them for further processing in the reduce 
+step.
 
-   Inferno's default **map_function** is the **keyset_map**. You define the 
-   relevant key and value parts by declaring **key_parts** and **value_parts** 
-   in your Inferno rule.
+Inferno's default **map_function** is the **keyset_map**. You define the 
+relevant key and value parts by declaring **key_parts** and **value_parts** 
+in your Inferno rule.
 
-    .. code-block:: python
-       :emphasize-lines: 6,7
+.. code-block:: python
+   :emphasize-lines: 6,7
+InfernoRule(
+    name='last_names_json',
+    source_tags=['example:chunk:users'],
+    map_input_stream=chunk_json_keyset_stream,
+    parts_preprocess=[count],
+    key_parts=['last'],
+    value_parts=['count'],
+)
 
-        InfernoRule(
-            name='last_names_json',
-            source_tags=['example:chunk:users'],
-            map_input_stream=chunk_json_keyset_stream,
-            parts_preprocess=[count],
-            key_parts=['last'],
-            value_parts=['count'],
-        )
-
-   Example data transition during the **map** step:
+Example data transition during the **map** step:
 
 .. image:: images/map.png
    :height: 600px
@@ -167,17 +166,17 @@ input to the next.
 
 **Reduce**
 
-   The reduce step of an Inferno map/reduce job is responsible for summarizing 
-   the results of your map/reduce query.
+The reduce step of an Inferno map/reduce job is responsible for summarizing 
+the results of your map/reduce query.
 
-   Inferno's default **reduce_function** is the **keyset_reduce**. It will sum
-   the value parts yielded by the map step, grouped by the key parts.
+Inferno's default **reduce_function** is the **keyset_reduce**. It will sum
+the value parts yielded by the map step, grouped by the key parts.
 
-   In this example, we're only summing one value (the ``count``). You can 
-   define and sum many value parts, as you'll see :doc:`here </election>` in 
-   the next example.
+In this example, we're only summing one value (the ``count``). You can 
+define and sum many value parts, as you'll see :doc:`here </election>` in 
+the next example.
 
-   Example data transition during the **reduce** step:
+Example data transition during the **reduce** step:
 
 .. image:: images/reduce.png
    :height: 600px
@@ -188,16 +187,16 @@ input to the next.
 
 **Output**
 
-    Unless you create and specify your own **result_processor**, Inferno 
-    defaults to the **keyset_result** processor which simply uses a CSV writer 
-    to print the results from the reduce step to standard output.
+Unless you create and specify your own **result_processor**, Inferno 
+defaults to the **keyset_result** processor which simply uses a CSV writer 
+to print the results from the reduce step to standard output.
 
-    Other common result processor use cases include: populating a cache, 
-    persisting to a database, writing back to 
-    `DDFS <http://discoproject.org/doc/disco/howto/ddfs.html>`_ or 
-    `DiscoDB <http://discoproject.org/doc/disco/howto/discodb.html>`_, etc.
+Other common result processor use cases include: populating a cache, 
+persisting to a database, writing back to 
+`DDFS <http://discoproject.org/doc/disco/howto/ddfs.html>`_ or 
+`DiscoDB <http://discoproject.org/doc/disco/howto/discodb.html>`_, etc.
 
-    Example data transition during the **output** step:
+Example data transition during the **output** step:
 
 .. image:: images/output.png
    :height: 600px
