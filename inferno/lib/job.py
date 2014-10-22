@@ -10,9 +10,7 @@ from inferno.lib.archiver import Archiver
 from inferno.lib.disco_ext import get_disco_handle
 from inferno.lib.job_options import JobOptions
 from inferno.lib.result import reduce_result
-from inferno.lib import pid
 from datetime import datetime
-from functools import partial
 
 log = logging.getLogger(__name__)
 
@@ -82,30 +80,27 @@ class InfernoJob(object):
         if self._enough_blobs(len(job_blobs)):
             if self.rule.rule_init_function:
                 self.rule.rule_init_function(self.params)
-            def run_job():
-                self.job.run(name=self.rule.name,
-                             input=job_blobs,
-                             map=self.rule.map_function,
-                             reduce=self.rule.reduce_function,
-                             params=self.params,
-                             partitions=self.rule.partitions,
-                             map_input_stream=self.rule.map_input_stream,
-                             map_output_stream=self.rule.map_output_stream,
-                             map_init=self.rule.map_init_function,
-                             save=self.rule.save or self.rule.result_tag is not None,
-                             scheduler=self.rule.scheduler,
-                             combiner=self.rule.combiner_function,
-                             reduce_output_stream=self.rule.reduce_output_stream,
-                             sort=self.rule.sort,
-                             sort_buffer_size=self.rule.sort_buffer_size,
-                             profile=self.settings.get('profile'),
-                             partition=self.rule.partition_function,
-                             required_files=self.rule.required_files,
-                             required_modules=self.rule.required_modules)
-            def job_id():
-                return self.job.name
-            self.full_job_id = self.execute_if_not_checkmarked(run_job, "run", job_id)
-            self.job.name = self.full_job_id
+            self.job.run(name=self.rule.name,
+                         input=job_blobs,
+                         map=self.rule.map_function,
+                         reduce=self.rule.reduce_function,
+                         params=self.params,
+                         partitions=self.rule.partitions,
+                         map_input_stream=self.rule.map_input_stream,
+                         map_output_stream=self.rule.map_output_stream,
+                         map_init=self.rule.map_init_function,
+                         save=self.rule.save or self.rule.result_tag is not None,
+                         scheduler=self.rule.scheduler,
+                         combiner=self.rule.combiner_function,
+                         reduce_output_stream=self.rule.reduce_output_stream,
+                         sort=self.rule.sort,
+                         sort_buffer_size=self.rule.sort_buffer_size,
+                         profile=self.settings.get('profile'),
+                         partition=self.rule.partition_function,
+                         required_files=self.rule.required_files,
+                         required_modules=self.rule.required_modules)
+            # actual id is only assigned after starting the job
+            self.full_job_id = self.job.name
             return self.job
         return None
 
@@ -121,21 +116,6 @@ class InfernoJob(object):
         except UnicodeEncodeError:
             return unicode(value).encode('utf-8')
 
-    def execute_if_not_checkmarked(self, func, checkmark, uid_func=None):
-        assert not " " in checkmark
-        pd = pid.pid_dir(self.settings)
-        if pid.checkmark_exists(pd, self.rule, checkmark):
-            log.debug('Skipping %s.%s because checkmark found.', self.rule.name, checkmark)
-            return pid.get_checkmark_uid(pd, self.rule, checkmark)
-        else:
-            func()
-            uid = None
-            if uid_func:
-                uid = uid_func()
-                checkmark += "\t" + uid
-            pid.add_checkmark(pd, self.rule, checkmark)
-            return uid
-
     def wait(self):
         blob_count = self.archiver.blob_count
         log.info('Started job %s processing %i blobs',
@@ -145,10 +125,9 @@ class InfernoJob(object):
             jobout = self.job.wait()
             log.info('Done waiting for job %s', self.job.name)
             self._profile(self.job)
-            self.execute_if_not_checkmarked(partial(self._tag_results, self.job.name), "tagging")
+            self._tag_results(self.job.name)
             if not self.settings.get('debug'):
-                self.execute_if_not_checkmarked(partial(self._process_results,
-                                             jobout, self.job.name), "process_results")
+                self._process_results(jobout, self.job.name)
             else:
                 results = self._get_job_results(jobout)
                 reduce_result(results)
@@ -168,13 +147,11 @@ class InfernoJob(object):
             raise
         else:
             if not self.settings.get('debug'):
-                self.execute_if_not_checkmarked(partial(self._archive_tags,
-                                                        self.archiver), "archiver")
+                self._archive_tags(self.archiver)
             if self.rule.rule_cleanup:
                 self._notify(JOB_CLEANUP)
                 self.rule.rule_cleanup(self, )
             self._notify(JOB_DONE)
-            pid.remove_checkmarks(pid.pid_dir(self.settings), self.rule)
             if self.rule.notify_on_success:
                 try:
                     from inferno.lib.notifications import send_mail
