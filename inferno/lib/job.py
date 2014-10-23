@@ -1,6 +1,7 @@
 import logging
 import sys
 import time
+import random
 import pprint
 
 from disco.worker.classic.worker import Params
@@ -11,6 +12,7 @@ from inferno.lib.disco_ext import get_disco_handle
 from inferno.lib.job_options import JobOptions
 from inferno.lib.result import reduce_result
 from datetime import datetime
+from functools import partial
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +30,20 @@ JOB_TAG = 'job.tag'
 JOB_WAIT = 'job.wait'
 JOB_ERROR = 'job.error'
 
+
+MIN_SLEEP=5
+MAX_SLEEP=10
+def try_to_execute(func, sleep=MIN_SLEEP):
+    try:
+        return func()
+    except Exception as e:
+        if sleep == MAX_SLEEP:
+            raise("failed to execute function.")
+        else:
+            sleepTime = random.randint(1, 2**sleep)
+            log.warn("Exception '%s', sleeping %s seconds.", e.message, sleepTime)
+            time.sleep(sleepTime)
+            return try_to_execute(func, sleep=sleep+1)
 
 class InfernoJob(object):
     def __init__(self, rule, settings, urls=None):
@@ -127,7 +143,7 @@ class InfernoJob(object):
             self._profile(self.job)
             self._tag_results(self.job.name)
             if not self.settings.get('debug'):
-                self._process_results(jobout, self.job.name)
+                try_to_execute(partial(self._process_results, jobout, self.job.name))
             else:
                 results = self._get_job_results(jobout)
                 reduce_result(results)
@@ -147,7 +163,8 @@ class InfernoJob(object):
             raise
         else:
             if not self.settings.get('debug'):
-                self._archive_tags(self.archiver)
+                try_to_execute(partial(self._archive_tags, self.archiver))
+
             if self.rule.rule_cleanup:
                 self._notify(JOB_CLEANUP)
                 self.rule.rule_cleanup(self, )
@@ -213,7 +230,8 @@ class InfernoJob(object):
             tag_name = '%s:%s' % (self.job_options.result_tag, suffix)
             log.info('Tagging result: %s', tag_name)
             try:
-                self.ddfs.tag(tag_name, list(self.ddfs.blobs(result_name)))
+                try_to_execute(partial(self.ddfs.tag, tag_name,
+                                       list(self.ddfs.blobs(result_name))))
             except Exception:
                 log.error('Error tagging result %s', tag_name)
                 raise
