@@ -149,7 +149,7 @@ class InfernoJob(object):
                 reduce_result(results)
             self._purge(self._safe_str(self.job.name))
         except Exception as e:
-            log.error('Job %s failed', self.job.name)
+            log.error('Job %s failed with %s', self.job.name, e.message)
             self._notify(JOB_ERROR)
             if self.rule.notify_on_fail:
                 try:
