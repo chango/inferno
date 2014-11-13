@@ -128,6 +128,8 @@ class InfernoRule(object):
                  required_files=None,
                  required_modules=None,
                  retry=False,
+                 retry_limit=2,
+                 retry_delay=1,
 
                  # notifications --> notify_addresses must be list of addresses
                  notify_on_fail=False,
@@ -222,6 +224,8 @@ class InfernoRule(object):
         self.rule_init_function = rule_init_function
         self.rule_cleanup = rule_cleanup
         self.retry = retry
+        self.retry_limit = retry_limit
+        self.retry_delay = retry_delay
         self.required_modules = required_modules or []
         self.required_files = required_files or []
         self.notify_on_fail = notify_on_fail
