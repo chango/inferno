@@ -213,7 +213,10 @@ class InfernoJob(object):
     def _tag_results(self, job_name):
         if self.job_options.result_tag:
             self._notify(JOB_TAG)
-            result_name = 'disco:job:results:%s' % job_name
+            
+            # note that Disco changed it's base tag name for saved results during transition to version 0.5
+            base_tag = 'disco:results:%s' if self.disco.master_version() >= '0.5' else 'disco:job:results:%s'
+            result_name = base_tag % job_name
             suffix = job_name
             # try to guess a better suffix (ie. the date)
             # sort the tags the job ran on, take the last part of the last tag
