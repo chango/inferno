@@ -77,6 +77,7 @@ def dynamic_reader(stream, size=None, url=None, params=None):
     else:
         reader = csv.reader(stream, dialect=dialect)
 
+    done = False
     for line in stream:
         if line.find('{') != -1:
             try:
@@ -89,7 +90,6 @@ def dynamic_reader(stream, size=None, url=None, params=None):
                 yield parts
         else:
             # We couldn't find '{' in the line so it is not json encoded... use csv reader!
-            done = False
             while not done:
                 try:
                     if not line:
@@ -108,3 +108,5 @@ def dynamic_reader(stream, size=None, url=None, params=None):
                     # just skip bad lines
                     print 'csv line error: %s' % ee
                 line = reader.next()
+        if done:
+            break
