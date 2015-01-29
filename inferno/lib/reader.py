@@ -77,42 +77,34 @@ def dynamic_reader(stream, size=None, url=None, params=None):
     else:
         reader = csv.reader(stream, dialect=dialect)
 
-    done = False
-    use_csv_reader = False
-
-    while not done:
-        if use_csv_reader:
+    for line in stream:
+        if line.find('{') != -1:
             try:
-                line = reader.next()
-                if not line:
-                    continue
-                if not fieldnames:
-                    fieldnames = [str(x) for x in range(len(line))]
-                parts = dict(__builtin__.map(None, fieldnames, line))
-                if None in parts:
-                    # remove extra data values
-                    del parts[None]
-                yield parts
-            except StopIteration as e:
-                done = True
-            except Exception as ee:
+                parts = ujson.loads(line.rstrip())
+                assert isinstance(parts, dict)
+            except:
                 # just skip bad lines
-                print 'csv line error: %s' % ee
+                print 'json line error: %r' % line
+            else:
+                yield parts
         else:
-            for line in stream:
-                if line.find('{') != -1:
-                    try:
-                        parts = ujson.loads(line.rstrip())
-                        assert isinstance(parts, dict)
-                    except:
-                        # just skip bad lines
-                        print 'json line error: %r' % line
-                    else:
-                        yield parts
-                else:
-                    # We couldn't find '{' in the line so it is not json encoded... use csv reader!
-                    use_csv_reader = True
-                    break
-            if not use_csv_reader:
-                done = True
-
+            # We couldn't find '{' in the line so it is not json encoded... use csv reader!
+            done = False
+            while not done:
+                try:
+                    if not line:
+                        line = reader.next()
+                        continue
+                    if not fieldnames:
+                        fieldnames = [str(x) for x in range(len(line))]
+                    parts = dict(__builtin__.map(None, fieldnames, line))
+                    if None in parts:
+                        # remove extra data values
+                        del parts[None]
+                    yield parts
+                except StopIteration as e:
+                    done = True
+                except Exception as ee:
+                    # just skip bad lines
+                    print 'csv line error: %s' % ee
+                line = reader.next()
