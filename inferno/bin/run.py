@@ -184,6 +184,13 @@ def _get_options(argv):
         default=None,
         help="resume a job using the mapresults of supplied module.job_id")
 
+    parser.add_argument(
+        "--daemon",
+        dest="run_daemon",
+        default=False,
+        action="store_true",
+        help="run inferno as a daemon")
+
     options = parser.parse_args(argv)
 
     if options.source_tags:
@@ -232,7 +239,7 @@ def _get_options(argv):
             message = "Could not open/process data file: %s %s"
             log.error(message, options.data_file, e)
 
-    return result
+    return result, parser
 
 
 def _get_settings(options):
@@ -268,7 +275,7 @@ def _setup_logging(settings):
 
 
 def main(argv=sys.argv):
-    options = _get_options(argv[1:])
+    options, parser = _get_options(argv[1:])
     settings = _get_settings(options)
 
     if options['example_rules']:
@@ -356,11 +363,15 @@ def main(argv=sys.argv):
             log.error(trace)
             exit(1)
 
-    else:
+    elif options['run_daemon']:
         # run inferno in 'daemon' mode
         from inferno.lib.daemon import InfernoDaemon
         setproctitle('inferno - master')
         InfernoDaemon(settings).start()
+
+    else:
+        # Display help when no options specified
+        parser.print_help()
 
 if __name__ == '__main__':
     main()
