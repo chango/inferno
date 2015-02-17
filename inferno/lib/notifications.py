@@ -12,6 +12,8 @@ def send_mail(job_id=None, job_fail=None, mail_to=None, mail_from=None, mail_ser
         raise Exception("mail_to cannot be empty: Requires a list of recipient addresses")
     if retry and retry_delay:
         retry_str = ' [AUTO-RETRY IN %s HOUR(s)]' % str(retry_delay)
+    else:
+        retry_str = False
     mail_server = "localhost" if not mail_server else mail_server
     msg_body = str(job_fail)
     msg = MIMEText(msg_body)
