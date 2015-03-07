@@ -12,6 +12,9 @@ def get_disco_handle(server):
     if server and not server.startswith('disco://'):
         server = 'disco://' + server
 
+    if server and ':' not in server:
+        server = server + ":8989"
+
     return Disco(server), DDFS(server)
 
 
