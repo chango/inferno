@@ -12,6 +12,7 @@ from inferno.lib.disco_ext import sorted_iterator, json_output_stream
 from inferno.lib.map import keyset_map
 from inferno.lib.reader import csv_reader
 from inferno.lib.reader import json_reader
+from inferno.lib.reader import dynamic_reader
 from inferno.lib.reduce import keyset_reduce
 from inferno.lib.result import keyset_result
 
@@ -20,6 +21,7 @@ gzip_csv_stream = gzip_stream + (csv_reader,)
 gzip_json_stream = gzip_stream + (json_reader,)
 chunk_json_stream = chain_stream + (json_reader,)
 chunk_csv_stream = chain_stream + (csv_reader,)
+chunk_dynamic_stream = chain_stream + (dynamic_reader,)
 json_reduce_output_stream = (reduce_output_stream, json_output_stream)
 
 
