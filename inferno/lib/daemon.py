@@ -63,6 +63,7 @@ def run_rule_async(rule_name, settings):
         if rule.retry:
             # Failed before, however, ran successfully this time. Clean up fail/retry files
             pid.clean_up(pid_dir, rule)
+        pid.create_last_complete(pid_dir, rule)
     finally:
         pid.remove_pid(pid_dir, rule)
         os._exit(0)
