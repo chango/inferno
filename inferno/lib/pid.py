@@ -38,6 +38,10 @@ def should_run(pid_dir, rule):
     return False
 
 
+def create_last_complete(pid_dir, rule):
+    Datefile(pid_dir, "%s.last_complete" % rule.name, timestamp=datetime.utcnow())
+
+
 def create_last_run(pid_dir, rule):
     Datefile(pid_dir, "%s.last_run" % rule.name, timestamp=datetime.utcnow())
 
