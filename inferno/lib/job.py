@@ -38,7 +38,7 @@ def try_to_execute(func, sleep=MIN_SLEEP):
         return func()
     except Exception as e:
         if sleep == MAX_SLEEP:
-            raise("failed to execute function.")
+            raise Exception("Failed to execute function: %s" % e.message)
         else:
             sleepTime = random.randint(1, 2**sleep)
             log.warn("Exception '%s', sleeping %s seconds.", e.message, sleepTime)
