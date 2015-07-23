@@ -138,6 +138,7 @@ class InfernoRule(object):
                  notify_on_success=False,
                  notify_addresses=None,
                  notify_pagerduty=False,
+                 notify_pagerduty_key=None,
                  **kwargs):
 
         self.qualified_name = name
@@ -235,6 +236,7 @@ class InfernoRule(object):
         self.notify_on_success = notify_on_success
         self.notify_addresses = notify_addresses or []
         self.notify_pagerduty = notify_pagerduty
+        self.notify_pagerduty_key = notify_pagerduty_key
         self.source_urls = source_urls
 
     def __str__(self):

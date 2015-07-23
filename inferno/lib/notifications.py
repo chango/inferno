@@ -38,6 +38,9 @@ def send_pagerduty(job_id=None, job_fail=None,
     if not job_id or not job_fail:
         raise Exception(
             "Missing job_id or job_fail for Pagerduty notification")
+    if not api_key:
+        raise Exception(
+            "Missing pagerduty API key")
     if retry and retry_delay:
         retry_str = ' [AUTO-RETRY IN %s HOUR(s)]' % str(retry_delay)
     else:

@@ -168,19 +168,19 @@ class InfernoJob(object):
                         self.job.name, mail_ex, exc_info=sys.exc_info())
 
                 if self.rule.notify_pagerduty:
-                    api_key = self.settings.get('pagerduty_api_key')
-                    if api_key:
-                        try:
-                            from inferno.lib.notifications import send_pagerduty
-                            send_pagerduty(job_id=self.job.name, job_fail=exc,
-                                           api_key=api_key, retry=self.rule.retry,
-                                           retry_delay=self.rule.retry_delay)
-                        except Exception as pd_ex:
-                            log.error(
-                                "Pagerduty notification failed for %s: %s",
-                                self.job.name, pd_ex)
+                    if not self.rule.notify_pagerduty_key:
+                        api_key = self.settings.get('pagerduty_api_key')
                     else:
-                        log.error("Pagerduty API key missing from settings")
+                        api_key = self.rule.notify_pagerduty_key
+                    try:
+                        from inferno.lib.notifications import send_pagerduty
+                        send_pagerduty(job_id=self.job.name, job_fail=exc,
+                                       api_key=api_key, retry=self.rule.retry,
+                                       retry_delay=self.rule.retry_delay)
+                    except Exception as pd_ex:
+                        log.error(
+                            "Pagerduty notification failed for %s: %s",
+                            self.job.name, pd_ex)
             raise
         else:
             if not self.settings.get('debug'):
