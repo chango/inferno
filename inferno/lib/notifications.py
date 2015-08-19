@@ -44,13 +44,13 @@ def send_pagerduty(job_id=None, job_fail=None,
     if retry and retry_delay:
         retry_str = ' [AUTO-RETRY IN %s HOUR(s)]' % str(retry_delay)
     else:
-        retry_str = False
+        retry_str = ''
     pd_data = {
         'service_key': api_key,
         'event_type': 'trigger',
-        'description': "Inferno: %s failed" % job_id,
+        'description': "Inferno job %s failed%s" % (job_id, retry_str),
         'details': {
-            'failure': job_fail
+            'failure': job_fail,
         }
     }
     data = json.dumps(pd_data)
