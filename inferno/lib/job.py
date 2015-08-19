@@ -152,16 +152,35 @@ class InfernoJob(object):
             log.error('Job %s failed with %s', self.job.name, e.message)
             self._notify(JOB_ERROR)
             if self.rule.notify_on_fail:
+                import traceback
+                exc = traceback.format_exc(15)
                 try:
                     from inferno.lib.notifications import send_mail
-                    send_mail(job_id=self.job.name, job_fail=e,
+                    send_mail(job_id=self.job.name, job_fail=exc,
                               mail_to=self.rule.notify_addresses,
                               mail_from=self.settings.get('mail_from'),
                               mail_server=self.settings.get('mail_server'),
                               retry=self.rule.retry,
                               retry_delay=self.rule.retry_delay)
-                except Exception as e:
-                    log.error('Job %s failed notification: %s', self.job.name, e, exc_info=sys.exc_info())
+                except Exception as mail_ex:
+                    log.error(
+                        'Mail notification failed for %s: %s',
+                        self.job.name, mail_ex, exc_info=sys.exc_info())
+
+                if self.rule.notify_pagerduty:
+                    if not self.rule.notify_pagerduty_key:
+                        api_key = self.settings.get('pagerduty_api_key')
+                    else:
+                        api_key = self.rule.notify_pagerduty_key
+                    try:
+                        from inferno.lib.notifications import send_pagerduty
+                        send_pagerduty(job_id=self.job.name, job_fail=exc,
+                                       api_key=api_key, retry=self.rule.retry,
+                                       retry_delay=self.rule.retry_delay)
+                    except Exception as pd_ex:
+                        log.error(
+                            "Pagerduty notification failed for %s: %s",
+                            self.job.name, pd_ex)
             raise
         else:
             if not self.settings.get('debug'):

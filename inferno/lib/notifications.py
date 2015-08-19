@@ -1,5 +1,8 @@
 import smtplib
 from email.mime.text import MIMEText
+import urllib2
+import urllib
+import json
 
 
 def send_mail(job_id=None, job_fail=None, mail_to=None, mail_from=None, mail_server=None,
@@ -27,3 +30,29 @@ def send_mail(job_id=None, job_fail=None, mail_to=None, mail_from=None, mail_ser
         return True
     except:
         return False
+
+
+def send_pagerduty(job_id=None, job_fail=None,
+                   api_key=None, retry=None, retry_delay=None):
+    api_url = "https://events.pagerduty.com/generic/2010-04-15/create_event.json"
+    if not job_id or not job_fail:
+        raise Exception(
+            "Missing job_id or job_fail for Pagerduty notification")
+    if not api_key:
+        raise Exception(
+            "Missing pagerduty API key")
+    if retry and retry_delay:
+        retry_str = ' [AUTO-RETRY IN %s HOUR(s)]' % str(retry_delay)
+    else:
+        retry_str = ''
+    pd_data = {
+        'service_key': api_key,
+        'event_type': 'trigger',
+        'description': "Inferno job %s failed%s" % (job_id, retry_str),
+        'details': {
+            'failure': job_fail,
+        }
+    }
+    data = json.dumps(pd_data)
+    req = urllib2.Request(api_url, data)
+    resp = urllib2.urlopen(req)
