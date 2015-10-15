@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime, timedelta
 
 from disco.worker.classic.worker import Params
 from disco.core import result_iterator
@@ -29,6 +30,39 @@ def crc_partition(key, nr_partitions, params):
     import binascii
     return binascii.crc32(key) % nr_partitions
 
+'''
+    The dateLookBack function will take in a list of sourceTags and the number of days 
+    you want to return on the sourceTag list. For example, if today is October 14, 2015 
+    and you enter the following:
+    dateLookBack('incoming:collector:chunk:searches', 3) will return a list containing
+    ['incoming:collector:chunk:data_channel_params:2015-10-14', 'incoming:collector:chunk:data_channel_params:2015-10-13'
+    'incoming:collector:chunk:data_channel_params:2015-10-12', 'incoming:collector:chunk:data_channel_params:2015-10-11']
+
+    arguments:
+        sourceTagList: The list of the sourceTags you want to use the rule on
+        lookBackNumber: An integer number of days you want to look look back 
+
+    Returns: A list containing all of the sourceTags with the date appended to them
+
+'''
+
+def dateLookBack(sourceTagList, lookBackNumber):
+    
+    dateList = []
+    allSourceTags = []
+
+    for i in range (0, lookBackNumber+1):
+        date_n_days_ago = datetime.now() - timedelta(days=i)
+        year = date_n_days_ago.year
+        month= date_n_days_ago.month
+        day = date_n_days_ago.day
+        date = str(year) + '-' + str(month) + '-' + str(day)
+        dateList.append(date)
+
+    for sourceTag in sourceTagList:
+        for date in dateList:
+            allSourceTags.append(sourceTag + ":" + date)
+    return allSourceTags
 
 class Keyset(object):
 
@@ -77,6 +111,7 @@ class InfernoRule(object):
                  # archive
                  archive=False,
                  archive_tag_prefix='processed',
+                 archive_lookback=0,
 
                  # nuke
                  nuke=False,
@@ -201,6 +236,9 @@ class InfernoRule(object):
         # input
         if isinstance(source_tags, basestring):
             source_tags = [source_tags]
+        if archive_lookback != 0:
+            source_tags = dateLookBack(source_tags, archive_lookback)
+
         self.day_range = day_range
         self.day_offset = day_offset
         self.day_start = day_start
