@@ -273,32 +273,31 @@ class InfernoRule(object):
         )
 
 
-def get_date_lookback(sourceTagList, lookBackNumber):
+def get_date_lookback(source_tag_list, look_back_number):
     
     """
-    The dateLookBack function will take in a list of sourceTags and the number of days 
-    you want to return on the sourceTag list. For example, if today is October 14, 2015 
-    and you enter the following:
-    dateLookBack('incoming:collector:chunk:searches', 3) will return a list containing
-    ['incoming:collector:chunk:data_channel_params:2015-10-14', 'incoming:collector:chunk:data_channel_params:2015-10-13'
-    'incoming:collector:chunk:data_channel_params:2015-10-12', 'incoming:collector:chunk:data_channel_params:2015-10-11']
+    The get_date_lookback function will take in a list of sourceTags and the 
+    number of days you want to return on the source tag list. For example, if 
+    today is October 14, 2015 and you enter the following:
+    get_date_lookback('incoming:collector', 3) will return a list containing
+    ['incoming:collector:2015-10-14', 'incoming:collector:2015-10-13'
+    'incoming:collector:2015-10-12', 'incoming:collector:2015-10-11']
 
-    arguments:
-        sourceTagList: The list of the sourceTags you want to use the rule on
-        lookBackNumber: An integer number of days you want to look look back 
+    Arguments:
+        source_tag_list: The list of the sourceTags you want to use the rule on
+        look_back_number: An integer number of days you want to look look back 
 
     Returns: A list containing all of the sourceTags with the date appended to them
 
     """
 
-    dateList = []
-    allSourceTags = []
+    all_source_tags = []
 
-    for i in range(0, lookBackNumber+1):
-        for sourceTag in sourceTagList:
-            allSourceTags.append("%s:%s" % (sourceTag, datetime.strftime(datetime.now() - timedelta(days=i), "%Y-%m-%d")))
+    for i in range(0, look_back_number+1):
+        for source_tag in source_tag_list:
+            all_source_tags.append("%s:%s" % (source_tag, datetime.strftime(datetime.now() - timedelta(days=i), "%Y-%m-%d")))
 
-    return allSourceTags
+    return all_source_tags
     
 
 def extract_subrules(rule):
