@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime, timedelta
 
 from disco.worker.classic.worker import Params
 from disco.core import result_iterator
@@ -77,6 +78,7 @@ class InfernoRule(object):
                  # archive
                  archive=False,
                  archive_tag_prefix='processed',
+                 archive_lookback=0,
 
                  # nuke
                  nuke=False,
@@ -201,6 +203,9 @@ class InfernoRule(object):
         # input
         if isinstance(source_tags, basestring):
             source_tags = [source_tags]
+        if archive_lookback:
+            source_tags = get_date_lookback(source_tags, archive_lookback)
+
         self.day_range = day_range
         self.day_offset = day_offset
         self.day_start = day_start
@@ -267,6 +272,33 @@ class InfernoRule(object):
             parts_preprocess=fname(self.params.parts_preprocess),
         )
 
+
+def get_date_lookback(source_tag_list, look_back_number):
+    
+    """
+    The get_date_lookback function will take in a list of sourceTags and the 
+    number of days you want to return on the source tag list. For example, if 
+    today is October 14, 2015 and you enter the following:
+    get_date_lookback('incoming:collector', 3) will return a list containing
+    ['incoming:collector:2015-10-14', 'incoming:collector:2015-10-13'
+    'incoming:collector:2015-10-12', 'incoming:collector:2015-10-11']
+
+    Arguments:
+        source_tag_list: The list of the sourceTags you want to use the rule on
+        look_back_number: An integer number of days you want to look look back 
+
+    Returns: A list containing all of the sourceTags with the date appended to them
+
+    """
+
+    all_source_tags = []
+
+    for i in range(0, look_back_number+1):
+        for source_tag in source_tag_list:
+            all_source_tags.append("%s:%s" % (source_tag, datetime.strftime(datetime.now() - timedelta(days=i), "%Y-%m-%d")))
+
+    return all_source_tags
+    
 
 def extract_subrules(rule):
     for item in rule.source_tags:
